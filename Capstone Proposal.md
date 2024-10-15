@@ -131,32 +131,103 @@ Describe your data and the relationships between the data points. You can show t
 
 #### **GET /pois**
 
-- Get *Points of Interest* - trails, campgrounds, natural parks, etc - close to a certain location. Data pulled from OSM's Overpass API.
+- Get *Points of Interest* - trails, campgrounds, nature reserves, etc - close to a certain location. Data pulled from OSM's Overpass API.
 
 Parameters:
 - longitude: User-provided location as a number
 - latitude: User-provided location as a number
 - radius: User-provided distance as a number
+- types: User-provided comma-separated list of the types of points of interest to retrieve. Any of options "trails", "campgrounds", "reserves".
 
 Response:
 ```
-[
-
-]
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.1 084b4234",
+  "osm3s": {
+    "timestamp_osm_base": "2024-10-15T23:24:28Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+		{
+			"type": "way",
+			"id": 89197644,
+			"tags": {
+				"name": "South Balsam Trail",
+				"highway": "footway",
+				"sac_scale": "hiking",
+				"source": "GPS trace",
+				"surface": "gravel"
+			},
+			"bounds": {
+				"minlat": 44.1017728,
+				"minlon": -79.1348396,
+				"maxlat": 44.1065268,
+				"maxlon": -79.1282126
+			},
+			"nodes": [
+				...
+			],
+			"geometry": [
+				{
+					"lat": 44.1065268,
+					"lon": -79.1282126
+				},
+				...
+			]
+		},
+		...
+	]
+}
 ```
 
 #### **GET /pois/:id**
 
-- Get available metadata for a specific Point of Interest. Data pulled from OSM's Overpass API.
+- Get available data for a single Point of Interest. Data pulled from OSM's Overpass API.
 
 Parameters:
 - id: PoI identifier as a number
+- type: The type that this PoI is represented as in Overpass. One of "node", "way", or "relation".
 
 Response:
 ```
-[
-
-]
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.1 084b4234",
+  "osm3s": {
+    "timestamp_osm_base": "2024-10-15T23:24:28Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+		{
+			"type": "way",
+			"id": 89197644,
+			"tags": {
+				"name": "South Balsam Trail",
+				"highway": "footway",
+				"sac_scale": "hiking",
+				"source": "GPS trace",
+				"surface": "gravel"
+			},
+			"bounds": {
+				"minlat": 44.1017728,
+				"minlon": -79.1348396,
+				"maxlat": 44.1065268,
+				"maxlon": -79.1282126
+			},
+			"nodes": [
+				...
+			],
+			"geometry": [
+				{
+					"lat": 44.1065268,
+					"lon": -79.1282126
+				},
+				...
+			]
+		}
+	]
+}
 ```
 
 #### **POST /pois/:id**
