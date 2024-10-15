@@ -58,7 +58,11 @@ List technologies that will be used in your app, including any libraries to save
 ### APIs
 
 - [OSM's Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API)
+	- For searching for locations that match our search criteria
 - [iNaturalist API](https://api.inaturalist.org/v1/docs/)
+	- For retrieving information about species and their distribution
+- [Wikipedia API](https://en.wikipedia.org/api/rest_v1/)
+	- For retrieving excerpts of information about a species
 
 ### Sitemap
 
@@ -197,7 +201,15 @@ Parameters:
 Response:
 ```
 [
-
+	{
+		"id": 39682,
+		"common_name": "Common Snapping Turtle",
+		"photo": {
+			"square_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/72712185/square.jpeg",
+			"attribution": "(c) Tommy Farquhar, some rights reserved (CC BY-NC), uploaded by Tommy Farquhar"
+		}
+	}
+	...
 ]
 ```
 
@@ -210,9 +222,18 @@ Parameters:
 
 Response:
 ```
-[
-
-]
+{
+	"id": 39682,
+	"common_name": "Common Snapping Turtle",
+	"scientific_name": "Chelydra serpentina",
+	"photo": {
+		"square_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/72712185/square.jpeg",
+		"medium_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/72712185/medium.jpeg",
+		"attribution": "(c) Tommy Farquhar, some rights reserved (CC BY-NC), uploaded by Tommy Farquhar"
+	},
+	"wikipedia_url": "http://en.wikipedia.org/wiki/Common_snapping_turtle",
+	"wikipedia_excerpt": "<p>The <b>common snapping turtle</b> is a species of large freshwater turtle in the family Chelydridae. Its natural range extends from southeastern Canada, southwest to the edge of the Rocky Mountains, as far east as Nova Scotia and Florida. The present-day [...]"
+}
 ```
 
 #### **POST /users/register**
