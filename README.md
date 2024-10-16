@@ -11,10 +11,10 @@ Many individuals, particularly those in urban areas, experience a disconnect fro
 ### User Profile
 
 - Outdoor enthusiasts:
-	- ...looking for a new spot to hike, camp, or unwind in nature close to their location
-	- ...looking for spots to hike or camp close to a given location for the future
-	- ...that want to keep track of trails, campgrounds, and nature reserves they want to visit
-	- with a focus on beginners to these activities, though individuals of all experience levels are welcome.
+  - ...looking for a new spot to hike, camp, or unwind in nature close to their location
+  - ...looking for spots to hike or camp close to a given location for the future
+  - ...that want to keep track of trails, campgrounds, and nature reserves they want to visit
+  - with a focus on beginners to these activities, though individuals of all experience levels are welcome.
 
 ### Features
 
@@ -37,41 +37,41 @@ Many individuals, particularly those in urban areas, experience a disconnect fro
 - React
 - Express
 - Client libraries:
-	- react
-	- react-router
-	- react-leaflet
-	- axios
+  - react
+  - react-router
+  - react-leaflet
+  - axios
 - Server libraries:
-	- express
-	- knex
-	- axios
-	- bcrypt for password hashing
+  - express
+  - knex
+  - axios
+  - bcrypt for password hashing
 
 ### APIs
 
 - [OSM's Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API)
-	- For searching for locations that match our search criteria
+  - For searching for locations that match our search criteria
 - [iNaturalist API](https://api.inaturalist.org/v1/docs/)
-	- For retrieving information about species and their distribution
+  - For retrieving information about species and their distribution
 - [Wikipedia API](https://en.wikipedia.org/api/rest_v1/)
-	- For retrieving excerpts of information about a species
+  - For retrieving excerpts of information about a species
 
 ### Sitemap
 
 - Home page
-	- Introduce website purpose, Call to action (go to find trails page)
+  - Introduce website purpose, Call to action (go to find trails page)
 - Find new trails page
-	- Form which lets user enter a location and details on the kind of place they're searching for; displays results on a map.
+  - Form which lets user enter a location and details on the kind of place they're searching for; displays results on a map.
 - View & save a trail
-	- View more details about a trail/campground/other point of interest
+  - View more details about a trail/campground/other point of interest
 - View an organism
-	- View more details about a given species
+  - View more details about a given species
 - Save/print a sightings checklist
-	- From a trail/point of interest, get a printable checklist of species you may see there.
+  - From a trail/point of interest, get a printable checklist of species you may see there.
 - Manage bookmarked trails
-	- Logged in users: view and manage a list of saved points of interest
+  - Logged in users: view and manage a list of saved points of interest
 - Contribute
-	- Brief information about data sources (iNaturalist, OSM) and call to action to contribute to those projects
+  - Brief information about data sources (iNaturalist, OSM) and call to action to contribute to those projects
 - Register
 - Login
 
@@ -138,35 +138,35 @@ Response:
     "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
   },
   "elements": [
-		{
-			"type": "way",
-			"id": 89197644,
-			"tags": {
-				"name": "South Balsam Trail",
-				"highway": "footway",
-				"sac_scale": "hiking",
-				"source": "GPS trace",
-				"surface": "gravel"
-			},
-			"bounds": {
-				"minlat": 44.1017728,
-				"minlon": -79.1348396,
-				"maxlat": 44.1065268,
-				"maxlon": -79.1282126
-			},
-			"nodes": [
-				...
-			],
-			"geometry": [
-				{
-					"lat": 44.1065268,
-					"lon": -79.1282126
-				},
-				...
-			]
-		},
-		...
-	]
+    {
+      "type": "way",
+      "id": 89197644,
+      "tags": {
+        "name": "South Balsam Trail",
+        "highway": "footway",
+        "sac_scale": "hiking",
+        "source": "GPS trace",
+        "surface": "gravel"
+      },
+      "bounds": {
+        "minlat": 44.1017728,
+        "minlon": -79.1348396,
+        "maxlat": 44.1065268,
+        "maxlon": -79.1282126
+      },
+      "nodes": [
+        ...
+      ],
+      "geometry": [
+        {
+          "lat": 44.1065268,
+          "lon": -79.1282126
+        },
+        ...
+      ]
+    },
+    ...
+  ]
 }
 ```
 
@@ -188,34 +188,34 @@ Response:
     "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
   },
   "elements": [
-		{
-			"type": "way",
-			"id": 89197644,
-			"tags": {
-				"name": "South Balsam Trail",
-				"highway": "footway",
-				"sac_scale": "hiking",
-				"source": "GPS trace",
-				"surface": "gravel"
-			},
-			"bounds": {
-				"minlat": 44.1017728,
-				"minlon": -79.1348396,
-				"maxlat": 44.1065268,
-				"maxlon": -79.1282126
-			},
-			"nodes": [
-				...
-			],
-			"geometry": [
-				{
-					"lat": 44.1065268,
-					"lon": -79.1282126
-				},
-				...
-			]
-		}
-	]
+    {
+      "type": "way",
+      "id": 89197644,
+      "tags": {
+        "name": "South Balsam Trail",
+        "highway": "footway",
+        "sac_scale": "hiking",
+        "source": "GPS trace",
+        "surface": "gravel"
+      },
+      "bounds": {
+        "minlat": 44.1017728,
+        "minlon": -79.1348396,
+        "maxlat": 44.1065268,
+        "maxlon": -79.1282126
+      },
+      "nodes": [
+        ...
+      ],
+      "geometry": [
+        {
+          "lat": 44.1065268,
+          "lon": -79.1282126
+        },
+        ...
+      ]
+    }
+  ]
 }
 ```
 
@@ -233,10 +233,10 @@ Response:
 - Status code 201 Created, and the database record that was created.
 ```
 {
-	"id": 1,
-	"osm_id": 89197644,
-	"osm_type": "way",
-	"name": "South Balsam Trail"
+  "id": 1,
+  "osm_id": 89197644,
+  "osm_type": "way",
+  "name": "South Balsam Trail"
 }
 ```
 
@@ -261,13 +261,13 @@ Parameters:
 Response:
 ```
 [
-	{
-		"id": 1,
-		"osm_id": 89197644,
-		"osm_type": "way",
-		"name": "South Balsam Trail"
-	},
-	...
+  {
+    "id": 1,
+    "osm_id": 89197644,
+    "osm_type": "way",
+    "name": "South Balsam Trail"
+  },
+  ...
 ]
 ```
 
@@ -283,15 +283,15 @@ Parameters:
 Response:
 ```
 [
-	{
-		"id": 39682,
-		"common_name": "Common Snapping Turtle",
-		"photo": {
-			"square_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/72712185/square.jpeg",
-			"attribution": "(c) Tommy Farquhar, some rights reserved (CC BY-NC), uploaded by Tommy Farquhar"
-		}
-	}
-	...
+  {
+    "id": 39682,
+    "common_name": "Common Snapping Turtle",
+    "photo": {
+      "square_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/72712185/square.jpeg",
+      "attribution": "(c) Tommy Farquhar, some rights reserved (CC BY-NC), uploaded by Tommy Farquhar"
+    }
+  }
+  ...
 ]
 ```
 
@@ -305,16 +305,16 @@ Parameters:
 Response:
 ```
 {
-	"id": 39682,
-	"common_name": "Common Snapping Turtle",
-	"scientific_name": "Chelydra serpentina",
-	"photo": {
-		"square_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/72712185/square.jpeg",
-		"medium_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/72712185/medium.jpeg",
-		"attribution": "(c) Tommy Farquhar, some rights reserved (CC BY-NC), uploaded by Tommy Farquhar"
-	},
-	"wikipedia_url": "http://en.wikipedia.org/wiki/Common_snapping_turtle",
-	"wikipedia_excerpt": "<p>The <b>common snapping turtle</b> is a species of large freshwater turtle in the family Chelydridae. Its natural range extends from southeastern Canada, southwest to the edge of the Rocky Mountains, as far east as Nova Scotia and Florida. The present-day [...]"
+  "id": 39682,
+  "common_name": "Common Snapping Turtle",
+  "scientific_name": "Chelydra serpentina",
+  "photo": {
+    "square_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/72712185/square.jpeg",
+    "medium_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/72712185/medium.jpeg",
+    "attribution": "(c) Tommy Farquhar, some rights reserved (CC BY-NC), uploaded by Tommy Farquhar"
+  },
+  "wikipedia_url": "http://en.wikipedia.org/wiki/Common_snapping_turtle",
+  "wikipedia_excerpt": "<p>The <b>common snapping turtle</b> is a species of large freshwater turtle in the family Chelydridae. Its natural range extends from southeastern Canada, southwest to the edge of the Rocky Mountains, as far east as Nova Scotia and Florida. The present-day [...]"
 }
 ```
 
@@ -329,7 +329,7 @@ Parameters:
 Response:
 ```
 {
-	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
@@ -344,73 +344,73 @@ Parameters:
 Response:
 ```
 {
-	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
 }
 ```
 
 ### Auth
 
 - JWT auth
-	- Before adding auth functionality, relevant API requests will be made using a fake user with id 1.
-	- Auth functionality will be added after core features have been implemented.
-	- If user asks the site to remember them on login, JWT will be saved in localStorage; if not, it will be saved to sessionStorage; in either case, it is removed upon logout.
-	- Add states for logged in that show different UI in relevant areas.
+  - Before adding auth functionality, relevant API requests will be made using a fake user with id 1.
+  - Auth functionality will be added after core features have been implemented.
+  - If user asks the site to remember them on login, JWT will be saved in localStorage; if not, it will be saved to sessionStorage; in either case, it is removed upon logout.
+  - Add states for logged in that show different UI in relevant areas.
 
 ## Roadmap
 
 - Create client - Day 1
-	- React project with routes & boilerplate pages
-	- Set up Sass partials & accessibility enhancements
+  - React project with routes & boilerplate pages
+  - Set up Sass partials & accessibility enhancements
 
 - Create server - Day 1
-	- Express project with routing, with placeholder 501 responses
-	- Set up general middleware (cors, compression, etc)
-	- Set up sanitization and validation for user-inputted data
+  - Express project with routing, with placeholder 501 responses
+  - Set up general middleware (cors, compression, etc)
+  - Set up sanitization and validation for user-inputted data
 
 - Create database migrations - Day 1
 - Create seeds for fake user data - Day 1
-	- One user account, plus a few saved points of interest
+  - One user account, plus a few saved points of interest
 
 - Deploy client and server projects so all commits will be reflected in production
 
 - Feature: Find Trails - Day 2
-	- Create GET /pois
-	- Implement find trails page, including form & Leaflet map
-	- Save most form contents in sessionStorage; iconic taxa choices in localStorage
+  - Create GET /pois
+  - Implement find trails page, including form & Leaflet map
+  - Save most form contents in sessionStorage; iconic taxa choices in localStorage
 
 - Feature: View Trail Page - Day 3
-	- Create GET /pois/:osm_id
-	- Create GET /life
-	- Implement view trail page, including overview of seasonal animal sightings
+  - Create GET /pois/:osm_id
+  - Create GET /life
+  - Implement view trail page, including overview of seasonal animal sightings
 
 - Feature: View Organism Page - Day 4
-	- Create GET /life/:id
-	- Implement view organism page
+  - Create GET /life/:id
+  - Implement view organism page
 
 - Feature: Home Page - Day 5
-	- Implement home page
+  - Implement home page
 
 - Feature: Contribute Page - Day 5
-	- Implement contribute page
+  - Implement contribute page
 
 - Feature: Sighting Checklist Page - Day 6
-	- Implement printable checklist page - shows name of PoI, month, and a list of animals randomly chosen from iconic taxa groups of user's choice
+  - Implement printable checklist page - shows name of PoI, month, and a list of animals randomly chosen from iconic taxa groups of user's choice
 
 - Feature: Manage Bookmarked Trails Page - Day 7
-	- Create GET /pois/saved
-	- Implement manage bookmarks page, including a delete button for each bookmark and a link to view details.
+  - Create GET /pois/saved
+  - Implement manage bookmarks page, including a delete button for each bookmark and a link to view details.
 
 - Feature: Login - Day 8
-	- Create POST /users/login
-	- Implement login page and form
+  - Create POST /users/login
+  - Implement login page and form
 
 - Feature: Create account - Day 8
-	- Create POST /users/register
-	- Implement registration page and form
+  - Create POST /users/register
+  - Implement registration page and form
 
 - Feature: Implement JWT tokens - Day 9
-	- Server: Update expected requests & responses on protected endpoints
-	- Client: Local storage of JWT, include JWT with api calls
+  - Server: Update expected requests & responses on protected endpoints
+  - Client: Local storage of JWT, include JWT with api calls
 
 - Bug fixes
 
