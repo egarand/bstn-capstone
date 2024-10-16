@@ -419,7 +419,6 @@ Response:
 ---
 
 ## Future Implementations
-Your project will be marked based on what you committed to in the above document. Here, you can list any additional features you may complete after the MVP of your application is built, or if you have extra time before the Capstone due date.
 
 - User authentication may be a future implementation, depending on time.
 - Forgot password & password change functionality.
