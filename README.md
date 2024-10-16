@@ -113,8 +113,23 @@ Many individuals, particularly those in urban areas, experience a disconnect fro
 
 ### Data
 
-*TODO*
 ![](./mockups/database.png)
+
+**`users`**:
+  - `id`: primary key, integer, auto-increment
+  - `email`: varchar(60)
+  - `password`: char(60)
+
+**`pois`**:
+  - `id`: primary key, integer, auto-increment
+  - `name`: varchar(128)
+  - `osm_id`: integer
+  - `osm_type`: integer
+
+**`saved_pois`**:
+  - `id`: primary key, integer, auto-increment
+  - `user_id`: foreign key on `users.id`
+  - `poi_id`: foreign key on `pois.id`
 
 ### Endpoints
 
