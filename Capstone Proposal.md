@@ -17,7 +17,7 @@ Many individuals, particularly those in urban areas, experience a disconnect fro
 - Outdoor enthusiasts:
 	- ...looking for a new spot to hike, camp, or unwind in nature close to their location
 	- ...looking for spots to hike or camp close to a given location for the future
-	- ...that want to keep track of trails, campgrounds, and parks they want to visit
+	- ...that want to keep track of trails, campgrounds, and nature reserves they want to visit
 	- with a focus on beginners to these activities, though individuals of all experience levels are welcome.
 
 ### Features
@@ -181,13 +181,13 @@ Response:
 }
 ```
 
-#### **GET /pois/:id**
+#### **GET /pois/:osm_id**
 
 - Get available data for a single Point of Interest. Data pulled from OSM's Overpass API.
 
 Parameters:
-- id: PoI identifier as a number
-- type: The type that this PoI is represented as in Overpass. One of "node", "way", or "relation".
+- osm_id: PoI OSM identifier as a number
+- osm_type: The type that this PoI is represented as in Overpass. One of "node", "way", or "relation".
 
 Response:
 ```
@@ -230,19 +230,25 @@ Response:
 }
 ```
 
-#### **POST /pois/:id**
+#### **POST /pois**
 
 - Logged in user can save a Point of Interest to their personal list.
 
 Parameters:
-- id: PoI identifier as a number
+- osm_id: PoI OSM identifier as a number
+- osm_type: The type that this PoI is represented as in Overpass. One of "node", "way", or "relation".
+- name: The name of this PoI
 - token: JWT used to identify the user saving the location.
 
 Response:
+- Status code 201 Created, and the database record that was created.
 ```
-[
-
-]
+{
+	"id": 1,
+	"osm_id": 89197644,
+	"osm_type": "way",
+	"name": "South Balsam Trail"
+}
 ```
 
 #### **DELETE /pois/:id**
@@ -250,13 +256,29 @@ Response:
 - Logged in users can remove a Point of Interest from their personal list.
 
 Parameters:
-- id: PoI id as a number
+- id: PoI internal id as a number
+- token: JWT used to identify the user removing the location.
+
+Response:
+- Status code 204 No Content
+
+#### **GET /pois/saved**
+
+- Logged in users can view a list of their saved Points of Interest.
+
+Parameters:
 - token: JWT used to identify the user removing the location.
 
 Response:
 ```
 [
-
+	{
+		"id": 1,
+		"osm_id": 89197644,
+		"osm_type": "way",
+		"name": "South Balsam Trail"
+	},
+	...
 ]
 ```
 
@@ -318,7 +340,7 @@ Parameters:
 Response:
 ```
 {
-	"token": "..."
+	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
@@ -333,7 +355,7 @@ Parameters:
 Response:
 ```
 {
-	"token": "..."
+	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
 }
 ```
 
