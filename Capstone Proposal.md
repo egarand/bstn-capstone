@@ -1,8 +1,4 @@
-# Project Title
-
-Hike & Seek
-
-(Alt: "Wanderwild", but I like the playfulness of Hike & Seek)
+# 🍃🔍 Hike & Seek
 
 ## Overview
 
@@ -89,12 +85,13 @@ List the pages of your app with brief descriptions. You can show this visually, 
 
 Provide visuals of your app's screens. You can use pictures of hand-drawn sketches, or wireframing tools like Figma.
 
+#### Style Guide
+![](./mockups/style-guide.png)
+
 #### Home page
-*TODO*
 ![](./mockups/home.png)
 
 #### Find new trails page
-*TODO*
 ![](./mockups/find-trails.png)
 
 #### View & save a trail
@@ -436,5 +433,5 @@ Your project will be marked based on what you committed to in the above document
 
 - User authentication may be a future implementation, depending on time.
 - Forgot password & password change functionality.
-- Get directions from a specified location to a given point of interest.
+- Get directions from a specified location to a given point of interest, when possible.
 - Unit and Integration tests.
