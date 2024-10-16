@@ -386,27 +386,25 @@ Response:
 - Create seeds for fake user data - Day 1
   - One user account, plus a few saved points of interest
 
-- Deploy client and server projects so all commits will be reflected in production
+- Feature: Home Page - Day 2
+  - Implement home page
 
-- Feature: Find Trails - Day 2
+- Feature: Contribute Page - Day 2
+  - Implement contribute page
+
+- Feature: Find Trails - Day 3
   - Create GET /pois
   - Implement find trails page, including form & Leaflet map
   - Save most form contents in sessionStorage; iconic taxa choices in localStorage
 
-- Feature: View Trail Page - Day 3
+- Feature: View Trail Page - Day 4
   - Create GET /pois/:osm_id
   - Create GET /life
   - Implement view trail page, including overview of seasonal animal sightings
 
-- Feature: View Organism Page - Day 4
+- Feature: View Organism Page - Day 5
   - Create GET /life/:id
   - Implement view organism page
-
-- Feature: Home Page - Day 5
-  - Implement home page
-
-- Feature: Contribute Page - Day 5
-  - Implement contribute page
 
 - Feature: Sighting Checklist Page - Day 6
   - Implement printable checklist page - shows name of PoI, month, and a list of animals randomly chosen from iconic taxa groups of user's choice
@@ -426,6 +424,8 @@ Response:
 - Feature: Implement JWT tokens - Day 9
   - Server: Update expected requests & responses on protected endpoints
   - Client: Local storage of JWT, include JWT with api calls
+
+- Deploy client and server projects
 
 - Bug fixes
 
