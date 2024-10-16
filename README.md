@@ -18,8 +18,6 @@ Many individuals, particularly those in urban areas, experience a disconnect fro
 
 ### Features
 
-List the functionality that your app will include. These can be written as user stories or descriptions with related details. Do not describe _how_ these features are implemented, only _what_ needs to be implemented.
-
 - As a user, I want to be able to find trails and campgrounds close to my current location.
 - As a user, I want to be able to find trails and campgrounds close to any given location.
 - As a user, I want to learn about wildlife I can encounter at a given trail or campground.
@@ -35,8 +33,6 @@ List the functionality that your app will include. These can be written as user 
 ## Implementation
 
 ### Tech Stack
-
-List technologies that will be used in your app, including any libraries to save time or provide more functionality. Be sure to research any potential limitations.
 
 - React
 - Express
@@ -62,8 +58,6 @@ List technologies that will be used in your app, including any libraries to save
 
 ### Sitemap
 
-List the pages of your app with brief descriptions. You can show this visually, or write it out.
-
 - Home page
 	- Introduce website purpose, Call to action (go to find trails page)
 - Find new trails page
@@ -82,8 +76,6 @@ List the pages of your app with brief descriptions. You can show this visually, 
 - Login
 
 ### Mockups
-
-Provide visuals of your app's screens. You can use pictures of hand-drawn sketches, or wireframing tools like Figma.
 
 #### Style Guide
 ![](./mockups/style-guide.png)
@@ -120,8 +112,6 @@ Provide visuals of your app's screens. You can use pictures of hand-drawn sketch
 
 
 ### Data
-
-Describe your data and the relationships between the data points. You can show this visually using diagrams, or write it out.
 
 *TODO*
 ![](./mockups/database.png)
