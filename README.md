@@ -185,7 +185,7 @@ Response:
 }
 ```
 
-#### **GET /pois/:osm_id**
+#### **GET /pois/:osm_type/:osm_id**
 
 - Get available data for a single Point of Interest. Data pulled from OSM's Overpass API.
 
@@ -234,58 +234,6 @@ Response:
 }
 ```
 
-#### **POST /pois**
-
-- Logged in user can save a Point of Interest to their personal list.
-
-Parameters:
-- osm_id: PoI OSM identifier as a number
-- osm_type: The type that this PoI is represented as in Overpass. One of "node", "way", or "relation".
-- name: The name of this PoI
-- token: JWT used to identify the user saving the location.
-
-Response:
-- Status code 201 Created, and the database record that was created.
-```
-{
-  "id": 1,
-  "osm_id": 89197644,
-  "osm_type": "way",
-  "name": "South Balsam Trail"
-}
-```
-
-#### **DELETE /pois/:id**
-
-- Logged in users can remove a Point of Interest from their personal list.
-
-Parameters:
-- id: PoI internal id as a number
-- token: JWT used to identify the user removing the location.
-
-Response:
-- Status code 204 No Content
-
-#### **GET /pois/saved**
-
-- Logged in users can view a list of their saved Points of Interest.
-
-Parameters:
-- token: JWT used to identify the user removing the location.
-
-Response:
-```
-[
-  {
-    "id": 1,
-    "osm_id": 89197644,
-    "osm_type": "way",
-    "name": "South Balsam Trail"
-  },
-  ...
-]
-```
-
 #### **GET /life**
 
 - Get a list of species that have previously been sighted within a radius of a certain location, within the current month of the year. Data pulled from iNaturalist.
@@ -332,6 +280,58 @@ Response:
   "wikipedia_excerpt": "<p>The <b>common snapping turtle</b> is a species of large freshwater turtle in the family Chelydridae. Its natural range extends from southeastern Canada, southwest to the edge of the Rocky Mountains, as far east as Nova Scotia and Florida. The present-day [...]"
 }
 ```
+
+#### **GET /users/pois**
+
+- Logged in users can view a list of their saved Points of Interest.
+
+Parameters:
+- token: JWT used to identify the user removing the location.
+
+Response:
+```
+[
+  {
+    "id": 1,
+    "osm_id": 89197644,
+    "osm_type": "way",
+    "name": "South Balsam Trail"
+  },
+  ...
+]
+```
+
+#### **POST /users/pois**
+
+- Logged in user can save a Point of Interest to their personal list.
+
+Parameters:
+- osm_id: PoI OSM identifier as a number
+- osm_type: The type that this PoI is represented as in Overpass. One of "node", "way", or "relation".
+- name: The name of this PoI
+- token: JWT used to identify the user saving the location.
+
+Response:
+- Status code 201 Created, and the database record that was created.
+```
+{
+  "id": 1,
+  "osm_id": 89197644,
+  "osm_type": "way",
+  "name": "South Balsam Trail"
+}
+```
+
+#### **DELETE /users/pois/:id**
+
+- Logged in users can remove a Point of Interest from their personal list.
+
+Parameters:
+- id: PoI internal id as a number
+- token: JWT used to identify the user removing the location.
+
+Response:
+- Status code 204 No Content
 
 #### **POST /users/register**
 
