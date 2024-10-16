@@ -78,6 +78,8 @@ List the pages of your app with brief descriptions. You can show this visually, 
 	- View more details about a given species
 - Save/print a sightings checklist
 	- From a trail/point of interest, get a printable checklist of species you may see there.
+- Manage bookmarked trails
+	- Logged in users: view and manage a list of saved points of interest
 - Contribute
 	- Brief information about data sources (iNaturalist, OSM) and call to action to contribute to those projects
 - Register
@@ -369,38 +371,59 @@ Response:
 
 ## Roadmap
 
-*TODO* more detailed breakdown of features
-
 - Create client - Day 1
-	- react project with routes, boilerplate pages, other preliminary set up
+	- React project with routes & boilerplate pages
+	- Set up Sass partials & accessibility enhancements
 
 - Create server - Day 1
-	- express project with routing, with placeholder 501 responses
+	- Express project with routing, with placeholder 501 responses
+	- Set up general middleware (cors, compression, etc)
+	- Set up sanitization and validation for user-inputted data
 
 - Create database migrations - Day 1
 - Create seeds for fake user data - Day 1
+	- One user account, plus a few saved points of interest
 
-- Deploy client and server projects so all commits will be reflected in production - Day 1
+- Deploy client and server projects so all commits will be reflected in production
 
-- Feature: Find Trails Page - Day 2
+- Feature: Find Trails - Day 2
+	- Create GET /pois
+	- Implement find trails page, including form & Leaflet map
+	- Save most form contents in sessionStorage; iconic taxa choices in localStorage
 
 - Feature: View Trail Page - Day 3
+	- Create GET /pois/:osm_id
+	- Create GET /life
+	- Implement view trail page, including overview of seasonal animal sightings
 
-- Feature: Sighting Checklist Page - Day 4
+- Feature: View Organism Page - Day 4
+	- Create GET /life/:id
+	- Implement view organism page
 
 - Feature: Home Page - Day 5
+	- Implement home page
 
 - Feature: Contribute Page - Day 5
+	- Implement contribute page
 
-- Feature: View Organism Page - Day 6
+- Feature: Sighting Checklist Page - Day 6
+	- Implement printable checklist page - shows name of PoI, month, and a list of animals randomly chosen from iconic taxa groups of user's choice
 
-- Feature: Manage Saved Trails Page - Day 7
-
-- Feature: Create account - Day 8
+- Feature: Manage Bookmarked Trails Page - Day 7
+	- Create GET /pois/saved
+	- Implement manage bookmarks page, including a delete button for each bookmark and a link to view details.
 
 - Feature: Login - Day 8
+	- Create POST /users/login
+	- Implement login page and form
+
+- Feature: Create account - Day 8
+	- Create POST /users/register
+	- Implement registration page and form
 
 - Feature: Implement JWT tokens - Day 9
+	- Server: Update expected requests & responses on protected endpoints
+	- Client: Local storage of JWT, include JWT with api calls
 
 - Bug fixes
 
