@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import "./App.scss";
+import { AccessibleNavProvider } from "./navigation-accessibility";
 import Layout from "./pages/Layout/Layout";
 import HomePage from "./pages/HomePage/HomePage";
 import ContributePage from "./pages/ContributePage/ContributePage";
@@ -13,6 +14,7 @@ import BookmarksPage from "./pages/BookmarksPage/BookmarksPage";
 
 function App() {
 	return (
+	<AccessibleNavProvider>
 		<Routes>
 			<Route element={<Layout/>}>
 				<Route path="/" element={<HomePage/>}/>
@@ -32,6 +34,7 @@ function App() {
 				<Route path="/bookmarks" element={<BookmarksPage/>}/>
 			</Route>
 		</Routes>
+	</AccessibleNavProvider>
 	);
 }
 
