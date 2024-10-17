@@ -144,45 +144,33 @@ Parameters:
 - types: User-provided comma-separated list of the types of points of interest to retrieve. Any of options "trails", "campgrounds", "reserves".
 
 Response:
+- `osm_type` may be either "way" or "relation"
+- `category` may be either "trail", "campground", or "reserve"
 ```
-{
-  "version": 0.6,
-  "generator": "Overpass API 0.7.62.1 084b4234",
-  "osm3s": {
-    "timestamp_osm_base": "2024-10-15T23:24:28Z",
-    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
-  },
-  "elements": [
-    {
-      "type": "way",
-      "id": 89197644,
-      "tags": {
-        "name": "South Balsam Trail",
-        "highway": "footway",
-        "sac_scale": "hiking",
-        "source": "GPS trace",
-        "surface": "gravel"
-      },
-      "bounds": {
-        "minlat": 44.1017728,
-        "minlon": -79.1348396,
-        "maxlat": 44.1065268,
-        "maxlon": -79.1282126
-      },
-      "nodes": [
-        ...
-      ],
-      "geometry": [
-        {
-          "lat": 44.1065268,
-          "lon": -79.1282126
-        },
-        ...
-      ]
+[
+  {
+    "osm_type": "relation",
+    "osm_id": 6025349,
+    "category": "trail",
+    "tags": {
+      "hiking": "rwn",
+      "name": "Sutton-Zephyr Rail Trail",
+      "route": "hiking",
+      "type": "route"
     },
-    ...
-  ]
-}
+    "geometry": [
+      [
+        [44.3001117, -79.363436],
+        [44.2986731, -79.3634508],
+        [44.2974991, -79.3634629],
+        [44.2954765, -79.3633343],
+        [44.2895405, -79.3616627]
+      ],
+      ...
+    ]
+  },
+  ...
+]
 ```
 
 #### **GET /pois/:osm_type/:osm_id**
@@ -194,42 +182,28 @@ Parameters:
 - osm_type: The type that this PoI is represented as in Overpass. One of "node", "way", or "relation".
 
 Response:
+- `osm_type` may be either "way" or "relation"
+- `category` may be either "trail", "campground", or "reserve"
 ```
 {
-  "version": 0.6,
-  "generator": "Overpass API 0.7.62.1 084b4234",
-  "osm3s": {
-    "timestamp_osm_base": "2024-10-15T23:24:28Z",
-    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  "osm_type": "relation",
+  "osm_id": 6025349,
+  "category": "trail",
+  "tags": {
+    "hiking": "rwn",
+    "name": "Sutton-Zephyr Rail Trail",
+    "route": "hiking",
+    "type": "route"
   },
-  "elements": [
-    {
-      "type": "way",
-      "id": 89197644,
-      "tags": {
-        "name": "South Balsam Trail",
-        "highway": "footway",
-        "sac_scale": "hiking",
-        "source": "GPS trace",
-        "surface": "gravel"
-      },
-      "bounds": {
-        "minlat": 44.1017728,
-        "minlon": -79.1348396,
-        "maxlat": 44.1065268,
-        "maxlon": -79.1282126
-      },
-      "nodes": [
-        ...
-      ],
-      "geometry": [
-        {
-          "lat": 44.1065268,
-          "lon": -79.1282126
-        },
-        ...
-      ]
-    }
+  "geometry": [
+    [
+      [44.3001117, -79.363436],
+      [44.2986731, -79.3634508],
+      [44.2974991, -79.3634629],
+      [44.2954765, -79.3633343],
+      [44.2895405, -79.3616627]
+    ],
+    ...
   ]
 }
 ```
