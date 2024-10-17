@@ -1,5 +1,4 @@
 @use "sass:math";
-@use "layout" as *;
 
 /// Converts pixel values to rems.
 /// @param {number} $px The pixel value to convert.
@@ -21,11 +20,8 @@
 	width: 1px;
 }
 
-/// After tablet breakpoint, use padding to clamp the width of inner content so
-/// it's never wider than the maximum desktop content width. Similar in concept
-/// to margin: auto.
-@mixin content-width-clamp {
-	@include tablet {
-		padding-inline: max(calc((100% - $max-content-width) / 2), $margin-tablet);
-	}
+/// Use padding to clamp the width of inner content so it's never wider than
+/// the maximum desktop content width. Similar in concept to margin: auto.
+@mixin content-width-clamp($max-width, $min-padding) {
+	padding-inline: max(calc((100% - $max-width) / 2), $min-padding);
 }
