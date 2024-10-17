@@ -1,0 +1,106 @@
+
+// || FONT FACES
+
+// Roboto Slab
+
+@font-face {
+	font-family: "Roboto Slab";
+	src: local("Roboto Slab Bold"), local("RobotoSlab-Bold"),
+		url("../../assets/fonts/roboto-slab/RobotoSlab-Bold.woff2") format("woff2"),
+		url("../../assets/fonts/roboto-slab/RobotoSlab-Bold.woff") format("woff"),
+		url("../../assets/fonts/roboto-slab/RobotoSlab-Bold.ttf") format("truetype");
+	font-weight: bold;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Roboto Slab";
+	src: local("Roboto Slab Thin"), local("RobotoSlab-Thin"),
+		url("../../assets/fonts/roboto-slab/RobotoSlab-Thin.woff2") format("woff2"),
+		url("../../assets/fonts/roboto-slab/RobotoSlab-Thin.woff") format("woff"),
+		url("../../assets/fonts/roboto-slab/RobotoSlab-Thin.ttf") format("truetype");
+	font-weight: 100;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Roboto Slab";
+	src: local("Roboto Slab Light"), local("RobotoSlab-Light"),
+		url("../../assets/fonts/roboto-slab/RobotoSlab-Light.woff2") format("woff2"),
+		url("../../assets/fonts/roboto-slab/RobotoSlab-Light.woff") format("woff"),
+		url("../../assets/fonts/roboto-slab/RobotoSlab-Light.ttf") format("truetype");
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Roboto Slab";
+	src: local("Roboto Slab Regular"), local("RobotoSlab-Regular"),
+		url("../../assets/fonts/roboto-slab/RobotoSlab-Regular.woff2") format("woff2"),
+		url("../../assets/fonts/roboto-slab/RobotoSlab-Regular.woff") format("woff"),
+		url("../../assets/fonts/roboto-slab/RobotoSlab-Regular.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Roboto Slab-fallback";
+	src: local("Times New Roman");
+	size-adjust: 117.789%;
+	ascent-override: 87%;
+	font-display: swap;
+}
+
+// Cardenio Modern
+
+@font-face {
+    font-family: "Cardenio Modern";
+    src: local("Cardenio Modern Regular"), local("CardenioModern-Regular"),
+        url("../../assets/fonts/cardenio-modern/CardenioModern-Regular.woff2") format("woff2"),
+        url("../../assets/fonts/cardenio-modern/CardenioModern-Regular.woff") format("woff"),
+        url("../../assets/fonts/cardenio-modern/CardenioModern-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Cardenio Modern";
+    src: local("Cardenio Modern Bold"), local("CardenioModern-Bold"),
+        url("../../assets/fonts/cardenio-modern/CardenioModern-Bold.woff2") format("woff2"),
+        url("../../assets/fonts/cardenio-modern/CardenioModern-Bold.woff") format("woff"),
+        url("../../assets/fonts/cardenio-modern/CardenioModern-Bold.ttf") format("truetype");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+	font-family: "Cardenio Modern-fallback";
+	src: local("Arial Narrow");
+    size-adjust: 84%;
+    ascent-override: 111%;
+    descent-override: 30%;
+	font-display: swap;
+}
+
+
+
+// || FONT RESETS
+
+$family-cardenio: "Cardenio Modern", "Cardenio Modern-fallback", "Arial Narrow", Arial, Helvetica, sans-serif;
+$family-roboto: "Roboto Slab", "Roboto Slab-fallback", "Times New Roman", serif;
+
+body {
+	font-family: $family-roboto;
+}
+textarea, input {
+	font-family: inherit;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family: $family-cardenio;
+}
