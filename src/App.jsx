@@ -11,8 +11,10 @@ import SpeciesDetailPage from "./pages/SpeciesDetailPage/SpeciesDetailPage";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import BookmarksPage from "./pages/BookmarksPage/BookmarksPage";
+import { useRequestCancellationOnNav } from "./utils/api";
 
 function App() {
+	useRequestCancellationOnNav();
 	return (
 	<AccessibleNavProvider>
 		<Routes>
