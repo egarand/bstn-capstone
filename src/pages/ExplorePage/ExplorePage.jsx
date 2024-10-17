@@ -1,8 +1,14 @@
+import ExploreMap from "../../components/ExploreMap/ExploreMap";
 import "./ExplorePage.scss";
 
 function ExplorePage() {
 	return (
-		<div>ExplorePage</div>
+		<div>
+			<h1>ExplorePage</h1>
+
+			<ExploreMap/>
+
+		</div>
 	);
 }
 
