@@ -1,0 +1,46 @@
+@use "utility" as *;
+
+
+// || BREAKPOINTS
+
+$tablet-breakpoint: 768px;
+$desktop-breakpoint: 1280px;
+
+@mixin tablet {
+	@media (min-width: $tablet-breakpoint) {
+		@content;
+	}
+}
+@mixin desktop {
+	@media (min-width: $desktop-breakpoint) {
+		@content;
+	}
+}
+
+
+// || SPACING
+
+$space-base: pxToRem(8);
+
+$space-0: $space-base * .5;		// 4
+$space-1: $space-base * 1;		// 8
+$space-2: $space-base * 2;		// 16
+$space-3: $space-base * 3;		// 24
+$space-4: $space-base * 4;		// 32
+$space-5: $space-base * 5;		// 40
+$space-6: $space-base * 6;		// 48
+$space-7: $space-base * 7;		// 56
+$space-8: $space-base * 8;		// 64
+$space-10: $space-base * 10;	// 80
+
+
+// || LAYOUT
+
+$margin-mobile: $space-2;
+$margin-tablet: $space-4;
+
+$gutter-mobile: $space-2;
+$gutter-tablet: $space-3;
+$gutter-desktop: $space-3;
+
+$max-content-width: pxToRem((63px * 12) + (24px * 11));
