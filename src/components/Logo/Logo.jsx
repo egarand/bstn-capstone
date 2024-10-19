@@ -12,4 +12,4 @@ function Logo({ className = "", alt = "Hike & Seek" }) {
 	);
 }
 
-export default Logo
+export default Logo;
