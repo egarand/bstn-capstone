@@ -6,8 +6,10 @@ import "./Layout.scss";
 function Layout() {
 	return (<>
 		<Header/>
-		<main>
-			<Outlet/>
+		<main className="layout">
+			<div className="layout__inner">
+				<Outlet/>
+			</div>
 		</main>
 		<Footer/>
 	</>);
