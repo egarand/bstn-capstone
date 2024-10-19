@@ -1,6 +1,6 @@
 import "./ContributePage.scss";
 import inatSrc from "../../assets/icons/inaturalist.svg";
-import seekSrc from "../../assets/icons/seek.svg";
+import seekSrc from "../../assets/icons/seek-full.svg";
 import osmSrc from "../../assets/icons/osm-full.svg";
 
 const initiatives = [
