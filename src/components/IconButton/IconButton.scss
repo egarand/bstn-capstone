@@ -1,0 +1,19 @@
+@use "../../styles/partials/global" as *;
+
+.icon-btn {
+	min-width: min-content;
+	min-height: $l-space-5 - u-pxToRem(1);
+	border: 1px solid transparent;
+	background: none;
+	font-family: $f-family-cardenio;
+	font-size: u-pxToRem(16px);
+	&__icon {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+	&__hidden {
+		@include u-screen-reader-only;
+	}
+}

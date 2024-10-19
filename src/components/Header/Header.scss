@@ -1,0 +1,89 @@
+@use "../../styles/partials/global" as *;
+
+.header {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: $l-space-3;
+	background-color: $c-pine;
+	padding: $l-space-3 $l-margin-mobile;
+	font-family: $f-family-cardenio;
+
+	&__menu-btn {
+		padding: $l-space-1;
+		width: u-pxToRem(48);
+	}
+	&__nav {
+		display: none;
+		&--mobile-open {
+			flex: 1 0 100%;
+			display: flex;
+			flex-wrap: wrap;
+			gap: $l-space-3;
+		}
+	}
+
+	&__logo {
+		width: 6rem;
+		color: $c-white;
+		&:hover {
+			color: $c-hawkweed;
+		}
+	}
+	&__navlink {
+		flex: 1 1 auto;
+		border-radius: 4px;
+		padding: $l-space-0 $l-space-2;
+		font-size: u-pxToRem(24px);
+		text-align: center;
+		text-decoration: none;
+		color: $c-matcha;
+		&:hover {
+			color: $c-hawkweed;
+			text-decoration: underline;
+		}
+		&--active {
+			background: $c-blackberry;
+		}
+	}
+	&__login {
+		flex: 1 1 100%;
+		border-radius: 4px;
+		padding: $l-space-0 $l-space-2;
+		background: $c-hawkweed;
+		font-size: u-pxToRem(24px);
+		font-weight: 700;
+		text-align: center;
+		text-decoration: none;
+		color: $c-blackberry;
+	}
+
+	@include l-tablet {
+		@include u-content-width-clamp($l-max-content-width, $l-margin-tablet);
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		gap: $l-space-4;
+
+		&__logo {
+			width: 8rem;
+		}
+		&__menu-btn {
+			display: none;
+		}
+		&__nav {
+			flex: 1 0 auto;
+			display: flex;
+			flex-wrap: nowrap;
+			justify-content: flex-start;
+			gap: $l-space-2;
+		}
+		&__navlink {
+			flex: initial;
+		}
+		&__login {
+			flex: initial;
+			margin-left: auto;
+		}
+	}
+}
