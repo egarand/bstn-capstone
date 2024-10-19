@@ -4,7 +4,7 @@
 	display: flex;
 	flex-flow: row wrap;
 	gap: $l-space-2 $l-space-7;
-	padding: $l-space-5 0;
+	padding: $l-space-3 0;
 	background: $c-blackberry;
 	color: $c-white;
 
@@ -17,6 +17,7 @@
 	}
 	&__section {
 		flex: 1 0 content;
+		min-width: 12rem;
 		padding: $l-margin-mobile;
 		background: $c-blackberry;
 		&:first-child {
@@ -25,7 +26,7 @@
 			display: flex;
 			align-items: center;
 			gap: $l-space-2;
-			width: fit-content;
+			min-width: fit-content;
 		}
 	}
 	&__logo {
@@ -52,27 +53,20 @@
 		&:last-child {
 			margin-bottom: 0;
 		}
-		&--top {
-			flex: 1 0 50%;
-			display: block;
-			margin: 0 $l-margin-mobile;
-			border-top: 1px solid $c-hawkweed;
-			padding-top: $l-space-2;
-			font-size: u-pxToRem(13);
-		}
 	}
 	&__icon {
 		display: block;
 		width: $l-space-3;
 	}
 
-	@media (min-width: 587px) {
+	@media (min-width: 600px) {
 		&__section {
 			flex: 1 1 auto;
-			width: 14rem;
+			// width: 14rem;
 		}
 		&__section:first-child {
 			flex: initial;
+			width: fit-content;
 			display: initial;
 		}
 		&__logo, &__copyright {
@@ -82,13 +76,11 @@
 	}
 
 	@include l-tablet {
+		padding-block: $l-space-4;
 		@include u-content-width-clamp($l-max-content-width + $l-margin-tablet*2, 0px);
 		&__section {
 			width: 14rem + $l-margin-tablet*2;
 			padding-inline: $l-margin-tablet;
-		}
-		&__link--top {
-			margin-inline: $l-margin-tablet;
 		}
 	}
 }

@@ -12,11 +12,10 @@ function Footer() {
 	return (
 	<footer className="footer">
 		<div className="footer__sections-wrapper">
-		<section className="footer__section footer__section--first">
-			<Logo className="footer__logo"/>
-			<small className="footer__copyright">&copy; E. Garand {(new Date()).getFullYear()}</small>
-		</section>
-
+			<section className="footer__section footer__section--first">
+				<Logo className="footer__logo"/>
+				<small className="footer__copyright">&copy; E. Garand {(new Date()).getFullYear()}</small>
+			</section>
 			<section className="footer__section">
 				<h2 className="footer__subheading">Get in Touch</h2>
 				<a className="footer__link" target="blank" href="https://github.com/egarand">
@@ -49,9 +48,6 @@ function Footer() {
 				</a>
 			</section>
 		</div>
-
-		<a className="footer__link footer__link--top" href="#main">Back to top</a>
-
 	</footer>
 	);
 }
