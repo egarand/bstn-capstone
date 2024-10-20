@@ -16,7 +16,7 @@ import { useRequestCancellationOnNav } from "./utils/api";
 function App() {
 	useRequestCancellationOnNav();
 	return (
-	<AccessibleNavProvider>
+	<AccessibleNavProvider skipLinkClass="skip-link">
 		<Routes>
 			<Route element={<Layout/>}>
 				<Route path="/" element={<HomePage/>}/>
