@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Marker, Popup } from "react-leaflet";
+import { useEffect, useState } from "react";
+import { Circle } from "react-leaflet";
+import api from "../../utils/api";
 import ExploreMap from "../../components/ExploreMap/ExploreMap";
 import "./ExplorePage.scss";
 import Input from "../../components/Input/Input";
@@ -20,13 +21,35 @@ function ExplorePage() {
 
 	async function handleSubmit(ev) {
 		ev.preventDefault();
-		console.log("subvals", values);
+		const submitValues = {...values, radius: values.radius*1000};
+		delete submitValues.taxa;
+		const params = new URLSearchParams(Object.entries(submitValues));
+		const response = await api("get", `/pois?${params.toString()}`, null, {
+			timeout: 30_000
+		});
+		console.log(response);
+
+		setPois(response.data);
 	}
 
 	function handleInputChange(ev) {
 		const { name, value } = ev.target;
 		setValues({ ...values, [name]: value });
 	}
+
+	function round(num, decimals) {
+		const mult = Number(String(1).padEnd(decimals, 0));
+		return Math.round((num + Number.EPSILON) * mult) / mult;
+	}
+
+	function fillCurrentLocation(ev) {
+		ev?.preventDefault();
+		navigator?.geolocation?.getCurrentPosition((pos) => {
+			setValues(v => ({ ...v, lat: round(pos.coords.latitude, 5), lon: round(pos.coords.longitude, 5) }));
+		}, null, { timeout: 5000 });
+	}
+
+	useEffect(fillCurrentLocation, []);
 
 	return (<>
 		<h1 className="explore-page__title">ExplorePage</h1>
@@ -59,11 +82,13 @@ function ExplorePage() {
 			<h2 className="explore-page__form-heading">Where Should We Look?</h2>
 
 			<fieldset className="explore-page__fieldset explore-page__coord-group">
-				<Input className="explore-page__coord-input" type="number" name="lat" value={values.lat} onChange={handleInputChange} label="Latitude" min={-90} max={90} step={0.000001}/>
-				<Input className="explore-page__coord-input" type="number" name="lon" value={values.lon} onChange={handleInputChange} label="Longitude" min={-180} max={180} step={0.000001}/>
-				<Input className="explore-page__coord-input" type="number" name="radius" value={values.radius} onChange={handleInputChange} label="Radius (kilometers)" min={0} max={10} step={0.1}/>
-				<Button className="explore-page__current-loc-btn" variant="secondary">Use Your Location</Button>
+				<Input className="explore-page__coord-input" type="number" name="lat" value={values.lat} onChange={handleInputChange} label="Latitude" min={-90} max={90} step={0.0001}/>
+				<Input className="explore-page__coord-input" type="number" name="lon" value={values.lon} onChange={handleInputChange} label="Longitude" min={-180} max={180} step={0.0001}/>
+				<Input className="explore-page__coord-input" type="number" name="radius" value={values.radius} onChange={handleInputChange} label="Radius (kilometers)" min={0} max={30} step={0.1}/>
+				<Button className="explore-page__current-loc-btn" variant="secondary" onClick={fillCurrentLocation}>Use Your Location</Button>
 			</fieldset>
+
+			<hr/>
 
 			<Button>Submit</Button>
 		</form>
@@ -72,9 +97,7 @@ function ExplorePage() {
 		<p>Select a place on the map, or browse the list below, for more details.</p>
 		<ExploreMap className="explore-page__map">
 			<ExploreMap.CenterOnUserOnMount/>
-			<Marker position={[values.lat, values.lon]}>
-				<Popup content="Your search location"/>
-			</Marker>
+			<Circle className="explore-page__search-area" center={[values.lat, values.lon]} radius={Number(values.radius) * 1000}/>
 			<ExploreMap.PoiOverlay pois={pois}/>
 		</ExploreMap>
 	</>);

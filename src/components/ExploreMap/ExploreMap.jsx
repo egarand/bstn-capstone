@@ -1,6 +1,7 @@
-import { MapContainer, Polygon, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Polygon, Polyline, Popup as BasePopup, TileLayer, useMap } from "react-leaflet";
 import "./ExploreMap.scss";
-import { Children, useEffect } from "react";
+import { useEffect } from "react";
+import { AnnouncedLink } from "../../navigation-accessibility";
 
 const algonquinCoords = [45.8372, -78.3791];
 const tileAttribution =
@@ -21,26 +22,17 @@ const pathOptions = {
 	}
 }
 
-function ExploreMap({ children }) {
-	const subcomponentNames = Object.keys(ExploreMap);
-	const subcomponents =
-		subcomponentNames.map(
-			(key) => Children.map(
-				children,
-				(child) => child.type.name === key ? child : null
-			)
-		);
-
+function ExploreMap({ className, children }) {
 	return (
-		<MapContainer center={algonquinCoords} zoom={10} scrollWheelZoom={false} className="explore-map">
+		<MapContainer center={algonquinCoords} zoom={10} scrollWheelZoom={false} className={`explore-map ${className}`}>
 			<TileLayer
-				minZoom={5}
-				maxZoom={13}
+				minZoom={6}
+				maxZoom={14}
 				attribution={tileAttribution}
 				url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png"
 			/>
 
-			{subcomponents.map((sc) => sc)}
+			{children}
 
 		</MapContainer>
 	);
@@ -64,14 +56,28 @@ function PoiOverlay({ pois = [] }) {
 		const TagName =
 			p.category === "trail"
 			? Polyline : Polygon;
+		console.log(p);
+
 		return (
 		<TagName key={key} pathOptions={pathOptions[p.category]} positions={p.geometry}>
-			<Popup>Test Popup for {p.tags.name}</Popup>
+			<ExploreMap.Popup title={p.tags.name} content={(
+				<AnnouncedLink to={`/location/${p.osm_type}${p.osm_id}`} state={p}>More Details</AnnouncedLink>
+			)}/>
 		</TagName>
 		);
 	})}
 	</>);
 }
 ExploreMap.PoiOverlay = PoiOverlay;
+
+function Popup({ title, content }) {
+	return (
+		<BasePopup className="explore-map-popup">
+			{title && <div className="explore-map-popup__title">{title}</div>}
+			{content && <div className="explore-map-popup__content">{content}</div>}
+		</BasePopup>
+	);
+}
+ExploreMap.Popup = Popup;
 
 export default ExploreMap;
