@@ -36,7 +36,6 @@ function Input({
 		if (ev.target.validity.valid) {
 			setInvalid(false);
 		}
-		// document.createElement("input").validity.
 		onChange?.(ev);
 	}
 
