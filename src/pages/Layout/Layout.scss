@@ -1,6 +1,7 @@
 @use "../../styles/partials/global" as *;
 
 .layout {
+	flex: 1 0 auto;
 
 	&__inner {
 		background-color: $c-white;
