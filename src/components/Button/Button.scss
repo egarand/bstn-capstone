@@ -1,0 +1,38 @@
+@use "../../styles/partials/global" as *;
+
+.cta-button {
+	display: block;
+	width: 100%;
+	height: u-pxToRem(36);
+	border-radius: 4px;
+	border: 1px solid transparent;
+	padding: $l-space-0 $l-space-2;
+	// @extend %f-button;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+	font-family: $f-family-cardenio;
+	font-size: u-pxToRem(24px);
+	font-weight: 700;
+
+	&--primary {
+		background: $c-hawkweed;
+		color: $c-blackberry;
+		&:hover {
+			background: $c-white;
+		}
+	}
+	&--secondary {
+		border-color: $c-pine;
+		background: $c-white;
+		color: $c-pine;
+		&:hover {
+			background: $c-matcha;
+		}
+	}
+
+	@include l-tablet {
+		width: auto;
+		flex-shrink: 0;
+	}
+}

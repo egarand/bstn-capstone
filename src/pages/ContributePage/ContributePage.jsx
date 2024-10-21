@@ -1,7 +1,8 @@
+import { useLocation } from "react-router-dom";
 import "./ContributePage.scss";
-import inatSrc from "../../assets/icons/inaturalist.svg";
-import seekSrc from "../../assets/icons/seek-full.svg";
-import osmSrc from "../../assets/icons/osm-full.svg";
+import inatSrc from "../../assets/logo/inaturalist.svg";
+import seekSrc from "../../assets/logo/seek-full.svg";
+import osmSrc from "../../assets/logo/osm-full.svg";
 
 const initiatives = [
 	{
@@ -48,7 +49,6 @@ function ContributePage() {
 			{init.desc.split("\n").map((p,i) => (
 				<p key={i} className="contribute__card-body">{p}</p>
 			))}
-
 			<a className="contribute__card-cta" target="blank" href={init.link}>{init.cta}</a>
 		</section>
 		))}
