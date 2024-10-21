@@ -3,7 +3,7 @@ import Icon from "../Icon/Icon";
 import "./CheckboxGroup.scss";
 import errorSrc from "../../assets/icons/error.svg";
 
-function CheckboxGroup({ name, values, onChange, required = false, children }) {
+function CheckboxGroup({ name, values, onChange, required = false, label, className = "", children }) {
 	const [invalid, setInvalid] = useState(!required);
 	const [showInvalid, setShowInvalid] = useState(false);
 	const ref = useRef(null);
@@ -26,10 +26,13 @@ function CheckboxGroup({ name, values, onChange, required = false, children }) {
 	}, [required]);
 
 	useEffect(() => validate(values), [values, validate]);
-	useEffect(() =>
+	useEffect(() => {
 		ref.current.querySelectorAll('input[type="checkbox"]')
-			.forEach((box)=>box.classList.toggle("checkbox__input--invalid"))
-	, [showInvalid]);
+			.forEach((box)=> showInvalid
+							? box.classList.add("checkbox__input--invalid")
+							: box.classList.remove("checkbox__input--invalid")
+			);
+	}, [showInvalid]);
 
 	function onCheckboxChange(val, ev) {
 		const newValues =
@@ -62,7 +65,8 @@ function CheckboxGroup({ name, values, onChange, required = false, children }) {
 	);
 
 	return (
-	<fieldset className="checkbox-group" aria-required={required} aria-invalid={invalid} onInvalid={onGroupInvalid} ref={ref}>
+	<fieldset className={`checkbox-group ${className}`} aria-required={required} aria-invalid={invalid} onInvalid={onGroupInvalid} ref={ref}>
+		<legend className="checkbox-group__legend">{label}</legend>
 		{showInvalid && <Icon className="checkbox-group__error" src={errorSrc} alt=""/>}
 		{boxes}
 	</fieldset>);

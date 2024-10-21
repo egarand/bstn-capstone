@@ -1,0 +1,37 @@
+@use "../../styles/partials/global" as *;
+
+.explore-page {
+	&__form-heading {
+		margin-block: 0 $l-space-1;
+		&:last-of-type {
+			break-before: column;
+		}
+	}
+	&__fieldset {
+		display: grid;
+		grid-auto-flow: row;
+		column-gap: $l-space-2;
+		margin-block: $l-space-1 $l-space-2;
+	}
+	&__type-group {
+		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(160), 1fr));
+	}
+	&__taxa-group {
+		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(130), 1fr));
+	}
+	&__coord-group {
+		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(200), 1fr));
+		align-items: end;
+		gap: $l-space-2;
+		max-width: u-pxToRem(600) + $l-space-2;
+	}
+
+	@include l-tablet {
+		&__form {
+			columns: 2;
+		}
+		&__fieldset {
+			break-inside: avoid-column;
+		}
+	}
+}

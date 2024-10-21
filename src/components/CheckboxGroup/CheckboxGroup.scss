@@ -1,15 +1,19 @@
 @use "../../styles/partials/global" as *;
 
 .checkbox-group {
+	&__legend {
+		@include u-screen-reader-only;
+	}
 	&__error {
-		display: inline-block;
-		vertical-align: middle;
+		display: block;
 		background: darken($c-hawkweed, 10%);
 		width: $l-space-3;
 	}
 }
 
 .checkbox {
+	display: block;
+	margin-block: $l-space-0;
 	cursor: pointer;
 	&__input {
 		appearance: none;

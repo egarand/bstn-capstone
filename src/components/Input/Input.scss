@@ -4,12 +4,12 @@
 	display: flex;
 	flex-flow: row wrap;
 	align-items: center;
-	gap: $l-space-0;
 	width: 100%;
 	min-width: u-pxToRem(184);
 
 	&__label {
 		flex: 1 0 100%;
+		margin-bottom: $l-space-0;
 		text-transform: uppercase;
 		font-weight: 700;
 		font-size: .8rem;
@@ -53,6 +53,9 @@
 		color: $c-pine;
 		font-style: italic;
 		font-size: .7rem;
+		&:not(:empty) {
+			margin-top: $l-space-0;
+		}
 	}
 	&__hidden {
 		@include u-screen-reader-only;
