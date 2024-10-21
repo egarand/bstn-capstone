@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AnnouncedLink, AnnouncedNavLink } from "../../navigation-accessibility";
 import Logo from "../Logo/Logo";
 import IconButton from "../IconButton/IconButton";
+import Button from "../Button/Button";
 
 import "./Header.scss";
 import menuSrc from "../../assets/icons/menu.svg";
@@ -38,9 +39,7 @@ function Header() {
 			<AnnouncedNavLink to="/contribute" className={navLinkClasses}>
 				Contribute
 			</AnnouncedNavLink>
-			<AnnouncedLink to="/login" className="header__login">
-				Login
-			</AnnouncedLink>
+			<Button to="/login" className="header__login">Log In</Button>
 		</nav>
 	</header>
 	);

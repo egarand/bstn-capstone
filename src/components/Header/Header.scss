@@ -47,17 +47,6 @@
 			background: $c-blackberry;
 		}
 	}
-	&__login {
-		flex: 1 1 100%;
-		border-radius: 4px;
-		padding: $l-space-0 $l-space-2;
-		background: $c-hawkweed;
-		font-size: u-pxToRem(24px);
-		font-weight: 700;
-		text-align: center;
-		text-decoration: none;
-		color: $c-blackberry;
-	}
 
 	@include l-tablet {
 		@include u-content-width-clamp($l-max-content-width, $l-margin-tablet);
@@ -82,7 +71,6 @@
 			flex: initial;
 		}
 		&__login {
-			flex: initial;
 			margin-left: auto;
 		}
 	}
