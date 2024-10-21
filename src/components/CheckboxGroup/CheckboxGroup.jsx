@@ -64,12 +64,12 @@ function CheckboxGroup({ name, values, onChange, required = false, label, classN
 		)
 	);
 
-	return (
+	return (<>
+	{showInvalid && <Icon className="checkbox-group-error" src={errorSrc} alt=""/>}
 	<fieldset className={`checkbox-group ${className}`} aria-required={required} aria-invalid={invalid} onInvalid={onGroupInvalid} ref={ref}>
 		<legend className="checkbox-group__legend">{label}</legend>
-		{showInvalid && <Icon className="checkbox-group__error" src={errorSrc} alt=""/>}
 		{boxes}
-	</fieldset>);
+	</fieldset></>);
 }
 
 function Checkbox({ value, disabled, name, onChange, checked, label, ...rest }) {

@@ -26,6 +26,17 @@
 		max-width: u-pxToRem(600) + $l-space-2;
 	}
 
+	&__map {
+		width: 100%;
+		height: u-pxToRem(500);
+		border: 2px solid $c-matcha;
+	}
+	&__search-area {
+		stroke: lighten($c-pine, 20%);
+		stroke-dasharray: 6 5 10 6 5 7 5 8;
+		fill: darken($c-matcha, 10%);
+	}
+
 	@include l-tablet {
 		&__form {
 			columns: 2;

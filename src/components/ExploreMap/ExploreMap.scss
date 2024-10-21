@@ -1,4 +1,47 @@
+@use "../../styles/partials/global" as *;
+
 .explore-map {
-	height: 50vh;
-	width: 50vw;
+	&-popup {
+		// Leaflet's popups aren't BEM compatible; this is required to style them
+		& .leaflet-popup {
+			&-content-wrapper {
+				border-radius: 4px;
+				background: $c-pine;
+				color: $c-white;
+				box-shadow: 0 0 5px 1px $c-white;
+				text-align: center;
+			}
+			&-content {
+				margin: $l-space-2;
+				margin-bottom: $l-space-3;
+			}
+			&-tip {
+				background: $c-pine;
+				box-shadow: 0 0 8px 1px $c-white;
+			}
+		}
+		& a.leaflet-popup-close-button {
+			color: $c-matcha;
+			&:hover {
+				color: $c-hawkweed;
+			}
+		}
+		&__title {
+			font-family: $f-family-cardenio;
+			font-size: u-pxToRem(24);
+			margin-block: 0;
+			text-overflow: ellipsis;
+			max-width: u-pxToRem(400);
+			color: $c-matcha;
+		}
+		&__content, &__content a {
+			color: currentColor;
+			font-family: $f-family-roboto;
+			font-size: u-pxToRem(14);
+			margin-top: $l-space-1;
+		}
+		&__content a:hover {
+			color: $c-hawkweed;
+		}
+	}
 }

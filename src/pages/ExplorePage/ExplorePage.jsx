@@ -70,7 +70,7 @@ function ExplorePage() {
 
 		<h2>Results</h2>
 		<p>Select a place on the map, or browse the list below, for more details.</p>
-		<ExploreMap>
+		<ExploreMap className="explore-page__map">
 			<ExploreMap.CenterOnUserOnMount/>
 			<Marker position={[values.lat, values.lon]}>
 				<Popup content="Your search location"/>

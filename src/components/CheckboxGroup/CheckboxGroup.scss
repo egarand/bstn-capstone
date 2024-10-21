@@ -4,11 +4,11 @@
 	&__legend {
 		@include u-screen-reader-only;
 	}
-	&__error {
-		display: block;
-		background: darken($c-hawkweed, 10%);
-		width: $l-space-3;
-	}
+}
+.checkbox-group-error {
+	display: block;
+	background: darken($c-hawkweed, 10%);
+	width: $l-space-3;
 }
 
 .checkbox {
