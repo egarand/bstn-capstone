@@ -1,12 +1,12 @@
 import Logo from "../Logo/Logo";
 import Icon from "../Icon/Icon";
 import "./Footer.scss";
-import githubSrc from "../../assets/icons/github.svg";
-import linkedinSrc from "../../assets/icons/linkedin.svg";
+import githubSrc from "../../assets/logo/github.svg";
+import linkedinSrc from "../../assets/logo/linkedin.svg";
 import mailSrc from "../../assets/icons/mail.svg";
-import inatSrc from "../../assets/icons/inaturalist.svg";
-import seekSrc from "../../assets/icons/seek.svg";
-import osmSrc from "../../assets/icons/osm-mono.svg";
+import inatSrc from "../../assets/logo/inaturalist.svg";
+import seekSrc from "../../assets/logo/seek.svg";
+import osmSrc from "../../assets/logo/osm-mono.svg";
 
 function Footer() {
 	return (
