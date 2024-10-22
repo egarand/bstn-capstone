@@ -32,9 +32,11 @@
 		border: 2px solid $c-matcha;
 	}
 	&__search-area {
-		stroke: lighten($c-pine, 20%);
+		stroke: lighten($c-blackberry, 45%);
 		stroke-dasharray: 6 5 10 6 5 7 5 8;
-		fill: darken($c-matcha, 10%);
+		fill: lighten($c-blackberry, 50%);
+		fill-opacity: .1;
+		cursor: grab;
 	}
 
 	@include l-tablet {

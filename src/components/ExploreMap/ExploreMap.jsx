@@ -9,19 +9,6 @@ const tileAttribution =
 &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> \
 &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`;
 
-const pathOptions = {
-	trail: {
-		weight: 8,
-		color: "purple"
-	},
-	campground: {
-		color: "red"
-	},
-	reserve: {
-		color: "blue"
-	}
-}
-
 function ExploreMap({ className, children }) {
 	return (
 		<MapContainer center={algonquinCoords} zoom={10} scrollWheelZoom={false} className={`explore-map ${className}`}>
@@ -57,7 +44,7 @@ function PoiOverlay({ pois = [], taxa = [] }) {
 			p.category === "trail"
 			? Polyline : Polygon;
 		return (
-		<TagName key={key} pathOptions={pathOptions[p.category]} positions={p.geometry}>
+		<TagName key={key} className={`explore-map__${p.category}`} positions={p.geometry}>
 			<ExploreMap.Popup title={p.tags.name} content={(
 				<AnnouncedLink to={`/location/${p.osm_type}${p.osm_id}`} state={{ poi: p, taxa }}>More Details</AnnouncedLink>
 			)}/>
