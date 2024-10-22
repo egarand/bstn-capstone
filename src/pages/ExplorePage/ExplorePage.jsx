@@ -20,6 +20,7 @@ const initialValues = {
 };
 
 function ExplorePage() {
+	const [isLoading, setIsLoading] = useState(false);
 	const [pois, setPois] = useState([]);
 	const [values, setValues] =
 		useState(
@@ -33,7 +34,8 @@ function ExplorePage() {
 
 	async function handleSubmit(ev) {
 		ev.preventDefault();
-		ev.target.setAttribute("disabled", true);
+		setIsLoading(true);
+		setPois([]);
 		try {
 			const submitValues = {...values, radius: values.radius*1000};
 			delete submitValues.taxa;
@@ -44,6 +46,7 @@ function ExplorePage() {
 			});
 			if (!isMounted.current) { return; }
 			setPois(data);
+			setIsLoading(false);
 		} catch {
 			// do something
 		}
@@ -85,7 +88,14 @@ function ExplorePage() {
 		<form className="explore-page__form" onSubmit={handleSubmit}>
 			<h2 className="explore-page__form-heading">What Are You Looking For?</h2>
 
-			<CheckboxGroup className="explore-page__fieldset explore-page__type-group" label="location types" required={true} values={values.types} onChange={handleInputChange} name="types">
+			<CheckboxGroup
+				className="explore-page__fieldset explore-page__type-group"
+				label="location types"
+				name="types"
+				required={true}
+				values={values.types} onChange={handleInputChange}
+				disabled={isLoading || null}
+			>
 				<CheckboxGroup.Checkbox value="t" label="Hiking trails"/>
 				<CheckboxGroup.Checkbox value="c" label="Campgrounds"/>
 				<CheckboxGroup.Checkbox value="r" label="Nature Reserves"/>
@@ -93,7 +103,14 @@ function ExplorePage() {
 
 			<h2 className="explore-page__form-heading">What Wildlife Are You Interested In?</h2>
 
-			<CheckboxGroup className="explore-page__fieldset explore-page__taxa-group" label="wildlife types" required={true} values={values.taxa} onChange={handleInputChange} name="taxa">
+			<CheckboxGroup
+				className="explore-page__fieldset explore-page__taxa-group"
+				label="wildlife types"
+				name="taxa"
+				required={true}
+				values={values.taxa} onChange={handleInputChange}
+				disabled={isLoading || null}
+			>
 				<CheckboxGroup.Checkbox value="Mammalia" label="Mammals"/>
 				<CheckboxGroup.Checkbox value="Aves" label="Birds"/>
 				<CheckboxGroup.Checkbox value="Reptilia" label="Reptiles"/>
@@ -109,44 +126,59 @@ function ExplorePage() {
 
 			<h2 className="explore-page__form-heading">Where Should We Look?</h2>
 
-			<fieldset className="explore-page__fieldset explore-page__coord-group">
-				<Input className="explore-page__coord-input" type="number" name="lat" value={values.lat} onChange={handleInputChange} label="Latitude" min={-90} max={90} step={0.0001}/>
-				<Input className="explore-page__coord-input" type="number" name="lon" value={values.lon} onChange={handleInputChange} label="Longitude" min={-180} max={180} step={0.0001}/>
-				<Input className="explore-page__coord-input" type="number" name="radius" value={values.radius} onChange={handleInputChange} label="Radius (kilometers)" min={0} max={30} step={0.1}/>
+			<fieldset className="explore-page__fieldset explore-page__coord-group" disabled={isLoading || null}>
+				{[["lat", "Latitude", -90, 90, 0.0001],
+				["lon", "Longitude", -180, 180, 0.0001],
+				["radius", "Radius (kilometers)", 0, 30, 0.1]]
+				.map(([name, label, min, max, step]) => (
+					<Input key={name}
+						className="explore-page__coord-input"
+						label={label}
+						type="number"
+						name={name}
+						value={values[name]}
+						onChange={handleInputChange}
+						min={min} max={max} step={step} />
+				))}
 				<Button className="explore-page__current-loc-btn" variant="secondary" onClick={fillCurrentLocation}>Use Your Location</Button>
 			</fieldset>
 
 			<hr/>
 
-			<Button>Submit</Button>
+			<Button disabled={isLoading || null}>
+				Submit
+			</Button>
 		</form>
 
-		<h2>Results</h2>
-		<p>Select a place on the map, or browse the list below, for more details.</p>
-		<ExploreMap className="explore-page__map">
-			<ExploreMap.CenterOnUserOnMount/>
-			<ExploreMap.VisualizeRadius
-				center={[values.lat, values.lon]}
-				radius={Number(values.radius) * 1000}/>
-			<ExploreMap.PoiOverlay
-				pois={pois}
-				taxa={values.taxa}/>
-		</ExploreMap>
+		<section aria-busy={isLoading}>
+			<h2>Results</h2>
+			<p>Select a place on the map, or browse the list below, for more details.</p>
+			<ExploreMap className="explore-page__map">
+				<ExploreMap.CenterOnUserOnMount/>
+				<ExploreMap.VisualizeRadius
+					center={[values.lat, values.lon]}
+					radius={Number(values.radius) * 1000}/>
+				<ExploreMap.PoiOverlay
+					pois={pois}
+					taxa={values.taxa}/>
+			</ExploreMap>
 
-		<ul className="explore-page__pois-wrapper">
-		{pois.map((p) => (
-			<li
-				key={`${p.osm_type}${p.osm_id}`}
-				className={`explore-page__poi explore-page__poi--${p.category}`}
-			>
-				<PoiOverview
-					poi={p}
-					taxa={values.taxa}
-					headingTag="h3"
-					headerClassName="explore-page__poi-header"/>
-			</li>
-		))}
-		</ul>
+			<ul className="explore-page__pois-wrapper">
+			{pois.map((p) => (
+				<li
+					key={`${p.osm_type}${p.osm_id}`}
+					className={`explore-page__poi explore-page__poi--${p.category}`}
+				>
+					<PoiOverview
+						poi={p}
+						taxa={values.taxa}
+						headingTag="h3"
+						headerClassName="explore-page__poi-header"/>
+				</li>
+			))}
+			</ul>
+		</section>
+
 	</>);
 }
 
