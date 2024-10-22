@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Circle } from "react-leaflet";
 import api from "../../utils/api";
+import useIsMounted from "../../hooks/useIsMounted";
+import { round, trycatch } from "../../utils";
 import ExploreMap from "../../components/ExploreMap/ExploreMap";
-import "./ExplorePage.scss";
 import Input from "../../components/Input/Input";
 import CheckboxGroup from "../../components/CheckboxGroup/CheckboxGroup";
 import Button from "../../components/Button/Button";
-import { round, trycatch } from "../../utils";
+import "./ExplorePage.scss";
 
 const initialValues = {
 	lat: 0,
@@ -26,19 +27,24 @@ function ExplorePage() {
 			)
 			?? initialValues
 		);
-
+	const isMounted = useIsMounted();
 
 	async function handleSubmit(ev) {
 		ev.preventDefault();
-		const submitValues = {...values, radius: values.radius*1000};
-		delete submitValues.taxa;
-		const params = new URLSearchParams(Object.entries(submitValues));
-		const response = await api("get", `/pois?${params.toString()}`, null, {
-			timeout: 30_000
-		});
-		console.log(response);
-
-		setPois(response.data);
+		ev.target.setAttribute("disabled", true);
+		try {
+			const submitValues = {...values, radius: values.radius*1000};
+			delete submitValues.taxa;
+			const params = new URLSearchParams(Object.entries(submitValues));
+			const { data } = await api("get", `/pois?${params.toString()}`, null, {
+				timeout: 30_000,
+				"axios-retry": { retries: 0 }
+			});
+			if (!isMounted.current) { return; }
+			setPois(data);
+		} catch {
+			// do something
+		}
 	}
 
 	function handleInputChange(ev) {
@@ -66,7 +72,7 @@ function ExplorePage() {
 				return newV;
 			});
 
-		}, null, { timeout: 5000 });
+		}, null);
 	}
 
 	useEffect(fillCurrentLocation, []);
