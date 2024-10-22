@@ -1,16 +1,24 @@
 @use "../../styles/partials/global" as *;
 
-.explore-map {
-	&__trail {
+.explore-map-radius {
+	stroke: lighten($c-blackberry, 45%);
+	stroke-dasharray: 6 5 10 6 5 7 5 8;
+	fill: lighten($c-blackberry, 50%);
+	fill-opacity: .1;
+	cursor: grab;
+}
+
+.explore-map-poi {
+	&--trail {
 		stroke: #0368bb;
 		stroke-width: .35rem;
 	}
-	&__campground {
+	&--campground {
 		stroke: darken($c-hawkweed, 20%);
 		fill: $c-hawkweed;
 		stroke-width: .2rem;
 	}
-	&__reserve {
+	&--reserve {
 		stroke: lighten($c-pine, 15%);
 		fill: $c-matcha;
 		stroke-width: .2rem;

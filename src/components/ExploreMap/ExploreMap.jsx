@@ -1,4 +1,4 @@
-import { MapContainer, Polygon, Polyline, Popup as BasePopup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Polygon, Polyline, Popup as BasePopup, TileLayer, useMap, Circle } from "react-leaflet";
 import "./ExploreMap.scss";
 import { useEffect } from "react";
 import { AnnouncedLink } from "../../navigation-accessibility";
@@ -40,21 +40,61 @@ function CenterOnUserOnMount() {
 }
 ExploreMap.CenterOnUserOnMount = CenterOnUserOnMount;
 
-function PoiOverlay({ pois = [], taxa = [] }) {
-	return (<>
-	{pois.map((p) => {
-		const key = `${p.osm_type}${p.osm_id}`;
-		const TagName =
-			p.category === "trail"
-			? Polyline : Polygon;
-		return (
-		<TagName key={key} className={`explore-map__${p.category}`} positions={p.geometry}>
-			<ExploreMap.Popup title={<><Icon src={p.category==="trail" ? hikingSrc : p.category==="campground" ? campingSrc : forestSrc} alt={p.category} className="explore-map__icon"/>{p.tags.name}</>} content={(
-				<AnnouncedLink to={`/location/${p.osm_type}${p.osm_id}`} state={{ poi: p, taxa }}>More Details</AnnouncedLink>
+function VisualizeRadius({ center, radius }) {
+	return (
+	<Circle
+		className="explore-map-radius"
+		center={center}
+		radius={radius}/>
+	);
+}
+ExploreMap.VisualizeRadius = VisualizeRadius;
+
+function Poi({ poiData: p, taxaData: taxa }) {
+	const TagName =
+		p.category === "trail"
+		? Polyline
+		: Polygon;
+	const src =
+		p.category==="trail"
+		? hikingSrc
+		: p.category==="campground"
+			? campingSrc
+			: forestSrc;
+	return (
+	<TagName
+		className={`explore-map-poi explore-map-poi--${p.category}`}
+		positions={p.geometry}
+	>
+		<ExploreMap.Popup
+			title={<>
+				<Icon
+					className="explore-map-poi__icon"
+					src={src}
+					alt={p.category === "reserve" ? "nature reserve" : p.category}/>
+				{p.tags.name}
+			</>}
+			content={(
+				<AnnouncedLink
+					to={`/location/${p.osm_type}${p.osm_id}`}
+					state={{ poi: p, taxa }}
+				>More Details</AnnouncedLink>
 			)}/>
-		</TagName>
-		);
-	})}
+	</TagName>
+	);
+}
+ExploreMap.Poi = Poi;
+
+function PoiOverlay({ pois = [], taxa = [] }) {
+	// larger polygons layered below smaller polygons layered below polylines
+	pois.sort((a, b) => {
+		const ranks = { reserve: 1, campground: 2, trail: 3 };
+		return ranks[a.category] - ranks[b.category];
+	})
+	return (<>
+	{pois.map((p) =>
+		<Poi key={`${p.osm_type}${p.osm_id}`} poiData={p} taxaData={taxa}/>
+	)}
 	</>);
 }
 ExploreMap.PoiOverlay = PoiOverlay;

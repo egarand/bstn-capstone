@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { Circle } from "react-leaflet";
-import api from "../../utils/api";
 import useIsMounted from "../../hooks/useIsMounted";
 import { round, trycatch } from "../../utils";
+import api from "../../utils/api";
+
+import { AnnouncedLink } from "../../navigation-accessibility";
 import ExploreMap from "../../components/ExploreMap/ExploreMap";
 import Input from "../../components/Input/Input";
 import CheckboxGroup from "../../components/CheckboxGroup/CheckboxGroup";
 import Button from "../../components/Button/Button";
-import "./ExplorePage.scss";
-import { AnnouncedLink } from "../../navigation-accessibility";
 import Icon from "../../components/Icon/Icon";
+
+import "./ExplorePage.scss";
 import hikingSrc from "../../assets/icons/hiking.svg";
 import campingSrc from "../../assets/icons/camping.svg";
 import forestSrc from "../../assets/icons/forest.svg";
@@ -128,8 +129,12 @@ function ExplorePage() {
 		<p>Select a place on the map, or browse the list below, for more details.</p>
 		<ExploreMap className="explore-page__map">
 			<ExploreMap.CenterOnUserOnMount/>
-			<Circle className="explore-page__search-area" center={[values.lat, values.lon]} radius={Number(values.radius) * 1000}/>
-			<ExploreMap.PoiOverlay pois={pois} taxa={values.taxa}/>
+			<ExploreMap.VisualizeRadius
+				center={[values.lat, values.lon]}
+				radius={Number(values.radius) * 1000}/>
+			<ExploreMap.PoiOverlay
+				pois={pois}
+				taxa={values.taxa}/>
 		</ExploreMap>
 
 		<ul className="explore-page__pois-wrapper">
