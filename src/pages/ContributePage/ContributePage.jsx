@@ -1,4 +1,3 @@
-import { useLocation } from "react-router-dom";
 import "./ContributePage.scss";
 import inatSrc from "../../assets/logo/inaturalist.svg";
 import seekSrc from "../../assets/logo/seek-full.svg";
@@ -37,7 +36,7 @@ function ContributePage() {
 				Your Impact
 			</span>
 		</h1>
-		<p className="contribute__intro-body">Hike & Seek is powered by open source databases! These incredible projects thrive on community support and contributions — so while you&apos;re off adventuring, why not dive in, lend a hand, and help them build something amazing?</p>
+		<p className="contribute__intro-body">Hike & Seek is powered by open source databases. These incredible projects thrive on community support and contributions — so while you&apos;re off adventuring, why not dive in, lend a hand, and help them build something amazing?</p>
 	</section>
 	<div className="contribute__card-wrapper">
 		{initiatives.map((init) => (

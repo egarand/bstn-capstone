@@ -1,10 +1,24 @@
 @use "../../styles/partials/global" as *;
 
+.checkbox-group {
+	&__legend {
+		@include u-screen-reader-only;
+	}
+}
+.checkbox-group-error {
+	display: block;
+	background: darken($c-hawkweed, 10%);
+	width: $l-space-3;
+}
+
 .checkbox {
+	display: block;
+	margin-block: $l-space-0;
 	cursor: pointer;
 	&__input {
 		appearance: none;
-		vertical-align: top;
+		vertical-align: middle;
+		margin-right: $l-space-1;
 		width: $l-space-2;
 		aspect-ratio: 1;
 		border-radius: 4px;
@@ -24,6 +38,11 @@
 					$c-pine 45%, $c-pine 55%,
 					rgba($c-matcha, .5) 55%
 				);
+		}
+		&--invalid {
+			border-color: darken($c-hawkweed, 10%);
+			outline-color: darken($c-hawkweed, 10%);
+			background: rgba($c-hawkweed, .15);
 		}
 	}
 }

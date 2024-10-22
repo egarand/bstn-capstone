@@ -1,0 +1,25 @@
+@use "../../styles/partials/global" as *;
+
+.poi-overview {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	&__icon {
+		width: $l-space-3;
+		margin-inline: auto;
+	}
+	&__header {
+		font-family: $f-family-cardenio;
+		margin-block: 0 .2em;
+	}
+	&__link {
+		color: currentColor;
+		&:hover {
+			color: $c-hawkweed;
+		}
+	}
+}
