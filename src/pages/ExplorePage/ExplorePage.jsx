@@ -3,17 +3,13 @@ import useIsMounted from "../../hooks/useIsMounted";
 import { round, trycatch } from "../../utils";
 import api from "../../utils/api";
 
-import { AnnouncedLink } from "../../navigation-accessibility";
 import ExploreMap from "../../components/ExploreMap/ExploreMap";
 import Input from "../../components/Input/Input";
 import CheckboxGroup from "../../components/CheckboxGroup/CheckboxGroup";
 import Button from "../../components/Button/Button";
-import Icon from "../../components/Icon/Icon";
+import PoiOverview from "../../components/PoiOverview/PoiOverview";
 
 import "./ExplorePage.scss";
-import hikingSrc from "../../assets/icons/hiking.svg";
-import campingSrc from "../../assets/icons/camping.svg";
-import forestSrc from "../../assets/icons/forest.svg";
 
 const initialValues = {
 	lat: 0,
@@ -138,15 +134,18 @@ function ExplorePage() {
 		</ExploreMap>
 
 		<ul className="explore-page__pois-wrapper">
-		{pois.map((p) => {
-			const key = `${p.osm_type}${p.osm_id}`;
-			return (
-				<li key={key} className={`explore-page__poi-card explore-page__poi-card--${p.category}`}>
-					<span className="explore-page__poi-header"><Icon src={p.category==="trail" ? hikingSrc : p.category==="campground" ? campingSrc : forestSrc} alt={p.category} className="explore-page__poi-icon"/> {p.tags.name}&nbsp;</span>
-					<AnnouncedLink className="explore-page__poi-link" to={`/location/${key}`} state={{ poi: p, taxa: values.taxa }}>More Details</AnnouncedLink>
-				</li>
-			)
-		})}
+		{pois.map((p) => (
+			<li
+				key={`${p.osm_type}${p.osm_id}`}
+				className={`explore-page__poi explore-page__poi--${p.category}`}
+			>
+				<PoiOverview
+					poi={p}
+					taxa={values.taxa}
+					headingTag="h3"
+					headerClassName="explore-page__poi-header"/>
+			</li>
+		))}
 		</ul>
 	</>);
 }

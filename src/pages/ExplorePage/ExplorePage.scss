@@ -32,7 +32,7 @@
 		margin-block: $l-space-3 0;
 		padding: 0;
 	}
-	&__poi-card {
+	&__poi {
 		color: $c-blackberry;
 		border: 2px solid;
 		border-radius: 4px;
@@ -50,25 +50,10 @@
 			background: rgba($c-matcha, .3);
 			border-color: lighten($c-pine, 30%);
 		}
-	}
-	&__poi-header {
-		display: flex;
-		align-items: center;
-		gap: $l-space-1;
-		margin-block: 0 $l-space-1;
-		font-family: $f-family-cardenio;
-		font-weight: 700;
-		font-size: u-pxToRem(20);
-	}
-	&__poi-icon {
-		flex: 0 0 $l-space-3;
-		width: $l-space-3;
-	}
-	&__poi-link {
-		margin-left: $l-space-4;
-		color: $c-blackberry;
-		&:hover {
-			color: $c-hawkweed;
+		// not a modifier; class for the header in PoiOverview
+		&-header {
+			font-size: u-pxToRem(20);
+			font-weight: 700;
 		}
 	}
 

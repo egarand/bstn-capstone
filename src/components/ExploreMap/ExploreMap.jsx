@@ -1,11 +1,7 @@
 import { MapContainer, Polygon, Polyline, Popup as BasePopup, TileLayer, useMap, Circle } from "react-leaflet";
 import "./ExploreMap.scss";
 import { useEffect } from "react";
-import { AnnouncedLink } from "../../navigation-accessibility";
-import Icon from "../../components/Icon/Icon";
-import hikingSrc from "../../assets/icons/hiking.svg";
-import campingSrc from "../../assets/icons/camping.svg";
-import forestSrc from "../../assets/icons/forest.svg";
+import PoiOverview from "../PoiOverview/PoiOverview";
 
 const algonquinCoords = [45.8372, -78.3791];
 const tileAttribution =
@@ -50,36 +46,24 @@ function VisualizeRadius({ center, radius }) {
 }
 ExploreMap.VisualizeRadius = VisualizeRadius;
 
-function Poi({ poiData: p, taxaData: taxa }) {
+function Poi({ poi, taxa }) {
 	const TagName =
-		p.category === "trail"
+		poi.category === "trail"
 		? Polyline
 		: Polygon;
-	const src =
-		p.category==="trail"
-		? hikingSrc
-		: p.category==="campground"
-			? campingSrc
-			: forestSrc;
 	return (
 	<TagName
-		className={`explore-map-poi explore-map-poi--${p.category}`}
-		positions={p.geometry}
+		className={`explore-map-poi explore-map-poi--${poi.category}`}
+		positions={poi.geometry}
 	>
-		<ExploreMap.Popup
-			title={<>
-				<Icon
-					className="explore-map-poi__icon"
-					src={src}
-					alt={p.category === "reserve" ? "nature reserve" : p.category}/>
-				{p.tags.name}
-			</>}
-			content={(
-				<AnnouncedLink
-					to={`/location/${p.osm_type}${p.osm_id}`}
-					state={{ poi: p, taxa }}
-				>More Details</AnnouncedLink>
-			)}/>
+		<Popup>
+			<PoiOverview
+			poi={poi}
+			taxa={taxa}
+			headingTag="span"
+			headerClassName="explore-map-poi__title" linkClassName="explore-map-poi__content"/>
+		</Popup>
+
 	</TagName>
 	);
 }
@@ -93,17 +77,16 @@ function PoiOverlay({ pois = [], taxa = [] }) {
 	})
 	return (<>
 	{pois.map((p) =>
-		<Poi key={`${p.osm_type}${p.osm_id}`} poiData={p} taxaData={taxa}/>
+		<Poi key={`${p.osm_type}${p.osm_id}`} poi={p} taxa={taxa}/>
 	)}
 	</>);
 }
 ExploreMap.PoiOverlay = PoiOverlay;
 
-function Popup({ title, content }) {
+function Popup({ children }) {
 	return (
 		<BasePopup className="explore-map-popup">
-			{title && <div className="explore-map-popup__title">{title}</div>}
-			{content && <div className="explore-map-popup__content">{content}</div>}
+			{children}
 		</BasePopup>
 	);
 }
