@@ -1,0 +1,42 @@
+@use "../../styles/partials/global" as *;
+
+.location-page {
+	&__no-species {
+		width: 100%;
+		height: 100%;
+		background: rgba($c-matcha, .3);
+		border: 2px solid $c-matcha;
+		border-radius: 4px;
+		padding: $l-space-1;
+		text-align: center;
+		text-decoration: none;
+		font-size: u-pxToRem(18);
+	}
+	&__contribute-cta {
+		font-size: u-pxToRem(16);
+		color: $c-pine;
+		&:hover {
+			color: $c-hawkweed;
+		}
+	}
+	&__species-list {
+		padding: 0;
+		list-style-type: none;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(180), 1fr));
+		gap: $l-space-1;
+	}
+	&__species-list-item {
+		display: inline-block;
+	}
+
+	@include l-tablet {
+		&__species-list {
+			padding: 0;
+			list-style-type: none;
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(200), 1fr));
+			gap: $l-space-2;
+		}
+	}
+}

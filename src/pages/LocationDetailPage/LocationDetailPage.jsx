@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import useIsMounted from "../../hooks/useIsMounted";
 import { trycatch } from "../../utils";
 import api from "../../utils/api";
 import { AnnouncedLink } from "../../navigation-accessibility";
+import DocTitle from "../../components/DocTitle/DocTitle";
+import SpeciesLink from "../../components/SpeciesLink/SpeciesLink";
 import "./LocationDetailPage.scss";
 
 function LocationDetailPage() {
@@ -22,6 +24,9 @@ function LocationDetailPage() {
 		)
 		?? []; console.log(val); return val;}
 	, [state?.taxa]);
+	const roughMiddle = useRef(null);
+
+	const currentMonth = useMemo(() => Intl.DateTimeFormat([], { month: "long" }).format(new Date()), []);
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -41,9 +46,9 @@ function LocationDetailPage() {
 					poiData.osm_type === "relation"
 					? poiData.geometry.flat(1)
 					: poiData.geometry;
-				const roughMiddle = flatGeom[Math.floor(flatGeom.length/2)];
+				roughMiddle.current = flatGeom[Math.floor(flatGeom.length/2)];
 
-				const params = new URLSearchParams(Object.entries(roughMiddle));
+				const params = new URLSearchParams(Object.entries(roughMiddle.current));
 				params.append("taxa", taxa);
 				const { data: lifeData } = await api("get", `/life?${params.toString()}`);
 
@@ -58,14 +63,32 @@ function LocationDetailPage() {
 
 	return (
 	<section aria-busy={isLoading}>
+		<DocTitle title={poi?.tags?.name} />
 		<h1>{poi?.tags?.name || "Loading..."}</h1>
-		<pre>{JSON.stringify(poi?.tags,null,2)}</pre>
+		<pre style={{whiteSpace: "pre-line", wordWrap: "break-word", wordBreak: "break-word"}}>{JSON.stringify(poi?.tags,null,2)}</pre>
 		<hr/>
-		{species?.map((s) => (<div key={s.id}>
-			<pre>{JSON.stringify(s,null,2)}</pre>
-			<AnnouncedLink to={`/species/${s.id}`}>Learn More</AnnouncedLink>
-			<hr/>
-		</div>)) || "Loading..."}
+		<h2>Wildlife Spotted Nearby in {currentMonth}</h2>
+		{!isLoading && !species.length && (
+			<div className="location-page__no-species">
+				<p>None... <em>yet.</em></p>
+				<p><AnnouncedLink
+					to="/contribute"
+					className="location-page__contribute-cta"
+				>
+					You could go record some observations and change that!
+				</AnnouncedLink></p>
+			</div>
+		)}
+		{!isLoading && species.length && (<>
+			<p>Click a species to learn more.</p>
+			<ul className="location-page__species-list">
+			{species?.map((s) => (
+				<li key={s.id} className="location-page__species-list-item">
+					<SpeciesLink species={s}/>
+				</li>
+			))}
+			</ul>
+		</>)}
 	</section>);
 }
 
