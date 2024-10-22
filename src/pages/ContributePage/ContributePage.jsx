@@ -1,4 +1,3 @@
-import { useLocation } from "react-router-dom";
 import "./ContributePage.scss";
 import inatSrc from "../../assets/logo/inaturalist.svg";
 import seekSrc from "../../assets/logo/seek-full.svg";

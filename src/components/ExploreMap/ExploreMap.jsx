@@ -49,19 +49,17 @@ function CenterOnUserOnMount() {
 }
 ExploreMap.CenterOnUserOnMount = CenterOnUserOnMount;
 
-function PoiOverlay({ pois = [] }) {
+function PoiOverlay({ pois = [], taxa = [] }) {
 	return (<>
 	{pois.map((p) => {
 		const key = `${p.osm_type}${p.osm_id}`;
 		const TagName =
 			p.category === "trail"
 			? Polyline : Polygon;
-		console.log(p);
-
 		return (
 		<TagName key={key} pathOptions={pathOptions[p.category]} positions={p.geometry}>
 			<ExploreMap.Popup title={p.tags.name} content={(
-				<AnnouncedLink to={`/location/${p.osm_type}${p.osm_id}`} state={p}>More Details</AnnouncedLink>
+				<AnnouncedLink to={`/location/${p.osm_type}${p.osm_id}`} state={{ poi: p, taxa }}>More Details</AnnouncedLink>
 			)}/>
 		</TagName>
 		);

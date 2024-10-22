@@ -6,6 +6,7 @@ import "./ExplorePage.scss";
 import Input from "../../components/Input/Input";
 import CheckboxGroup from "../../components/CheckboxGroup/CheckboxGroup";
 import Button from "../../components/Button/Button";
+import { round, trycatch } from "../../utils";
 
 const initialValues = {
 	lat: 0,
@@ -17,7 +18,15 @@ const initialValues = {
 
 function ExplorePage() {
 	const [pois, setPois] = useState([]);
-	const [values, setValues] = useState(initialValues);
+	const [values, setValues] =
+		useState(
+			trycatch(() =>
+				JSON.parse(localStorage.getItem("explore_input")),
+				initialValues
+			)
+			?? initialValues
+		);
+
 
 	async function handleSubmit(ev) {
 		ev.preventDefault();
@@ -34,18 +43,29 @@ function ExplorePage() {
 
 	function handleInputChange(ev) {
 		const { name, value } = ev.target;
-		setValues({ ...values, [name]: value });
-	}
+		const newValues = { ...values, [name]: value }
 
-	function round(num, decimals) {
-		const mult = Number(String(1).padEnd(decimals, 0));
-		return Math.round((num + Number.EPSILON) * mult) / mult;
+		setValues(newValues);
+		trycatch(()=>
+			localStorage.setItem("explore_input", JSON.stringify(newValues))
+		);
 	}
 
 	function fillCurrentLocation(ev) {
 		ev?.preventDefault();
 		navigator?.geolocation?.getCurrentPosition((pos) => {
-			setValues(v => ({ ...v, lat: round(pos.coords.latitude, 5), lon: round(pos.coords.longitude, 5) }));
+			setValues(v => {
+				const newV = {
+					...v,
+					lat: round(pos.coords.latitude, 5),
+					lon: round(pos.coords.longitude, 5)
+				};
+				trycatch(()=>
+					localStorage.setItem("explore_input", JSON.stringify(newV))
+				);
+				return newV;
+			});
+
 		}, null, { timeout: 5000 });
 	}
 
@@ -98,7 +118,7 @@ function ExplorePage() {
 		<ExploreMap className="explore-page__map">
 			<ExploreMap.CenterOnUserOnMount/>
 			<Circle className="explore-page__search-area" center={[values.lat, values.lon]} radius={Number(values.radius) * 1000}/>
-			<ExploreMap.PoiOverlay pois={pois}/>
+			<ExploreMap.PoiOverlay pois={pois} taxa={values.taxa}/>
 		</ExploreMap>
 	</>);
 }
