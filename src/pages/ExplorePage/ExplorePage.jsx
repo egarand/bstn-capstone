@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useIsMounted from "../../hooks/useIsMounted";
 import { round, trycatch } from "../../utils";
 import api from "../../utils/api";
 
+import DocTitle from "../../components/DocTitle/DocTitle";
 import ExploreMap from "../../components/ExploreMap/ExploreMap";
 import Input from "../../components/Input/Input";
 import CheckboxGroup from "../../components/CheckboxGroup/CheckboxGroup";
@@ -30,6 +31,7 @@ function ExplorePage() {
 			)
 			?? initialValues
 		);
+	const resultsRef = useRef(null);
 	const isMounted = useIsMounted();
 
 	async function handleSubmit(ev) {
@@ -47,6 +49,7 @@ function ExplorePage() {
 			if (!isMounted.current) { return; }
 			setPois(data);
 			setIsLoading(false);
+			requestAnimationFrame(() => resultsRef.current.focus());
 		} catch {
 			// do something
 		}
@@ -80,10 +83,15 @@ function ExplorePage() {
 		}, null);
 	}
 
-	useEffect(fillCurrentLocation, []);
+	useEffect(() => {
+		if (values.lat !== 0) { return; }
+		fillCurrentLocation();
+	}, [values.lat]);
 
 	return (<>
-		<h1 className="explore-page__title">ExplorePage</h1>
+		<DocTitle title="Explore" />
+		<h1 className="explore-page__title">Explore</h1>
+		<p>Fill the form to search for outdoor spots to visit.</p>
 
 		<form className="explore-page__form" onSubmit={handleSubmit}>
 			<h2 className="explore-page__form-heading">What Are You Looking For?</h2>
@@ -151,8 +159,12 @@ function ExplorePage() {
 		</form>
 
 		<section aria-busy={isLoading}>
-			<h2>Results</h2>
-			<p>Select a place on the map, or browse the list below, for more details.</p>
+			<h2 tabIndex={-1} ref={resultsRef}>Results</h2>
+			<p>
+			{pois.length
+				? "Select a place on the map, or browse the list below the map, for more details."
+				: "Nothing here yet."}
+			</p>
 			<ExploreMap className="explore-page__map">
 				<ExploreMap.CenterOnUserOnMount/>
 				<ExploreMap.VisualizeRadius
