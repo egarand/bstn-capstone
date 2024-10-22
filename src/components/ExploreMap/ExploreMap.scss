@@ -15,6 +15,10 @@
 		fill: $c-matcha;
 		stroke-width: .2rem;
 	}
+	&__icon {
+		width: $l-space-3;
+		margin-inline: auto;
+	}
 }
 
 .explore-map-popup {

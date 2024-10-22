@@ -5,7 +5,7 @@
 
 	&__inner {
 		background-color: $c-white;
-		padding: $l-space-2 $l-margin-mobile;
+		padding: $l-space-2 $l-margin-mobile $l-space-3;
 	}
 
 	@include l-tablet {
@@ -21,7 +21,7 @@
 			),
 			linear-gradient($c-matcha, $c-matcha);
 		&__inner {
-			padding: $l-space-2 $l-margin-tablet;
+			padding: $l-space-2 $l-margin-tablet $l-space-3;
 		}
 	}
 }

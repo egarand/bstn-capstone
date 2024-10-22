@@ -2,6 +2,10 @@ import { MapContainer, Polygon, Polyline, Popup as BasePopup, TileLayer, useMap 
 import "./ExploreMap.scss";
 import { useEffect } from "react";
 import { AnnouncedLink } from "../../navigation-accessibility";
+import Icon from "../../components/Icon/Icon";
+import hikingSrc from "../../assets/icons/hiking.svg";
+import campingSrc from "../../assets/icons/camping.svg";
+import forestSrc from "../../assets/icons/forest.svg";
 
 const algonquinCoords = [45.8372, -78.3791];
 const tileAttribution =
@@ -45,7 +49,7 @@ function PoiOverlay({ pois = [], taxa = [] }) {
 			? Polyline : Polygon;
 		return (
 		<TagName key={key} className={`explore-map__${p.category}`} positions={p.geometry}>
-			<ExploreMap.Popup title={p.tags.name} content={(
+			<ExploreMap.Popup title={<><Icon src={p.category==="trail" ? hikingSrc : p.category==="campground" ? campingSrc : forestSrc} alt={p.category} className="explore-map__icon"/>{p.tags.name}</>} content={(
 				<AnnouncedLink to={`/location/${p.osm_type}${p.osm_id}`} state={{ poi: p, taxa }}>More Details</AnnouncedLink>
 			)}/>
 		</TagName>
