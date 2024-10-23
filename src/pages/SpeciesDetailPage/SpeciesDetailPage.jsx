@@ -15,6 +15,9 @@ function SpeciesDetailPage() {
 			try {
 				const { data: speciesData } = await api("get", `/life/${inat_id}`);
 				if (!isMounted.current) { return; }
+
+				speciesData.wikipedia_excerpt =
+					wikiExcerptToJSX(speciesData.wikipedia_excerpt);
 				setSpecies(() => speciesData);
 			} catch {
 				// do something
@@ -43,3 +46,29 @@ function SpeciesDetailPage() {
 }
 
 export default SpeciesDetailPage;
+
+/** Parses HTML-string wikipedia excerpts into JSX, keeping the formatting of
+ * the <b> and <i> tags.
+ *
+ * A library would be overkill since its fairly simple and only done here,
+ * and other options could leave XSS loopholes. */
+function wikiExcerptToJSX(wiki) {
+	const wikiStrs = wiki
+		// trim enclosing paragraph tag
+		.replaceAll(/<\/?p>/g, "")
+		// mark what tags we're about to lose in the split
+		.replaceAll(/<(b|i)>/g, "<$1>{{$1}}")
+		// split on the tags
+		.split(/<\/?(?:b|i)>/g);
+	return (<>
+		{wikiStrs.map((s,i) => {
+			// even indexes in the arrays were wrapped with b/i tags
+			if (i % 2) {
+				let Tag = /\{\{(b|i)\}\}/.exec(s)[1];
+				return <Tag key={i}>{s.substring(5)}</Tag>
+			} else {
+				return s;
+			}
+		})}
+	</>);
+}
