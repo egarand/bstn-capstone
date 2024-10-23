@@ -24,7 +24,7 @@
 	}
 	&--secondary {
 		border-color: $c-pine;
-		background: $c-white;
+		background: rgba($c-matcha, .3);
 		color: $c-pine;
 		&:hover {
 			background: $c-matcha;

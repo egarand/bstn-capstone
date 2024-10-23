@@ -5,8 +5,6 @@ import "./IconButton.scss";
  * styling. */
 function IconButton({ text = "", iconSrc = "", onClick, className = "", ...rest }) {
 	function showText(ev) {
-		console.log("show txt ev", ev);
-
 		ev.target.nextSibling.classList.remove("icon-btn__hidden");
 		ev.target.classList.add("icon-btn__hidden");
 	}
