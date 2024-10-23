@@ -9,12 +9,12 @@ const tileAttribution =
 &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> \
 &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`;
 
-function ExploreMap({ className, center = algonquinCoords, children }) {
+function ExploreMap({ className, center = algonquinCoords, minz = 6, maxz = 14, zoom = 10, children }) {
 	return (
-		<MapContainer center={center} zoom={10} scrollWheelZoom={false} className={`explore-map ${className}`}>
+		<MapContainer center={center} zoom={zoom} scrollWheelZoom={false} className={`explore-map ${className}`}>
 			<TileLayer
-				minZoom={6}
-				maxZoom={14}
+				minZoom={minz}
+				maxZoom={maxz}
 				attribution={tileAttribution}
 				url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png"
 			/>

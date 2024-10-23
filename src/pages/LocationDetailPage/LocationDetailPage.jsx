@@ -10,6 +10,8 @@ import SpeciesLink from "../../components/SpeciesLink/SpeciesLink";
 import Button from "../../components/Button/Button";
 import "./LocationDetailPage.scss";
 
+const perPage = 16;
+
 function LocationDetailPage() {
 	const { state } = useLocation();
 	const { osm_info } = useParams();
@@ -22,11 +24,11 @@ function LocationDetailPage() {
 
 	const [centroid, setCentroid] = useState(null);
 	const taxa = useMemo(() =>
-		{const val = trycatch(() =>
+		trycatch(() =>
 			JSON.parse(localStorage.getItem("explore_input")).taxa,
 			state?.taxa
 		)
-		?? []; console.log(val); return val;}
+		?? []
 	, [state?.taxa]);
 
 	const currentMonth = useMemo(() => Intl.DateTimeFormat([], { month: "long" }).format(new Date()), []);
@@ -60,33 +62,27 @@ function LocationDetailPage() {
 				const { data: lifeData } = await api("get", `/life?${params.toString()}`, null, {
 					"axios-retry": { retries: 0 }
 				});
+				lifeData.page = 1;
 
 				if (!isMounted.current) { return; }
 				setSpecies(() => lifeData);
 				setLoadingSpecies(() => false);
-			} catch {
+			} catch (error) {
+				console.error(error);
+
 				// do something
 			}
 		})();
 	}, [osm_info, state, taxa, isMounted]);
 
-	async function paginate(direction) {
-		const page = Math.max(1, Math.min(species.page_count, species.page + direction));
+	function totalPages() {
+		return Math.ceil(Number(species.total) / perPage);
+	}
+	function paginate(direction) {
+		const pageCount = totalPages();
+		const page = Math.max(1, Math.min(pageCount, Number(species.page) + direction));
+		setSpecies({ ...species, page });
 		if (page === species.page) { return; }
-		setLoadingSpecies(() => true);
-		try {
-			const params = new URLSearchParams(Object.entries(poi.bounds));
-			params.append("taxa", taxa);
-			params.append("page", page);
-			const { data } = await api("get", `/life?${params.toString()}`, null, {
-				"axios-retry": { retries: 0 }
-			});
-			if (!isMounted.current) { return; }
-			setSpecies(() => data);
-			setLoadingSpecies(() => false);
-		} catch {
-			// do something
-		}
 	}
 
 	return (
@@ -125,11 +121,15 @@ function LocationDetailPage() {
 		{species?.species.length && (<>
 			<p>Click a species to learn more.</p>
 			<ul className="location-page__species-list" aria-busy={loadingSpecies}>
-			{species.species?.map((s) => (
-				<li key={s.id} className="location-page__species-list-item">
-					<SpeciesLink species={s}/>
-				</li>
-			))}
+			{species.species?.reduce((arr, s, i) => {
+				const start = (Number(species.page) - 1) * perPage;
+				if (i >= start && i < Math.min(start + perPage, species.species.length)) {
+					arr.push(<li key={s.id} className="location-page__species-list-item">
+						<SpeciesLink species={s}/>
+					</li>);
+				}
+				return arr;
+			},[])}
 			</ul>
 			<nav className="location-page__pagination" aria-label="pagination">
 				<Button
@@ -137,11 +137,11 @@ function LocationDetailPage() {
 					onClick={()=>paginate(-1)}
 					disabled={species?.page === 1 || null}
 				>Previous</Button>
-				<p>Page {species?.page} / {species?.page_count}</p>
+				<p>Page {species?.page} / {species?.total / perPage}</p>
 				<Button
 					variant="secondary"
 					onClick={()=>paginate(1)}
-					disabled={species?.page === species?.page_count || null}
+					disabled={species?.page === species?.total / perPage || null}
 				>Next</Button>
 			</nav>
 		</>)}
