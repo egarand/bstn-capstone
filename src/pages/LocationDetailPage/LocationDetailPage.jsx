@@ -123,10 +123,6 @@ function LocationDetailPage() {
 
 		<section className="location-page__detail-section">
 		{!loadingPoi && (<>
-			<ExploreMap className="location-page__map" center={centroid}>
-				<ExploreMap.CenterOnCoordinate latlon={centroid}/>
-				<ExploreMap.Poi poi={poi} noPopup />
-			</ExploreMap>
 			{poi.tags.description && (
 				<p className="location-page__description">
 					{poi.tags.description}
@@ -158,12 +154,19 @@ function LocationDetailPage() {
 					}
 				</dl>
 			</details>
+			<span className="location-page__column-breaker"></span>
+			<ExploreMap className="location-page__map" center={centroid}>
+				<ExploreMap.CenterOnCoordinate latlon={centroid}/>
+				<ExploreMap.Poi poi={poi} noPopup />
+			</ExploreMap>
 		</>)}
 		</section>
 
 		<h2>Wildlife Spotted Nearby in {currentMonth}</h2>
-		<details>
-			<summary>Edit Wildlife Type Choices</summary>
+		<details className="location-page__collapsible-wrapper">
+			<summary className="location-page__collapsible-header">
+				Edit Wildlife Type Choices
+			</summary>
 			<form className="location-page__taxa-form" onSubmit={handleTaxaSubmit}>
 				<CheckboxGroup
 					className="location-page__taxa-group"
