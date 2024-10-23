@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import useIsMounted from "../../hooks/useIsMounted";
-import { trycatch } from "../../utils";
+import { polygonCentroid, trycatch } from "../../utils";
 import api from "../../utils/api";
 import { AnnouncedLink } from "../../navigation-accessibility";
+import ExploreMap from "../../components/ExploreMap/ExploreMap";
 import DocTitle from "../../components/DocTitle/DocTitle";
 import SpeciesLink from "../../components/SpeciesLink/SpeciesLink";
 import "./LocationDetailPage.scss";
@@ -17,6 +18,7 @@ function LocationDetailPage() {
 		[poi, setPoi] = useState(null),
 		[species, setSpecies] = useState(null);
 
+	const [centroid, setCentroid] = useState(null);
 	const taxa = useMemo(() =>
 		{const val = trycatch(() =>
 			JSON.parse(localStorage.getItem("explore_input")).taxa,
@@ -24,7 +26,6 @@ function LocationDetailPage() {
 		)
 		?? []; console.log(val); return val;}
 	, [state?.taxa]);
-	const roughMiddle = useRef(null);
 
 	const currentMonth = useMemo(() => Intl.DateTimeFormat([], { month: "long" }).format(new Date()), []);
 
@@ -36,7 +37,7 @@ function LocationDetailPage() {
 			try {
 				let poiData = state?.poi;
 				if (!state?.poi) {
-					const [,type,id] = /([a-z]+)([0-9]+)/g.exec(osm_info);
+					const [,type,id] = /([a-z]+)([0-9]+)/i.exec(osm_info);
 					poiData = (await api("get", `/pois/${type}/${id}`)).data;
 				}
 				if (!isMounted.current) { return; }
@@ -46,11 +47,14 @@ function LocationDetailPage() {
 					poiData.osm_type === "relation"
 					? poiData.geometry.flat(1)
 					: poiData.geometry;
-				roughMiddle.current = flatGeom[Math.floor(flatGeom.length/2)];
+				const middle = polygonCentroid(flatGeom);
+				setCentroid(middle);
 
-				const params = new URLSearchParams(Object.entries(roughMiddle.current));
+				const params = new URLSearchParams(Object.entries(poiData.bounds));
 				params.append("taxa", taxa);
-				const { data: lifeData } = await api("get", `/life?${params.toString()}`);
+				const { data: lifeData } = await api("get", `/life?${params.toString()}`, null, {
+					"axios-retry": { retries: 0 }
+				});
 
 				if (!isMounted.current) { return; }
 				setSpecies(lifeData);
@@ -65,7 +69,22 @@ function LocationDetailPage() {
 	<section aria-busy={isLoading}>
 		<DocTitle title={poi?.tags?.name} />
 		<h1>{poi?.tags?.name || "Loading..."}</h1>
+
+		<section className="location-page__detail-section">
+		{!loadingPoi && (<>
+			<ExploreMap className="location-page__map" center={centroid}>
+				<ExploreMap.CenterOnCoordinate latlon={centroid}/>
+				<ExploreMap.Poi poi={poi} noPopup />
+			</ExploreMap>
+			<dl>
+				{poi.tags.description && <p>poi.tags.description</p>}
+			</dl>
 		<pre style={{whiteSpace: "pre-line", wordWrap: "break-word", wordBreak: "break-word"}}>{JSON.stringify(poi?.tags,null,2)}</pre>
+			<h2>Other Tags</h2>
+
+		</>)}
+		</section>
+
 		<hr/>
 		<h2>Wildlife Spotted Nearby in {currentMonth}</h2>
 		{!isLoading && !species.length && (
@@ -79,10 +98,10 @@ function LocationDetailPage() {
 				</AnnouncedLink></p>
 			</div>
 		)}
-		{!isLoading && species.length && (<>
+		{species?.species.length && (<>
 			<p>Click a species to learn more.</p>
-			<ul className="location-page__species-list">
-			{species?.map((s) => (
+			<ul className="location-page__species-list" aria-busy={loadingSpecies}>
+			{species.species?.map((s) => (
 				<li key={s.id} className="location-page__species-list-item">
 					<SpeciesLink species={s}/>
 				</li>

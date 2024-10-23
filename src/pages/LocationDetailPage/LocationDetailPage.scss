@@ -1,6 +1,17 @@
 @use "../../styles/partials/global" as *;
 
 .location-page {
+
+	&__detail-section {
+		columns: 2;
+	}
+
+	&__map {
+		height: u-pxToRem(300);
+		border: 2px solid $c-matcha;
+		border-radius: 4px;
+	}
+
 	&__no-species {
 		width: 100%;
 		height: 100%;

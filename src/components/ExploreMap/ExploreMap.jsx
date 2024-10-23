@@ -9,9 +9,9 @@ const tileAttribution =
 &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> \
 &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`;
 
-function ExploreMap({ className, children }) {
+function ExploreMap({ className, center = algonquinCoords, children }) {
 	return (
-		<MapContainer center={algonquinCoords} zoom={10} scrollWheelZoom={false} className={`explore-map ${className}`}>
+		<MapContainer center={center} zoom={10} scrollWheelZoom={false} className={`explore-map ${className}`}>
 			<TileLayer
 				minZoom={6}
 				maxZoom={14}
@@ -36,6 +36,13 @@ function CenterOnUserOnMount() {
 }
 ExploreMap.CenterOnUserOnMount = CenterOnUserOnMount;
 
+function CenterOnCoordinate({ latlon }) {
+	const map = useMap();
+	map.setView(latlon, map.getZoom());
+	return null;
+}
+ExploreMap.CenterOnCoordinate = CenterOnCoordinate;
+
 function VisualizeRadius({ center, radius }) {
 	return (
 	<Circle
@@ -46,7 +53,7 @@ function VisualizeRadius({ center, radius }) {
 }
 ExploreMap.VisualizeRadius = VisualizeRadius;
 
-function Poi({ poi, taxa }) {
+function Poi({ poi, taxa, noPopup = false }) {
 	const TagName =
 		poi.category === "trail"
 		? Polyline
@@ -56,13 +63,14 @@ function Poi({ poi, taxa }) {
 		className={`explore-map-poi explore-map-poi--${poi.category}`}
 		positions={poi.geometry}
 	>
+		{!noPopup && (
 		<Popup>
 			<PoiOverview
 			poi={poi}
 			taxa={taxa}
 			headingTag="span"
 			headerClassName="explore-map-poi__title" linkClassName="explore-map-poi__content"/>
-		</Popup>
+		</Popup>)}
 
 	</TagName>
 	);
