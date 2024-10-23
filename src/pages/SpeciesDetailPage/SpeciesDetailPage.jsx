@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import useIsMounted from "../../hooks/useIsMounted";
 import api from "../../utils/api";
 import "./SpeciesDetailPage.scss";
+import ExploreMap from "../../components/ExploreMap/ExploreMap";
+import { TileLayer } from "react-leaflet";
 
 function SpeciesDetailPage() {
 	const { inat_id } = useParams();
@@ -34,6 +36,17 @@ function SpeciesDetailPage() {
 				{species?.photo.attribution.replace("(c)", "©")}
 			</figcaption>
 		</figure>
+		<ExploreMap className="species-page__range-map" zoom={3} minz={2} maxz={5}>
+			<ExploreMap.CenterOnUserOnMount/>
+			<TileLayer
+				minZoom={2}
+				maxZoom={5}
+				attribution='&copy; <a target="blank" href="https://inaturalist.org/">iNaturalist</a> contributers'
+				url={`https://api.inaturalist.org/v1/grid/{z}/{x}/{y}.png?ttl=${86_400}&verifiable=true&taxon_id=${species?.id}`}
+				updateInterval={2000}
+				keepBuffer={8}/>
+				{/* Most of these settings are intended to minimize requests to iNat's API. */}
+		</ExploreMap>
 		<p>
 			{species?.wikipedia_excerpt}
 		</p>
@@ -65,7 +78,7 @@ function wikiExcerptToJSX(wiki) {
 			// even indexes in the arrays were wrapped with b/i tags
 			if (i % 2) {
 				let Tag = /\{\{(b|i)\}\}/.exec(s)[1];
-				return <Tag key={i}>{s.substring(5)}</Tag>
+				return <Tag key={`${i}${s.substring(5,10)}`}>{s.substring(5)}</Tag>
 			} else {
 				return s;
 			}
