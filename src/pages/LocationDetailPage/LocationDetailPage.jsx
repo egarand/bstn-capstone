@@ -7,7 +7,7 @@ import { AnnouncedLink } from "../../navigation-accessibility";
 import ExploreMap from "../../components/ExploreMap/ExploreMap";
 import DocTitle from "../../components/DocTitle/DocTitle";
 import SpeciesLink from "../../components/SpeciesLink/SpeciesLink";
-import Button from "../../components/Button/Button";
+import Pagination from "../../components/Pagination/Pagination";
 import "./LocationDetailPage.scss";
 
 const perPage = 16;
@@ -63,6 +63,7 @@ function LocationDetailPage() {
 					"axios-retry": { retries: 0 }
 				});
 				lifeData.page = 1;
+				lifeData.total_pages = Math.ceil(Number(lifeData.total) / perPage);
 
 				if (!isMounted.current) { return; }
 				setSpecies(() => lifeData);
@@ -75,12 +76,8 @@ function LocationDetailPage() {
 		})();
 	}, [osm_info, state, taxa, isMounted]);
 
-	function totalPages() {
-		return Math.ceil(Number(species.total) / perPage);
-	}
 	function paginate(direction) {
-		const pageCount = totalPages();
-		const page = Math.max(1, Math.min(pageCount, Number(species.page) + direction));
+		const page = Math.max(1, Math.min(species.total_pages, species.page + direction));
 		setSpecies({ ...species, page });
 		if (page === species.page) { return; }
 	}
@@ -120,6 +117,10 @@ function LocationDetailPage() {
 		)}
 		{species?.species.length && (<>
 			<p>Click a species to learn more.</p>
+			<Pagination
+				currentPage={species?.page}
+				totalPages={species?.total_pages}
+				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
 			<ul className="location-page__species-list" aria-busy={loadingSpecies}>
 			{species.species?.reduce((arr, s, i) => {
 				const start = (Number(species.page) - 1) * perPage;
@@ -131,19 +132,10 @@ function LocationDetailPage() {
 				return arr;
 			},[])}
 			</ul>
-			<nav className="location-page__pagination" aria-label="pagination">
-				<Button
-					variant="secondary"
-					onClick={()=>paginate(-1)}
-					disabled={species?.page === 1 || null}
-				>Previous</Button>
-				<p>Page {species?.page} / {species?.total / perPage}</p>
-				<Button
-					variant="secondary"
-					onClick={()=>paginate(1)}
-					disabled={species?.page === species?.total / perPage || null}
-				>Next</Button>
-			</nav>
+			<Pagination
+				currentPage={species?.page}
+				totalPages={species?.total_pages}
+				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
 		</>)}
 	</section>);
 }

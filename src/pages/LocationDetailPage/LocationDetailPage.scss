@@ -37,15 +37,6 @@
 		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(180), 1fr));
 		gap: $l-space-1;
 	}
-	&__species-list-item {
-		display: inline-block;
-	}
-	&__pagination {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: $l-space-3;
-	}
 
 	@include l-tablet {
 		&__species-list {
