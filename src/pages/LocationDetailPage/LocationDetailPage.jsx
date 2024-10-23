@@ -7,6 +7,7 @@ import { AnnouncedLink } from "../../navigation-accessibility";
 import ExploreMap from "../../components/ExploreMap/ExploreMap";
 import DocTitle from "../../components/DocTitle/DocTitle";
 import SpeciesLink from "../../components/SpeciesLink/SpeciesLink";
+import Button from "../../components/Button/Button";
 import "./LocationDetailPage.scss";
 
 function LocationDetailPage() {
@@ -14,7 +15,8 @@ function LocationDetailPage() {
 	const { osm_info } = useParams();
 	const isMounted = useIsMounted();
 
-	const [isLoading, setIsLoading] = useState(true),
+	const [loadingPoi, setLoadingPoi] = useState(true),
+		[loadingSpecies, setLoadingSpecies] = useState(true),
 		[poi, setPoi] = useState(null),
 		[species, setSpecies] = useState(null);
 
@@ -30,7 +32,8 @@ function LocationDetailPage() {
 	const currentMonth = useMemo(() => Intl.DateTimeFormat([], { month: "long" }).format(new Date()), []);
 
 	useEffect(() => {
-		setIsLoading(true);
+		setLoadingPoi(true);
+		setLoadingSpecies(true);
 		setPoi(null);
 		setSpecies(null);
 		(async () => {
@@ -40,8 +43,6 @@ function LocationDetailPage() {
 					const [,type,id] = /([a-z]+)([0-9]+)/i.exec(osm_info);
 					poiData = (await api("get", `/pois/${type}/${id}`)).data;
 				}
-				if (!isMounted.current) { return; }
-				setPoi(() => poiData);
 
 				const flatGeom =
 					poiData.osm_type === "relation"
@@ -50,6 +51,10 @@ function LocationDetailPage() {
 				const middle = polygonCentroid(flatGeom);
 				setCentroid(middle);
 
+				if (!isMounted.current) { return; }
+				setPoi(() => poiData);
+				setLoadingPoi(() => false);
+
 				const params = new URLSearchParams(Object.entries(poiData.bounds));
 				params.append("taxa", taxa);
 				const { data: lifeData } = await api("get", `/life?${params.toString()}`, null, {
@@ -57,16 +62,35 @@ function LocationDetailPage() {
 				});
 
 				if (!isMounted.current) { return; }
-				setSpecies(lifeData);
-				setIsLoading(false);
+				setSpecies(() => lifeData);
+				setLoadingSpecies(() => false);
 			} catch {
 				// do something
 			}
 		})();
 	}, [osm_info, state, taxa, isMounted]);
 
+	async function paginate(direction) {
+		const page = Math.max(1, Math.min(species.page_count, species.page + direction));
+		if (page === species.page) { return; }
+		setLoadingSpecies(() => true);
+		try {
+			const params = new URLSearchParams(Object.entries(poi.bounds));
+			params.append("taxa", taxa);
+			params.append("page", page);
+			const { data } = await api("get", `/life?${params.toString()}`, null, {
+				"axios-retry": { retries: 0 }
+			});
+			if (!isMounted.current) { return; }
+			setSpecies(() => data);
+			setLoadingSpecies(() => false);
+		} catch {
+			// do something
+		}
+	}
+
 	return (
-	<section aria-busy={isLoading}>
+	<section aria-busy={loadingPoi}>
 		<DocTitle title={poi?.tags?.name} />
 		<h1>{poi?.tags?.name || "Loading..."}</h1>
 
@@ -87,7 +111,7 @@ function LocationDetailPage() {
 
 		<hr/>
 		<h2>Wildlife Spotted Nearby in {currentMonth}</h2>
-		{!isLoading && !species.length && (
+		{!loadingSpecies && !species.species.length && species.page === 1 && (
 			<div className="location-page__no-species">
 				<p>None... <em>yet.</em></p>
 				<p><AnnouncedLink
@@ -107,6 +131,19 @@ function LocationDetailPage() {
 				</li>
 			))}
 			</ul>
+			<nav className="location-page__pagination" aria-label="pagination">
+				<Button
+					variant="secondary"
+					onClick={()=>paginate(-1)}
+					disabled={species?.page === 1 || null}
+				>Previous</Button>
+				<p>Page {species?.page} / {species?.page_count}</p>
+				<Button
+					variant="secondary"
+					onClick={()=>paginate(1)}
+					disabled={species?.page === species?.page_count || null}
+				>Next</Button>
+			</nav>
 		</>)}
 	</section>);
 }

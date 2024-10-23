@@ -40,6 +40,12 @@
 	&__species-list-item {
 		display: inline-block;
 	}
+	&__pagination {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: $l-space-3;
+	}
 
 	@include l-tablet {
 		&__species-list {
