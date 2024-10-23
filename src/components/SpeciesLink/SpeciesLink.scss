@@ -1,0 +1,43 @@
+@use "../../styles/partials/global" as *;
+
+.species-link {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	background: rgba($c-matcha, .5);
+	border: 2px solid $c-matcha;
+	border-radius: 4px;
+	padding: $l-space-1;
+	text-align: center;
+	text-decoration: none;
+	transition: transform .15s ease-in-out;
+	&:hover {
+		transform: scale(1.04);
+	}
+
+	&__figure {
+		margin: 0 auto;
+	}
+	&__thumbnail {
+		display: block;
+		margin: $l-space-0 auto;
+		border-radius: 4px;
+	}
+	&__caption {
+		font-size: u-pxToRem(10);
+		font-style: italic;
+		color: $c-pine;
+		text-decoration: none;
+	}
+	&__name {
+		font-family: $f-family-cardenio;
+		font-size: u-pxToRem(26);
+		color: $c-blackberry;
+		text-decoration: underline;
+	}
+	&:hover &__name {
+		color: $c-hawkweed;
+	}
+}

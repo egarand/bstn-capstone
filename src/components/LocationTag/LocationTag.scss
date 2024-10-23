@@ -1,0 +1,20 @@
+@use "../../styles/partials/global" as *;
+
+.location-tag {
+	&__title {
+		font-weight: 700;
+		display: flex;
+		gap: $l-space-0;
+		align-items: center;
+		color: $c-pine;
+	}
+	&__icon {
+		width: $l-space-3;
+	}
+	&__link {
+		color: $c-pine;
+		&:hover {
+			color: $c-hawkweed;
+		}
+	}
+}

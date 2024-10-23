@@ -1,0 +1,8 @@
+@use "../../styles/partials/global" as *;
+
+.pagination {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: $l-space-3;
+}
