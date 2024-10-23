@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useIsMounted from "../../hooks/useIsMounted";
 import api from "../../utils/api";
@@ -66,22 +66,25 @@ export default SpeciesDetailPage;
  * A library would be overkill since its fairly simple and only done here,
  * and other options could leave XSS loopholes. */
 function wikiExcerptToJSX(wiki) {
-	const wikiStrs = wiki
-		// trim enclosing paragraph tag
-		.replaceAll(/<\/?p>/g, "")
-		// mark what tags we're about to lose in the split
-		.replaceAll(/<(b|i)>/g, "<$1>{{$1}}")
-		// split on the tags
-		.split(/<\/?(?:b|i)>/g);
-	return (<>
-		{wikiStrs.map((s,i) => {
-			// even indexes in the arrays were wrapped with b/i tags
-			if (i % 2) {
-				let Tag = /\{\{(b|i)\}\}/.exec(s)[1];
-				return <Tag key={`${i}${s.substring(5,10)}`}>{s.substring(5)}</Tag>
-			} else {
-				return s;
-			}
-		})}
-	</>);
+	const parser = new DOMParser();
+	let wikiTree = parser.parseFromString(wiki, "text/html");
+
+	/** @param {HTMLElement} el */
+	function createJSX(el) {
+		if (el.nodeType === Node.TEXT_NODE || el.childNodes.length === 0) {
+			return el.textContent;
+		}
+
+		let childJSX = [];
+		for (const child of el.childNodes) {
+			childJSX.push(createJSX(child));
+		}
+		if (["B", "I", "P"].includes(el.tagName)) {
+			return createElement(el.tagName.toLowerCase(), null, ...childJSX);
+		}
+		return <>{childJSX}</>;
+	}
+
+	const jsx = createJSX(wikiTree.body.firstChild);
+	return jsx;
 }
