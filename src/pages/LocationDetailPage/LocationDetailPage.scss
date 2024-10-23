@@ -23,9 +23,20 @@
 		font-size: u-pxToRem(14);
 	}
 	&__collapsible-header {
-		font-family: $f-family-cardenio;
-		font-size: u-pxToRem(20);
+		font-size: initial;
 		cursor: pointer;
+	}
+	&__taxa-form {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		gap: $l-space-2 $l-space-4;
+		margin-top: $l-space-1;
+	}
+	&__taxa-group {
+		flex: 1 1 u-pxToRem(160);
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(160), 1fr));
 	}
 
 	@media (min-width: 530px) {
