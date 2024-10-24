@@ -1,5 +1,10 @@
 @use "../../styles/partials/global" as *;
 
+.explore-map {
+	border: 2px solid $c-matcha;
+	border-radius: 4px;
+}
+
 .explore-map-radius {
 	stroke: lighten($c-blackberry, 45%);
 	stroke-dasharray: 6 5 10 6 5 7 5 8;
