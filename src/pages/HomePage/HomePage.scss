@@ -1,0 +1,7 @@
+@use "../../styles/partials/global" as *;
+
+.home-page {
+	&__img {
+		width: u-pxToRem(130);
+	}
+}
