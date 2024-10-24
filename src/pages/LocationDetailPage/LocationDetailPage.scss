@@ -1,28 +1,40 @@
 @use "../../styles/partials/global" as *;
 
 .location-page {
-	color: $c-blackberry;
+	&__title {
+		@extend %f-page-title;
+	}
+	&__heading {
+		@extend %f-heading;
+	}
+
+	&__detail-section {
+		margin-block: $l-space-2;
+	}
 
 	&__map {
-		margin-top: $l-space-3;
 		height: u-pxToRem(300);
 	}
 
 	// || POI DETAILS/TAGS
 
 	&__column-breaker {
+		display: block;
 		break-before: column;
 	}
 	&__tag-list {
+		margin-block: 0 $l-space-2;
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(220), 1fr));
 		gap: $l-space-2;
 	}
 	&__collapsible-wrapper {
-		font-size: u-pxToRem(14);
+		margin-block: $l-space-2;
+		@extend %f-body-small;
 	}
 	&__collapsible-header {
-		font-size: initial;
+		margin-block: 0 $l-space-0;
+		@extend %f-body-medium;
 		cursor: pointer;
 	}
 	&__taxa-form {
@@ -57,12 +69,12 @@
 		border: 2px solid $c-matcha;
 		border-radius: 4px;
 		padding: $l-space-1;
+		@extend %f-body-large;
 		text-align: center;
 		text-decoration: none;
-		font-size: u-pxToRem(18);
 	}
 	&__contribute-cta {
-		font-size: u-pxToRem(16);
+		@extend %f-body-medium;
 		color: $c-pine;
 		&:hover {
 			color: $c-hawkweed;

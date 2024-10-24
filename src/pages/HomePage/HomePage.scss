@@ -24,11 +24,11 @@
 	&__title {
 		flex: 0 1 content;
 		margin: 0;
-		font-size: u-pxToRem(60);
-		font-weight: 400;
+		@extend %f-hero;
 	}
 	&__hero-body {
 		flex-basis: u-pxToRem(240);
+		@extend %f-body-medium;
 	}
 	&__hero-btn {
 		margin-inline: auto;
@@ -46,6 +46,8 @@
 	&__subheading {
 		break-before: column;
 		margin-bottom: $l-space-1;
+		@extend %f-sub-heading;
+		font-weight: 700;
 		color: $c-pine;
 	}
 

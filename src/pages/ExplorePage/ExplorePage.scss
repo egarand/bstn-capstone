@@ -1,8 +1,21 @@
 @use "../../styles/partials/global" as *;
 
 .explore-page {
+	&__title {
+		@extend %f-page-title;
+	}
+	&__description {
+		@extend %f-body-large;
+	}
+	&__heading {
+		margin-block: $l-space-1;
+		@extend %f-heading;
+	}
 	&__form-heading {
 		margin-block: 0 $l-space-1;
+		@extend %f-sub-heading;
+		font-weight: 700;
+		color: $c-pine;
 		&:last-of-type {
 			break-before: column;
 		}
@@ -25,6 +38,14 @@
 		gap: $l-space-2;
 		max-width: u-pxToRem(600) + $l-space-2;
 	}
+	&__current-loc-btn {
+		width: 100%;
+		margin-bottom: $l-space-0*.5;
+	}
+	&__submit-btn {
+		margin-top: $l-space-4;
+		margin-left: auto;
+	}
 	&__pois-wrapper {
 		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(250), 1fr));
 		gap: $l-space-2;
@@ -33,11 +54,15 @@
 		padding: 0;
 	}
 	&__poi {
-		color: $c-blackberry;
+		margin: 0;
 		border: 2px solid;
 		border-radius: 4px;
 		padding: $l-space-2;
-		margin: 0;
+		@extend %f-body-medium;
+		transition: transform .15s ease-in-out;
+		&:hover {
+			transform: scale(1.04);
+		}
 		&--trail {
 			background: rgba(#0368bb, .15);
 			border-color: lighten(#0368bb,10%);
@@ -50,11 +75,10 @@
 			background: rgba($c-matcha, .3);
 			border-color: lighten($c-pine, 30%);
 		}
-		// not a modifier; class for the header in PoiOverview
-		&-header {
-			font-size: u-pxToRem(20);
-			font-weight: 700;
-		}
+	}
+	&__poi-header {
+		@extend %f-sub-heading;
+		font-weight: 700;
 	}
 
 	&__map {
