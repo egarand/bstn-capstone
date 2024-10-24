@@ -28,10 +28,10 @@ function SpeciesDetailPage() {
 
 	return (
 	<section className="species-page" aria-busy={!species}>
-		<DocTitle title={species?.common_name}/>
+		<DocTitle title={species?.common_name || species?.scientific_name}/>
 		<div className="species-page__title-wrapper">
-			<h1 className="species-page__title">{species?.common_name}</h1>
-			<p className="species-page__subtitle">{species?.scientific_name}</p>
+			<h1 className="species-page__title">{species?.common_name || species?.scientific_name}</h1>
+			{species?.common_name ? <p className="species-page__subtitle">{species?.scientific_name}</p> : null}
 		</div>
 
 		<figure className="species-page__photo">
