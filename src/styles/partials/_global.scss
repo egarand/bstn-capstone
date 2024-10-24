@@ -3,6 +3,7 @@
 @forward "./colours" as c-*;
 @forward "./layout" as l-*;
 @forward "./animation" as a-*;
+@use "./colours" as *;
 
 // || RESETS
 
@@ -14,6 +15,7 @@ html {
 	min-height: 100%;
 	display: flex;
 	flex-direction: column;
+	color: $blackberry;
 }
 body {
 	container-type: inline-size;

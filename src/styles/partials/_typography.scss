@@ -1,3 +1,5 @@
+@use "layout" as *;
+@use "utility" as *;
 
 // || FONT FACES
 
@@ -89,7 +91,6 @@
 }
 
 
-
 // || FONT RESETS
 
 $family-cardenio: "Cardenio Modern", "Cardenio Modern-fallback", "Arial Narrow", Arial, Helvetica, sans-serif;
@@ -102,5 +103,100 @@ textarea, input {
 	font-family: inherit;
 }
 h1, h2, h3, h4, h5, h6 {
+	margin: 0;
 	font-family: $family-cardenio;
+}
+
+// || FONT STYLES
+
+%f-hero {
+	font: 400 pxToRem(60) $family-cardenio;
+	@include tablet {
+		font-size: pxToRem(70);
+	}
+}
+
+%f-page-title {
+	font: 700 pxToRem(48 * .8) $family-cardenio;
+	@include tablet {
+		font-size: pxToRem(48);
+	}
+}
+
+%f-page-subtitle {
+	font: italic 700 pxToRem(24 * .8) $family-cardenio;
+	@include tablet {
+		font-size: pxToRem(24);
+	}
+}
+
+%f-heading {
+	font: 700 pxToRem(34 * .8) $family-cardenio;
+	@include tablet {
+		font-size: pxToRem(34);
+	}
+}
+
+%f-sub-heading {
+	font: 400 pxToRem(26 * .9) $family-cardenio;
+	@include tablet {
+		font-size: pxToRem(26);
+	}
+}
+
+%f-body-large {
+	font: 400 pxToRem(20 * .9) $family-roboto;
+	@include tablet {
+		font-size: pxToRem(20);
+	}
+}
+
+%f-body-medium {
+	font: 400 pxToRem(17 * .9) $family-roboto;
+	@include tablet {
+		font-size: pxToRem(17);
+	}
+}
+
+%f-body-small {
+	font: 400 pxToRem(14 * .9) $family-roboto;
+	@include tablet {
+		font-size: pxToRem(14);
+	}
+}
+
+%f-caption-large {
+	font: italic 400 pxToRem(14 * .9) $family-roboto;
+	@include tablet {
+		font-size: pxToRem(14);
+	}
+}
+
+%f-caption-small {
+	font: italic 400 pxToRem(12 * .9) $family-roboto;
+	@include tablet {
+		font-size: pxToRem(12);
+	}
+}
+
+%f-button-large {
+	font: 700 pxToRem(24 * .9) $family-cardenio;
+	@include tablet {
+		font-size: pxToRem(24);
+	}
+}
+
+%f-button-small {
+	font: 700 pxToRem(18 * .9) $family-cardenio;
+	@include tablet {
+		font-size: pxToRem(18);
+	}
+}
+
+%f-text-label {
+	font: 700 pxToRem(13 * .9) $family-roboto;
+	@include tablet {
+		font-size: pxToRem(13);
+	}
+	text-transform: uppercase;
 }
