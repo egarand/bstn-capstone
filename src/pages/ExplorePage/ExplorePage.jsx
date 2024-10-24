@@ -91,7 +91,7 @@ function ExplorePage() {
 	return (<>
 		<DocTitle title="Explore" />
 		<h1 className="explore-page__title">Explore</h1>
-		<p>Fill the form to search for outdoor spots to visit.</p>
+		<p className="explore-page__description">Fill the form to search for outdoor spots to visit.</p>
 
 		<form className="explore-page__form" onSubmit={handleSubmit}>
 			<h2 className="explore-page__form-heading">What Are You Looking For?</h2>
@@ -151,15 +151,13 @@ function ExplorePage() {
 				<Button className="explore-page__current-loc-btn" variant="secondary" onClick={fillCurrentLocation}>Use Your Location</Button>
 			</fieldset>
 
-			<hr/>
-
-			<Button disabled={isLoading || null}>
+			<Button className="explore-page__submit-btn" disabled={isLoading || null}>
 				Submit
 			</Button>
 		</form>
 
 		<section aria-busy={isLoading}>
-			<h2 tabIndex={-1} ref={resultsRef}>Results</h2>
+			<h2 className="explore-page__heading" tabIndex={-1} ref={resultsRef}>Results</h2>
 			<p>
 			{pois.length
 				? "Select a place on the map, or browse the list below the map, for more details."

@@ -117,15 +117,20 @@ function LocationDetailPage() {
 	}
 
 	return (
-	<section aria-busy={loadingPoi}>
+	<section className="location-page" aria-busy={loadingPoi}>
 		<DocTitle title={poi?.tags?.name} />
-		<h1>{poi?.tags?.name || "Loading..."}</h1>
+		<h1 className="location-page__title">{poi?.tags?.name || "Loading..."}</h1>
 
 		<section className="location-page__detail-section">
 		{!loadingPoi && (<>
 			{poi.tags.description && (
 				<p className="location-page__description">
 					{poi.tags.description}
+				</p>
+			)}
+			{poi.tags.note && (
+				<p className="location-page__description">
+					{poi.tags.note}
 				</p>
 			)}
 			<dl className="location-page__tag-list">
@@ -162,7 +167,7 @@ function LocationDetailPage() {
 		</>)}
 		</section>
 
-		<h2>Wildlife Spotted Nearby in {currentMonth}</h2>
+		<h2 className="location-page__heading">Wildlife Spotted Nearby in {currentMonth}</h2>
 		<details className="location-page__collapsible-wrapper">
 			<summary className="location-page__collapsible-header">
 				Edit Wildlife Type Choices
@@ -191,7 +196,7 @@ function LocationDetailPage() {
 				<Button variant="secondary">Refresh Wildlife</Button>
 			</form>
 		</details>
-		{!loadingSpecies && !species.species.length && species.page === 1 && (
+		{!loadingSpecies && species.species.length && species.page === 1 && (
 			<div className="location-page__no-species">
 				<p>None... <em>yet.</em></p>
 				<p><AnnouncedLink
