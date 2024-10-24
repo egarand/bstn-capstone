@@ -3,17 +3,19 @@
 .cta-button {
 	display: block;
 	width: 100%;
-	height: u-pxToRem(36);
 	border-radius: 4px;
 	border: 1px solid transparent;
 	padding: $l-space-0 $l-space-2;
-	// @extend %f-button;
 	text-align: center;
 	text-decoration: none;
 	cursor: pointer;
-	font-family: $f-family-cardenio;
-	font-size: u-pxToRem(24px);
-	font-weight: 700;
+
+	&--txt-large {
+		@extend %f-button-large;
+	}
+	&--txt-small {
+		@extend %f-button-small;
+	}
 
 	&--primary {
 		background: $c-hawkweed;
@@ -32,7 +34,7 @@
 	}
 
 	@include l-tablet {
-		width: auto;
+		width: fit-content;
 		flex-shrink: 0;
 	}
 }

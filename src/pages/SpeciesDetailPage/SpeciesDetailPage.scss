@@ -15,21 +15,17 @@
 	}
 
 	&__title {
-		font-size: xxx-large;
+		@extend %f-page-title;
 	}
 	&__subtitle {
-		font-family: $f-family-cardenio;
-		font-size: x-large;
-		font-weight: 700;
-		font-style: italic;
+		@extend %f-page-subtitle;
 		color: rgba($c-pine, .75);
 	}
 
 	&__photo, &__range {
 		flex: 1 0 100%;
 		margin: 0;
-		font-size: small;
-		font-style: italic;
+		@extend %f-caption-large;
 		text-align: center;
 		color: $c-pine;
 	}
@@ -58,6 +54,7 @@
 	}
 	&__wiki-excerpt {
 		margin-block: $l-space-1;
+		@extend %f-body-medium;
 	}
 	&__wiki-link {
 		margin-left: auto;
@@ -70,6 +67,7 @@
 		&__range-map {
 			flex: 1 0 auto;
 			width: 100%;
+			height: unset;
 		}
 		&__wiki-excerpt {
 			@include u-content-width-clamp($l-max-content-width - u-pxToRem(300), 0px);

@@ -29,14 +29,13 @@
 		stroke-width: .2rem;
 	}
 	&__title {
-		font-size: u-pxToRem(24);
-		text-overflow: ellipsis;
 		max-width: u-pxToRem(400);
+		@extend %f-sub-heading;
+		text-overflow: ellipsis;
 		color: $c-matcha;
 	}
 	&__content {
-		font-family: $f-family-roboto;
-		font-size: u-pxToRem(14);
+		@extend %f-body-medium;
 	}
 }
 

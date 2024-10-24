@@ -8,7 +8,6 @@
 	gap: $l-space-3;
 	background-color: $c-pine;
 	padding: $l-space-3 $l-margin-mobile;
-	font-family: $f-family-cardenio;
 
 	&__menu-btn {
 		padding: $l-space-1;
@@ -35,7 +34,7 @@
 		flex: 1 1 auto;
 		border-radius: 4px;
 		padding: $l-space-0 $l-space-2;
-		font-size: u-pxToRem(24px);
+		@extend %f-sub-heading;
 		text-align: center;
 		text-decoration: none;
 		color: $c-matcha;

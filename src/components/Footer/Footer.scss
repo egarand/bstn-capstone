@@ -35,16 +35,20 @@
 	&__copyright {
 		display: inline-block;
 		margin-block: $l-space-2;
-		font-size: u-pxToRem(13);
+		@extend %f-caption-small;
+		font-style: normal;
 	}
 	&__subheading {
 		margin-top: 0;
+		@extend %f-sub-heading;
+		font-weight: 700;
 	}
 	&__link {
 		display: flex;
 		align-items: center;
 		gap: $l-space-1;
 		margin-block: $l-space-2;
+		@extend %f-body-medium;
 		color: $c-matcha;
 		&:hover {
 			color: $c-hawkweed;
