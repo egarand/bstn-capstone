@@ -25,3 +25,9 @@
 @mixin content-width-clamp($max-width, $min-padding) {
 	padding-inline: max(calc((100% - $max-width) / 2), $min-padding);
 }
+
+/// Calculates perfect width for flex items in a responsive "grid" layout with
+/// the given column count and gutter width.
+@function flex-column-width($columns, $gutter) {
+	@return calc(100%/$columns - $gutter/$columns * ($columns - 1));
+}

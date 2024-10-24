@@ -1,0 +1,78 @@
+@use "../../styles/partials/global" as *;
+
+.species-page {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+	align-content: flex-start;
+	gap: $l-space-2 $l-gutter-desktop;
+	margin-bottom: $l-space-2;
+
+	&__title,
+	&__subtitle,
+	&__wiki-excerpt {
+		margin: 0;
+	}
+
+	&__title {
+		font-size: xxx-large;
+	}
+	&__subtitle {
+		font-family: $f-family-cardenio;
+		font-size: x-large;
+		font-weight: 700;
+		font-style: italic;
+		color: rgba($c-pine, .75);
+	}
+
+	&__photo, &__range {
+		flex: 1 0 100%;
+		margin: 0;
+		font-size: small;
+		font-style: italic;
+		text-align: center;
+		color: $c-pine;
+	}
+	&__photo-img {
+		border-radius: 4px;
+		display: block;
+		width: 100%;
+	}
+	&__photo-img, &__range-map {
+		margin-bottom: $l-space-0;
+	}
+
+	&__range {
+		display: flex;
+		flex-direction: column;
+	}
+	&__range-map {
+		flex: 1 0 auto;
+		width: 100%;
+		height: u-pxToRem(250px);
+		min-height: 50px;
+	}
+
+	&__title-wrapper, &__wiki-excerpt {
+		flex: 1 0 100%;
+	}
+	&__wiki-excerpt {
+		margin-block: $l-space-1;
+	}
+	&__wiki-link {
+		margin-left: auto;
+	}
+
+	@media (min-width: 650px) {
+		&__photo, &__range {
+			flex: 0 1 u-flex-column-width(2, $l-gutter-desktop);
+		}
+		&__range-map {
+			flex: 1 0 auto;
+			width: 100%;
+		}
+		&__wiki-excerpt {
+			@include u-content-width-clamp($l-max-content-width - u-pxToRem(300), 0px);
+		}
+	}
+}
