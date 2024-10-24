@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import useIsMounted from "../../hooks/useIsMounted";
 import { polygonCentroid, trycatch } from "../../utils";
@@ -11,7 +11,6 @@ import SpeciesLink from "../../components/SpeciesLink/SpeciesLink";
 import Pagination from "../../components/Pagination/Pagination";
 import LocationTag from "../../components/LocationTag/LocationTag";
 import CheckboxGroup from "../../components/CheckboxGroup/CheckboxGroup";
-import Button from "../../components/Button/Button";
 
 import "./LocationDetailPage.scss";
 import linkSrc from "../../assets/icons/link.svg";
@@ -33,7 +32,6 @@ function LocationDetailPage() {
 		[poi, setPoi] = useState(null),
 		[species, setSpecies] = useState(null);
 
-	const [centroid, setCentroid] = useState(null);
 	const [taxa, setTaxa] = useState(
 		state?.taxa
 		?? trycatch(() =>
@@ -42,23 +40,9 @@ function LocationDetailPage() {
 		?? []
 	);
 
-	const currentMonth = useMemo(() => Intl.DateTimeFormat([], { month: "long" }).format(new Date()), []);
-
-	const reloadSpecies = useCallback(async (bounds, taxas) => {
-		setLoadingSpecies(true);
-
-		const params = new URLSearchParams(Object.entries(bounds));
-		params.append("taxa", taxas);
-		const { data: lifeData } = await api("get", `/life?${params.toString()}`, null, {
-			"axios-retry": { retries: 0 }
-		});
-		lifeData.page = 1;
-		lifeData.total_pages = Math.ceil(Number(lifeData.total) / perPage);
-
-		if (!isMounted.current) { return; }
-		setSpecies(() => lifeData);
-		setLoadingSpecies(() => false);
-	}, [isMounted]);
+	const currentMonth = useMemo(() =>
+		Intl.DateTimeFormat([], { month: "long" }).format(new Date())
+	, []);
 
 	useEffect(() => {
 		setLoadingPoi(true);
@@ -72,48 +56,49 @@ function LocationDetailPage() {
 					const [,type,id] = /([a-z]+)([0-9]+)/i.exec(osm_info);
 					poiData = (await api("get", `/pois/${type}/${id}`)).data;
 				}
-
-				const flatGeom =
-					poiData.osm_type === "relation"
-					? poiData.geometry.flat(1)
-					: poiData.geometry;
-				const middle = polygonCentroid(flatGeom);
-				setCentroid(middle);
+				poiData.centroid = polygonCentroid(poiData.geometry.flat());
 
 				if (!isMounted.current) { return; }
 				setPoi(() => poiData);
 				setLoadingPoi(() => false);
 
-				reloadSpecies(poiData.bounds, taxa);
+				const params = new URLSearchParams(Object.entries(poiData.bounds));
+				const { data: lifeData } = await api("get", `/life?${params.toString()}`, null, {
+					"axios-retry": { retries: 0 }
+				});
+				lifeData.page = 1;
+
+				if (!isMounted.current) { return; }
+				setSpecies(() => lifeData);
+				setLoadingSpecies(() => false);
 			} catch {
 				// do something
 			}
 		})();
-	// technically `taxa` should be a dep; but if it is, all the fetches run
-	// again when the user checks/unchecks a single checkbox, which is not the
-	// desired behaviour.
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [osm_info, state, reloadSpecies, isMounted]);
+	}, [osm_info, state, isMounted]);
+
+	const [filteredSpecies, speciesPageTotal] = useMemo(() => {
+		const specs =
+			species?.species?.filter((s) => taxa.includes(s.iconic_taxon));
+		const pages =
+			specs ? Math.ceil(specs.length / perPage) : 0;
+		return [specs, pages];
+	}, [species, taxa]);
 
 	function paginate(direction) {
-		const page = Math.max(1, Math.min(species.total_pages, species.page + direction));
+		const page = Math.max(1, Math.min(speciesPageTotal, species.page + direction));
 		setSpecies({ ...species, page });
-		if (page === species.page) { return; }
 	}
 
 	function handleTaxaChange(ev) {
 		const { value } = ev.target;
 		setTaxa(value);
-		trycatch(()=> {
+		setSpecies({ ...species, page: 1 });
+		trycatch(() => {
 			const formInp = JSON.parse(localStorage.getItem("explore_input"));
 			formInp.taxa = value;
 			localStorage.setItem("explore_input", JSON.stringify(formInp));
 		});
-	}
-
-	function handleTaxaSubmit(ev) {
-		ev.preventDefault();
-		reloadSpecies(poi.bounds, taxa);
 	}
 
 	return (
@@ -160,8 +145,8 @@ function LocationDetailPage() {
 				</dl>
 			</details>
 			<span className="location-page__column-breaker"></span>
-			<ExploreMap className="location-page__map" center={centroid}>
-				<ExploreMap.CenterOnCoordinate latlon={centroid}/>
+			<ExploreMap className="location-page__map" center={poi?.centroid}>
+				<ExploreMap.CenterOnCoordinate latlon={poi?.centroid}/>
 				<ExploreMap.Poi poi={poi} noPopup />
 			</ExploreMap>
 		</>)}
@@ -172,31 +157,29 @@ function LocationDetailPage() {
 			<summary className="location-page__collapsible-header">
 				Edit Wildlife Type Choices
 			</summary>
-			<form className="location-page__taxa-form" onSubmit={handleTaxaSubmit}>
-				<CheckboxGroup
-					className="location-page__taxa-group"
-					label="wildlife types"
-					name="taxa"
-					required={true}
-					values={taxa} onChange={handleTaxaChange}
-					disabled={loadingSpecies || null}
-				>
-					<CheckboxGroup.Checkbox value="Mammalia" label="Mammals"/>
-					<CheckboxGroup.Checkbox value="Aves" label="Birds"/>
-					<CheckboxGroup.Checkbox value="Reptilia" label="Reptiles"/>
+			<CheckboxGroup
+				className="location-page__taxa-group"
+				label="wildlife types"
+				name="taxa"
+				required={true}
+				values={taxa} onChange={handleTaxaChange}
+				disabled={loadingSpecies || null}
+			>
+				<CheckboxGroup.Checkbox value="Mammalia" label="Mammals"/>
+				<CheckboxGroup.Checkbox value="Aves" label="Birds"/>
+				<CheckboxGroup.Checkbox value="Reptilia" label="Reptiles"/>
 
-					<CheckboxGroup.Checkbox value="Amphibia" label="Amphibians"/>
-					<CheckboxGroup.Checkbox value="Actinopterygii" label="Fish"/>
-					<CheckboxGroup.Checkbox value="Insecta" label="Insects"/>
+				<CheckboxGroup.Checkbox value="Amphibia" label="Amphibians"/>
+				<CheckboxGroup.Checkbox value="Actinopterygii" label="Fish"/>
+				<CheckboxGroup.Checkbox value="Insecta" label="Insects"/>
 
-					<CheckboxGroup.Checkbox value="Arachnida" label="Arachnids"/>
-					<CheckboxGroup.Checkbox value="Fungi" label="Fungi"/>
-					<CheckboxGroup.Checkbox value="Plantae" label="Plants"/>
-				</CheckboxGroup>
-				<Button variant="secondary">Refresh Wildlife</Button>
-			</form>
+				<CheckboxGroup.Checkbox value="Arachnida" label="Arachnids"/>
+				<CheckboxGroup.Checkbox value="Fungi" label="Fungi"/>
+				<CheckboxGroup.Checkbox value="Plantae" label="Plants"/>
+			</CheckboxGroup>
 		</details>
-		{!loadingSpecies && species.species.length && species.page === 1 && (
+
+		{!loadingSpecies && !filteredSpecies.length && species.page === 1 && (
 			<div className="location-page__no-species">
 				<p>None... <em>yet.</em></p>
 				<p><AnnouncedLink
@@ -207,25 +190,26 @@ function LocationDetailPage() {
 				</AnnouncedLink></p>
 			</div>
 		)}
-		{species?.species.length && (<>
+		{filteredSpecies?.length && (<>
 			<Pagination
 				currentPage={species?.page}
-				totalPages={species?.total_pages}
+				totalPages={speciesPageTotal}
 				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
-			<ul className="location-page__species-list" aria-busy={loadingSpecies}>
-			{species.species?.reduce((arr, s, i) => {
-				const start = (Number(species.page) - 1) * perPage;
-				if (i >= start && i < Math.min(start + perPage, species.species.length)) {
-					arr.push(<li key={s.id} className="location-page__species-list-item">
+			<ul className="location-page__species-list">
+			{filteredSpecies
+				.slice(
+					(species.page - 1) * perPage,
+					(species.page - 1) * perPage + perPage
+				).map((s) => (
+					<li key={s.id} className="location-page__species-list-item">
 						<SpeciesLink species={s}/>
-					</li>);
-				}
-				return arr;
-			},[])}
+					</li>
+				)
+			)}
 			</ul>
 			<Pagination
 				currentPage={species?.page}
-				totalPages={species?.total_pages}
+				totalPages={speciesPageTotal}
 				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
 		</>)}
 	</section>);
