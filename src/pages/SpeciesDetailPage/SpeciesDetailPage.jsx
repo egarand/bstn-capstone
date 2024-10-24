@@ -59,7 +59,9 @@ function SpeciesDetailPage() {
 			</figcaption>
 		</figure>
 		<p className="species-page__wiki-excerpt">
-			<WikiExcerpt wiki={species?.wikipedia_excerpt}/>
+			<WikiExcerpt
+				wiki={species?.wikipedia_excerpt}
+				speciesId={species?.id}/>
 		</p>
 		<Button className="species-page__wiki-link" href={species?.wikipedia_url}>
 			Read more on Wikipedia
@@ -74,7 +76,7 @@ export default SpeciesDetailPage;
  *
  * A library would be overkill since its fairly simple and only done here,
  * and other options could leave XSS loopholes. */
-function WikiExcerpt({ wiki }) {
+function WikiExcerpt({ wiki, speciesId }) {
 	if (!wiki) { return null; }
 	const parser = new DOMParser();
 	let wikiTree = parser.parseFromString(wiki, "text/html");
@@ -95,7 +97,7 @@ function WikiExcerpt({ wiki }) {
 		if (["B", "I"].includes(el.tagName)) {
 			return createElement(
 				el.tagName.toLowerCase(),
-				{ key: count++ },
+				{ key: `${speciesId}_${count++}` },
 				...childJSX
 			);
 		}
