@@ -1,7 +1,67 @@
 @use "../../styles/partials/global" as *;
 
 .home-page {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: $l-space-4 $l-space-5;
+
+	&__hero {
+		flex: 1 0 100%;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-evenly;
+		column-gap: $l-space-3;
+		margin: $l-space-2*-1 $l-margin-mobile*-1 0;
+		padding: $l-space-6 $l-margin-mobile $l-space-7;
+		$overlay-col: rgba($c-pine, .75);
+		background:
+			linear-gradient($overlay-col, $overlay-col),
+			no-repeat bottom/cover url("../../assets/images/autumn.jpg"),
+			linear-gradient($overlay-col, $overlay-col);
+		color: $c-white;
+	}
+	&__title {
+		flex: 0 1 content;
+		margin: 0;
+		font-size: u-pxToRem(60);
+		font-weight: 400;
+	}
+	&__hero-body {
+		flex-basis: u-pxToRem(240);
+	}
+
+	&__section {
+		flex: 1 1 u-pxToRem(220);
+		max-width: min(100%, u-pxToRem(400));
+		text-align: center;
+	}
+
+	&__img-wrapper {
+		margin-inline: auto;
+		width: fit-content;
+		border-radius: 4px;
+		background-color: $c-matcha;
+		padding: $l-space-2;
+	}
 	&__img {
 		width: u-pxToRem(130);
+		color: rgba($c-pine, .7);
+	}
+	&__copy {
+		margin: 0;
+	}
+
+	@include l-tablet {
+		&__hero {
+			margin-inline: $l-margin-tablet*-1;
+			padding: $l-space-8 $l-margin-tablet;
+		}
+		&__title {
+			font-size: u-pxToRem(70);
+		}
+		&__section {
+			max-width: 60%;
+		}
 	}
 }
