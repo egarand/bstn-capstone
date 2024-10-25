@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import useIsMounted from "../../hooks/useIsMounted";
+import { useEffect, useMemo, useState } from "react";
 import { round, trycatch } from "../../utils";
-import api from "../../utils/api";
+import useApi from "../../utils/api";
 
 import DocTitle from "../../components/DocTitle/DocTitle";
 import ExploreMap from "../../components/ExploreMap/ExploreMap";
@@ -24,10 +23,9 @@ const initialValues = {
 };
 
 function ExplorePage() {
-	const [isLoading, setIsLoading] = useState(false),
-		[error, setError] = useState(false),
-		[pois, setPois] = useState([]),
-		[poiPage, setPoiPage] = useState(1);
+	const [fetchPois, pois, loading, error] = useApi(null);
+	const [page, setPage] = useState(1);
+
 	const [values, setValues] =
 		useState(
 			trycatch(() =>
@@ -36,44 +34,26 @@ function ExplorePage() {
 			)
 			|| initialValues
 		);
-	const resultsRef = useRef(null);
-	const isMounted = useIsMounted();
 
-	const poiPageTotal = useMemo(() =>
-		Math.ceil(pois?.length / perPage)
+	const pageTotal = useMemo(() =>
+		pois ? Math.ceil(pois.length / perPage) : 0
 	, [pois]);
 
 	async function handleSubmit(ev) {
 		ev.preventDefault();
-		setError(false);
-		setIsLoading(true);
-		setPois([]);
-		setPoiPage(1);
-		try {
-			const submitValues = {...values, radius: values.radius*1000};
-			delete submitValues.taxa;
-			const params = new URLSearchParams(Object.entries(submitValues));
-			const { data } = await api("get", `/pois?${params.toString()}`, null, {
-				timeout: 30_000,
-				"axios-retry": { retries: 0 }
-			});
-			if (!isMounted.current) { return; }
-			setPois(data);
-			setIsLoading(false);
-			requestAnimationFrame(() => resultsRef.current.focus());
-		} catch (error) {
-			console.error(error);
-			if (error.name !== "CanceledError" && isMounted.current) {
-				setIsLoading(false);
-				setError(error);
-			}
-		}
+		setPage(1);
+		const submitValues = {...values, radius: values.radius*1000};
+		delete submitValues.taxa;
+		const params = new URLSearchParams(Object.entries(submitValues));
+		await fetchPois("get", `/pois?${params.toString()}`, null, {
+			timeout: 40_000,
+			"axios-retry": { retries: 0 }
+		});
 	}
 
 	function handleInputChange(ev) {
 		const { name, value } = ev.target;
 		const newValues = { ...values, [name]: value }
-
 		setValues(newValues);
 		trycatch(()=>
 			localStorage.setItem("explore_input", JSON.stringify(newValues))
@@ -94,7 +74,6 @@ function ExplorePage() {
 				);
 				return newV;
 			});
-
 		}, null);
 	}
 
@@ -104,8 +83,7 @@ function ExplorePage() {
 	}, [values.lat]);
 
 	function paginate(direction) {
-		const page = Math.max(1, Math.min(poiPageTotal, poiPage + direction));
-		setPoiPage(page);
+		setPage(Math.max(1, Math.min(pageTotal, page + direction)));
 	}
 
 	return (<>
@@ -122,7 +100,7 @@ function ExplorePage() {
 				name="types"
 				required={true}
 				values={values.types} onChange={handleInputChange}
-				disabled={isLoading || null}
+				disabled={loading || null}
 			>
 				<CheckboxGroup.Checkbox value="t" label="Hiking trails"/>
 				<CheckboxGroup.Checkbox value="c" label="Campgrounds"/>
@@ -137,7 +115,7 @@ function ExplorePage() {
 				name="taxa"
 				required={true}
 				values={values.taxa} onChange={handleInputChange}
-				disabled={isLoading || null}
+				disabled={loading || null}
 			>
 				<CheckboxGroup.Checkbox value="Mammalia" label="Mammals"/>
 				<CheckboxGroup.Checkbox value="Aves" label="Birds"/>
@@ -154,7 +132,7 @@ function ExplorePage() {
 
 			<h2 className="explore-page__form-heading">Where Should We Look?</h2>
 
-			<fieldset className="explore-page__fieldset explore-page__coord-group" disabled={isLoading || null}>
+			<fieldset className="explore-page__fieldset explore-page__coord-group" disabled={loading || null}>
 				{[["lat", "Latitude", -90, 90, 0.0001],
 				["lon", "Longitude", -180, 180, 0.0001],
 				["radius", "Radius (kilometers)", 0, 30, 0.1]]
@@ -171,39 +149,42 @@ function ExplorePage() {
 				<Button className="explore-page__current-loc-btn" variant="secondary" onClick={fillCurrentLocation}>Use Your Location</Button>
 			</fieldset>
 
-			<Button className="explore-page__submit-btn" disabled={isLoading || null}>
+			<Button className="explore-page__submit-btn" disabled={loading || null}>
 				Submit
 			</Button>
 		</form>
 
-		<section className="explore-page__results" aria-busy={isLoading}>
-			<h2 className="explore-page__heading" tabIndex={-1} ref={resultsRef}>Results</h2>
-			<p>
-			{pois.length
-				? "Select a place on the map, or browse the list below the map, for more details."
-				: "Nothing here yet."}
+		<section className="explore-page__results" aria-busy={loading}>
+			<h2 className="explore-page__heading">Results</h2>
+			<p className="explore-page__description" role="status">
+			{pois === null
+				? "Sorry, we couldn't find anything. Try adjusting the search coordinates and radius."
+				: pois.length
+					? "Select a place on the map, or browse the list below the map, for more details."
+					: ""
+			}
 			</p>
 			<ExploreMap className="explore-page__map">
-				<ExploreMap.CenterOnUserOnMount/>
+				<ExploreMap.CenterOnCoordinate latlon={[values.lat, values.lon]}/>
 				<ExploreMap.VisualizeRadius
 					center={[values.lat, values.lon]}
 					radius={Number(values.radius) * 1000}/>
 				<ExploreMap.PoiOverlay
-					pois={pois}
+					pois={pois ?? []}
 					taxa={values.taxa}/>
 			</ExploreMap>
 
-			{!!pois.length && (
+			{!!pois?.length && (
 			<Pagination
-				currentPage={poiPage}
-				totalPages={poiPageTotal}
+				currentPage={page}
+				totalPages={pageTotal}
 				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
 			)}
 			<ul className="explore-page__pois-wrapper">
 			{pois
-				.slice(
-					(poiPage - 1) * perPage,
-					(poiPage - 1) * perPage + perPage
+				?.slice(
+					(page - 1) * perPage,
+					(page - 1) * perPage + perPage
 				).map((p) => (
 				<li
 					key={`${p.osm_type}${p.osm_id}`}
@@ -217,14 +198,14 @@ function ExplorePage() {
 				</li>
 			))}
 			</ul>
-			{!!pois.length && (
+			{!!pois?.length && (
 			<Pagination
-				currentPage={poiPage}
-				totalPages={poiPageTotal}
+				currentPage={page}
+				totalPages={pageTotal}
 				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
 			)}
 
-			<Loader className="explore-page__loader" isLoading={isLoading} errorObj={error}/>
+			<Loader className="explore-page__loader" isLoading={loading} errorObj={error}/>
 		</section>
 
 	</>);
