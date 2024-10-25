@@ -8,8 +8,7 @@ import ExplorePage from "./pages/ExplorePage/ExplorePage";
 import LocationDetailPage from "./pages/LocationDetailPage/LocationDetailPage";
 import ChecklistPage from "./pages/ChecklistPage/ChecklistPage";
 import SpeciesDetailPage from "./pages/SpeciesDetailPage/SpeciesDetailPage";
-import RegisterPage from "./pages/RegisterPage/RegisterPage";
-import LoginPage from "./pages/LoginPage/LoginPage";
+import AuthPage from "./pages/AuthPage/AuthPage";
 import BookmarksPage from "./pages/BookmarksPage/BookmarksPage";
 import { useRequestCancellationOnNav } from "./utils/api";
 
@@ -31,8 +30,8 @@ function App() {
 
 				<Route path="/species/:inat_id" element={<SpeciesDetailPage/>}/>
 
-				<Route path="/register" element={<RegisterPage/>}/>
-				<Route path="/login" element={<LoginPage/>}/>
+				<Route path="/register" element={<AuthPage/>}/>
+				<Route path="/login" element={<AuthPage/>}/>
 				<Route path="/bookmarks" element={<BookmarksPage/>}/>
 			</Route>
 		</Routes>
