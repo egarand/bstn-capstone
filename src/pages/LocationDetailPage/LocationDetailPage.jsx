@@ -4,7 +4,7 @@ import useIsMounted from "../../hooks/useIsMounted";
 import { polygonCentroid, trycatch } from "../../utils";
 import api from "../../utils/api";
 
-import { AnnouncedLink } from "../../navigation-accessibility";
+import { AnnouncedLink, useAccessibleNav } from "../../navigation-accessibility";
 import ExploreMap from "../../components/ExploreMap/ExploreMap";
 import DocTitle from "../../components/DocTitle/DocTitle";
 import SpeciesLink from "../../components/SpeciesLink/SpeciesLink";
@@ -17,6 +17,7 @@ import linkSrc from "../../assets/icons/link.svg";
 import moneySrc from "../../assets/icons/money.svg";
 import pawprintSrc from "../../assets/icons/pawprint.svg";
 import wheelchairSrc from "../../assets/icons/wheelchair.svg";
+import Loader from "../../components/Loader/Loader";
 
 const perPage = 16;
 const primaryListTags = ["website", "wheelchair", "dog", "fee"];
@@ -27,7 +28,11 @@ function LocationDetailPage() {
 	const { osm_info } = useParams();
 	const isMounted = useIsMounted();
 
-	const [loadingPoi, setLoadingPoi] = useState(true),
+	const { refocusPageTop } = useAccessibleNav();
+
+	const [errorPoi, setErrorPoi] = useState(null),
+		[loadingPoi, setLoadingPoi] = useState(true),
+		[errorSpecies, setErrorSpecies] = useState(null),
 		[loadingSpecies, setLoadingSpecies] = useState(true),
 		[poi, setPoi] = useState(null),
 		[species, setSpecies] = useState(null);
@@ -45,6 +50,8 @@ function LocationDetailPage() {
 	, []);
 
 	useEffect(() => {
+		setErrorPoi(null);
+		setErrorSpecies(null);
 		setLoadingPoi(true);
 		setLoadingSpecies(true);
 		setPoi(null);
@@ -61,21 +68,31 @@ function LocationDetailPage() {
 				if (!isMounted.current) { return; }
 				setPoi(() => poiData);
 				setLoadingPoi(() => false);
+				requestAnimationFrame(refocusPageTop);
+				try {
+					const params = new URLSearchParams(Object.entries(poiData.bounds));
+					const { data: lifeData } = await api("get", `/life?${params.toString()}`, null, {
+						"axios-retry": { retries: 0 }
+					});
+					lifeData.page = 1;
 
-				const params = new URLSearchParams(Object.entries(poiData.bounds));
-				const { data: lifeData } = await api("get", `/life?${params.toString()}`, null, {
-					"axios-retry": { retries: 0 }
-				});
-				lifeData.page = 1;
-
-				if (!isMounted.current) { return; }
-				setSpecies(() => lifeData);
-				setLoadingSpecies(() => false);
-			} catch {
-				// do something
+					if (!isMounted.current) { return; }
+					setSpecies(() => lifeData);
+					setLoadingSpecies(() => false);
+				} catch (error) {
+					console.error(error);
+					if (error.name !== "CanceledError" && isMounted.current) {
+						setErrorSpecies(error);
+					}
+				}
+			} catch (error) {
+				console.error(error);
+				if (error.name !== "CanceledError" && isMounted.current) {
+					setErrorPoi(error);
+				}
 			}
 		})();
-	}, [osm_info, state, isMounted]);
+	}, [osm_info, state, isMounted, refocusPageTop]);
 
 	const [filteredSpecies, speciesPageTotal] = useMemo(() => {
 		const specs =
@@ -104,10 +121,12 @@ function LocationDetailPage() {
 	return (
 	<section className="location-page" aria-busy={loadingPoi}>
 		<DocTitle title={poi?.tags?.name} />
-		<h1 className="location-page__title">{poi?.tags?.name || "Loading..."}</h1>
-
-		<section className="location-page__detail-section">
+		<Loader isLoading={loadingPoi} errorObj={errorPoi}/>
 		{!loadingPoi && (<>
+		<h1 className="location-page__title">
+			{poi.tags.name}
+		</h1>
+		<section className="location-page__detail-section">
 			{poi.tags.description && (
 				<p className="location-page__description">
 					{poi.tags.description}
@@ -149,8 +168,8 @@ function LocationDetailPage() {
 				<ExploreMap.CenterOnCoordinate latlon={poi?.centroid}/>
 				<ExploreMap.Poi poi={poi} noPopup />
 			</ExploreMap>
-		</>)}
 		</section>
+		</>)}
 
 		<h2 className="location-page__heading">Wildlife Spotted Nearby in {currentMonth}</h2>
 		<details className="location-page__collapsible-wrapper">
@@ -179,6 +198,7 @@ function LocationDetailPage() {
 			</CheckboxGroup>
 		</details>
 
+		<Loader isLoading={loadingSpecies && !species} errorObj={errorSpecies}/>
 		{!loadingSpecies && !filteredSpecies.length && species.page === 1 && (
 			<div className="location-page__no-species">
 				<p>None... <em>yet.</em></p>

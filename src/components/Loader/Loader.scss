@@ -1,0 +1,61 @@
+@use "../../styles/partials/global" as *;
+@use "sass:math";
+
+.loader {
+	&:not(:empty) {
+		padding-block: $l-space-10;
+		text-align: center;
+	}
+
+	&__loading-header, &__error-header {
+		@extend %f-heading;
+	}
+
+	&__loading-header {
+		margin-right: $l-space-3;
+		font-style: italic;
+	}
+
+	&__error-message {
+		@extend %f-body-large;
+		font-style: italic;
+	}
+
+	@keyframes pawprint-steps {
+		0% {
+			clip-path: inset(0 100% 0 0);
+		}
+		50% {
+			clip-path: inset(0 -100% 0 0);
+		}
+		100% {
+			clip-path: inset(0 -100% 0 200%);
+		}
+	}
+
+	&__pawprints {
+		position: relative;
+		margin-inline: auto;
+		width: $l-space-4*6;
+		aspect-ratio: 3;
+		display: flex;
+		animation: pawprint-steps 6s infinite steps(12);
+
+		&::before {
+			content: "";
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			width: math.div(100%,3);
+			height: 300%;
+			transform: translate(-50%,-50%) rotate(90deg);
+			background: currentColor;
+			mask-image:
+				url("../../assets/icons/pawprint.svg"),
+				url("../../assets/icons/pawprint.svg");
+			mask-size: 50% math.div(100%,3);
+			mask-repeat: repeat-y, repeat-y;
+			mask-position: left -12%, right 12%;
+		}
+	}
+}

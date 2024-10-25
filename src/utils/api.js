@@ -15,7 +15,7 @@ function createAxiosInstance() {
 		controller,
 		instance: axios.create({
 			baseURL: import.meta.env.VITE_API_URL,
-			timeout: 5_000,
+			timeout: 15_000,
 			signal: controller.signal
 		})
 	};

@@ -11,6 +11,7 @@ import Button from "../../components/Button/Button";
 import PoiOverview from "../../components/PoiOverview/PoiOverview";
 
 import "./ExplorePage.scss";
+import Loader from "../../components/Loader/Loader";
 
 const initialValues = {
 	lat: 0,
@@ -21,8 +22,9 @@ const initialValues = {
 };
 
 function ExplorePage() {
-	const [isLoading, setIsLoading] = useState(false);
-	const [pois, setPois] = useState([]);
+	const [isLoading, setIsLoading] = useState(false),
+		[error, setError] = useState(false),
+		[pois, setPois] = useState([]);
 	const [values, setValues] =
 		useState(
 			trycatch(() =>
@@ -36,6 +38,7 @@ function ExplorePage() {
 
 	async function handleSubmit(ev) {
 		ev.preventDefault();
+		setError(false);
 		setIsLoading(true);
 		setPois([]);
 		try {
@@ -50,8 +53,12 @@ function ExplorePage() {
 			setPois(data);
 			setIsLoading(false);
 			requestAnimationFrame(() => resultsRef.current.focus());
-		} catch {
-			// do something
+		} catch (error) {
+			console.error(error);
+			if (error.name !== "CanceledError" && isMounted.current) {
+				setIsLoading(false);
+				setError(error);
+			}
 		}
 	}
 
@@ -156,7 +163,7 @@ function ExplorePage() {
 			</Button>
 		</form>
 
-		<section aria-busy={isLoading}>
+		<section className="explore-page__results" aria-busy={isLoading}>
 			<h2 className="explore-page__heading" tabIndex={-1} ref={resultsRef}>Results</h2>
 			<p>
 			{pois.length
@@ -187,6 +194,7 @@ function ExplorePage() {
 				</li>
 			))}
 			</ul>
+			<Loader className="explore-page__loader" isLoading={isLoading} errorObj={error}/>
 		</section>
 
 	</>);
