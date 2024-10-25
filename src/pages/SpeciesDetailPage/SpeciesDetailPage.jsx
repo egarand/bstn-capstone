@@ -1,38 +1,23 @@
-import { createElement, useEffect, useState } from "react";
+import { createElement, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import useIsMounted from "../../hooks/useIsMounted";
-import api from "../../utils/api";
-import ExploreMap from "../../components/ExploreMap/ExploreMap";
+import useApi from "../../utils/api";
 import { TileLayer } from "react-leaflet";
 import DocTitle from "../../components/DocTitle/DocTitle";
+import ExploreMap from "../../components/ExploreMap/ExploreMap";
+import Loader from "../../components/Loader/Loader";
 import Button from "../../components/Button/Button";
 import "./SpeciesDetailPage.scss";
-import Loader from "../../components/Loader/Loader";
 
 function SpeciesDetailPage() {
 	const { inat_id } = useParams();
-	const isMounted = useIsMounted();
-
-	const [error, setError] = useState(null),
-		[species, setSpecies] = useState(null);
+	const [fetchSpecies, species, loading, error] = useApi();
 
 	useEffect(() => {
-		(async () => {
-			try {
-				const { data: speciesData } = await api("get", `/life/${inat_id}`);
-				if (!isMounted.current) { return; }
-				setSpecies(() => speciesData);
-			} catch (error) {
-				console.error(error);
-				if (error.name !== "CanceledError" && isMounted.current) {
-					setError(error);
-				}
-			}
-		})();
-	}, [inat_id, isMounted]);
+		fetchSpecies("get", `/life/${inat_id}`);
+	}, [inat_id, fetchSpecies]);
 
 	return (<>
-	<Loader isLoading={!species} errorObj={error}/>
+	<Loader isLoading={loading} errorObj={error}/>
 	{species && (
 	<section className="species-page">
 		<DocTitle title={species.common_name || species.scientific_name}/>
