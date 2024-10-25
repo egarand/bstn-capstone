@@ -1,6 +1,6 @@
 import { MapContainer, Polygon, Polyline, Popup as BasePopup, TileLayer, useMap, Circle } from "react-leaflet";
 import "./ExploreMap.scss";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import PoiOverview from "../PoiOverview/PoiOverview";
 
 const algonquinCoords = [45.8372, -78.3791];
@@ -9,18 +9,33 @@ const tileAttribution =
 &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> \
 &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors`;
 
-function ExploreMap({ className, center = algonquinCoords, minz = 6, maxz = 14, zoom = 10, children }) {
+function ExploreMap({
+	className, children,
+	center = algonquinCoords, minz = 6, maxz = 14, zoom = 10
+}) {
+	const mapRef = useRef(null);
+	function loadTilesOnResize(ref) {
+		const resizeObserver = new ResizeObserver(
+			() => mapRef.current?.invalidateSize()
+		);
+		if (ref.current) {
+			resizeObserver.observe(ref.current);
+		}
+	}
 	return (
-		<MapContainer center={center} zoom={zoom} scrollWheelZoom={false} className={`explore-map ${className}`}>
+		<MapContainer
+			ref={mapRef}
+			whenReady={() => loadTilesOnResize(mapRef)}
+			center={center} zoom={zoom} scrollWheelZoom={false}
+			className={`explore-map ${className}`}
+		>
 			<TileLayer
 				minZoom={minz}
 				maxZoom={maxz}
 				attribution={tileAttribution}
 				url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png"
 			/>
-
 			{children}
-
 		</MapContainer>
 	);
 }
