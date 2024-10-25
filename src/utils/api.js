@@ -1,7 +1,8 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import useIsMounted from "../hooks/useIsMounted";
 
 // Module for making requests to the Hike & Seek API - includes tools for
 // automatic request cancellation when the user navigates.
@@ -37,11 +38,13 @@ export function cancelAllPageRequests(path) {
 	axiosInstances[path]?.controller.abort();
 }
 
-/** Use to make API calls. All requests made with this function will be canceled
- * if the user navigates to a new page. Always wrap in a try-catch and suppress `CanceledError`.
+/** Can be used to make API calls - but consider using `useApi` if you need
+ * to manage data/load/error states for an api call.
  *
- * Change axios-retry config with an `'axios-retry'` key in the `config` object. */
-export default async function api(method, path, data = null, config = null) {
+ * Requests will be canceled if the user navigates to a new page; handle
+ * `CanceledError` appropriately. Change axios-retry config with an
+ * `'axios-retry'` key in the `config` object. */
+export async function api(method, path, data = null, config = null) {
 	const axios = getAxiosInstance(window.location.pathname);
 	return await axios({
 		method,
@@ -50,7 +53,6 @@ export default async function api(method, path, data = null, config = null) {
 		...config
 	});
 }
-
 
 /** Use in App.jsx to enable automatic cancellation of pending requests when
  * the user navigates to a new page. */
@@ -67,4 +69,34 @@ export function useRequestCancellationOnNav() {
 			cancelAllPageRequests(previousPath);
 		}
 	}, [location.pathname]);
+}
+
+/** Reusable data/loading/error states and a function for fetching API data
+ * with built-in error catching. */
+export default function useApi(initialData = null, startInLoadState = false) {
+	const isMounted = useIsMounted();
+	const [data, setData] = useState(initialData),
+		[loading, setLoading] = useState(startInLoadState),
+		[error, setError] = useState(null);
+
+	const fetchData = useCallback(async (method, path, data = null, config = null) => {
+		setData(null);
+		setError(null);
+		setLoading(true);
+		try {
+			const response = await api(method, path, data, config);
+			if (!isMounted.current) { return; }
+			setLoading(false);
+			setData(response.data);
+		} catch (error) {
+			console.error(error);
+			if (!isMounted.current) { return; }
+			setLoading(false);
+			if (error.name !== "CanceledError") {
+				setError(error);
+			}
+		}
+	}, [isMounted]);
+
+	return [ fetchData, data, loading, error ];
 }
