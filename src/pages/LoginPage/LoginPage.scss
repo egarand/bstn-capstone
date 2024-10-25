@@ -1,0 +1,7 @@
+@use "../../styles/partials/global" as *;
+
+.login-page {
+	&__title {
+		@extend %f-page-title;
+	}
+}
