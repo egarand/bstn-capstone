@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../../components/AuthProvider/AuthProvider";
 import { AnnouncedLink, useAnnouncedNavigate } from "../../navigation-accessibility";
 import api from "../../utils/api";
 import DocTitle from "../../components/DocTitle/DocTitle";
@@ -15,6 +16,7 @@ const initialValues = {
 function AuthPage() {
 	const { pathname } = useLocation();
 	const navigate = useAnnouncedNavigate();
+	const { login } = useAuth();
 
 	const [values, setValues] = useState(initialValues);
 	const isRegisterPage = useMemo(() =>
@@ -31,10 +33,7 @@ function AuthPage() {
 	async function handleLogin(ev) {
 		ev.preventDefault();
 		try {
-			const { data } = await api("post", "/users/login", values);
-
-			// TODO store the JWT token, etc
-			navigate("/bookmarks");
+			login(values);
 		} catch {
 			// do something
 		}
@@ -44,7 +43,6 @@ function AuthPage() {
 		ev.preventDefault();
 		try {
 			const { data } = await api("post", "/users/register", values);
-
 			// TODO store the JWT token, etc
 			navigate("/explore");
 		} catch {

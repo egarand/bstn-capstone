@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { AnnouncedLink, AnnouncedNavLink } from "../../navigation-accessibility";
+import { useAuth } from "../AuthProvider/AuthProvider";
+
 import Logo from "../Logo/Logo";
 import IconButton from "../IconButton/IconButton";
 import Button from "../Button/Button";
@@ -9,6 +11,7 @@ import menuSrc from "../../assets/icons/menu.svg";
 import closeSrc from "../../assets/icons/close.svg";
 
 function Header() {
+	const { user, logout } = useAuth();
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 	const base = "header__navlink";
@@ -39,7 +42,14 @@ function Header() {
 			<AnnouncedNavLink to="/contribute" className={navLinkClasses}>
 				Contribute
 			</AnnouncedNavLink>
-			<Button to="/login" className="header__login">Log In</Button>
+			{!!user && (<>
+			<AnnouncedNavLink to="/bookmarks" className={navLinkClasses}>
+				Bookmarks
+			</AnnouncedNavLink>
+			<Button onClick={logout} className="header__login">Log Out</Button>
+			</>)}
+			{!!user || (
+			<Button to="/login" className="header__login">Log In</Button>)}
 		</nav>
 	</header>
 	);
