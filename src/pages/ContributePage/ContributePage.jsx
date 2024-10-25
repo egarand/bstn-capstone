@@ -2,6 +2,7 @@ import "./ContributePage.scss";
 import inatSrc from "../../assets/logo/inaturalist.svg";
 import seekSrc from "../../assets/logo/seek-full.svg";
 import osmSrc from "../../assets/logo/osm-full.svg";
+import DocTitle from "../../components/DocTitle/DocTitle";
 
 const initiatives = [
 	{
@@ -30,6 +31,7 @@ const initiatives = [
 function ContributePage() {
 	return (<>
 	<section className="contribute__intro">
+		<DocTitle title="Contribute"/>
 		<h1 className="contribute__title">
 			Your Map, Your Observations —&nbsp;
 			<span className="contribute__title--hightlight">
