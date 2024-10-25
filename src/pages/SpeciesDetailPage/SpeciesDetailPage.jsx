@@ -7,12 +7,14 @@ import { TileLayer } from "react-leaflet";
 import DocTitle from "../../components/DocTitle/DocTitle";
 import Button from "../../components/Button/Button";
 import "./SpeciesDetailPage.scss";
+import Loader from "../../components/Loader/Loader";
 
 function SpeciesDetailPage() {
 	const { inat_id } = useParams();
 	const isMounted = useIsMounted();
 
-	const [species, setSpecies] = useState(null);
+	const [error, setError] = useState(null),
+		[species, setSpecies] = useState(null);
 
 	useEffect(() => {
 		(async () => {
@@ -20,26 +22,33 @@ function SpeciesDetailPage() {
 				const { data: speciesData } = await api("get", `/life/${inat_id}`);
 				if (!isMounted.current) { return; }
 				setSpecies(() => speciesData);
-			} catch {
-				// do something
+			} catch (error) {
+				console.error(error);
+				if (error.name !== "CanceledError" && isMounted.current) {
+					setError(error);
+				}
 			}
 		})();
 	}, [inat_id, isMounted]);
 
-	return (
-	<section className="species-page" aria-busy={!species}>
-		<DocTitle title={species?.common_name || species?.scientific_name}/>
+	return (<>
+	<Loader isLoading={!species} errorObj={error}/>
+	{species && (
+	<section className="species-page">
+		<DocTitle title={species.common_name || species.scientific_name}/>
 		<div className="species-page__title-wrapper">
-			<h1 className="species-page__title">{species?.common_name || species?.scientific_name}</h1>
-			{species?.common_name ? <p className="species-page__subtitle">{species?.scientific_name}</p> : null}
+			<h1 className="species-page__title">{species.common_name || species.scientific_name}</h1>
+			{species.common_name
+			? <p className="species-page__subtitle">{species.scientific_name}</p>
+			: null}
 		</div>
 
 		<figure className="species-page__photo">
 			<img className="species-page__photo-img"
-				alt={`A ${species?.common_name}`}
-				src={species?.photo.medium_url}/>
+				alt={`A ${species.common_name || species.scientific_name}`}
+				src={species.photo.medium_url}/>
 			<figcaption className="species-page__photo-caption">
-				{species?.photo.attribution.replace("(c)", "©")}
+				{species.photo.attribution.replace("(c)", "©")}
 			</figcaption>
 		</figure>
 		<figure className="species-page__range">
@@ -47,7 +56,7 @@ function SpeciesDetailPage() {
 				<ExploreMap.CenterOnUserOnMount/>
 				<TileLayer
 					attribution='&copy; <a target="blank" href="https://inaturalist.org/">iNaturalist</a> contributers'
-					url={`https://api.inaturalist.org/v1/grid/{z}/{x}/{y}.png?ttl=${86_400}&verifiable=true&taxon_id=${species?.id}`}
+					url={`https://api.inaturalist.org/v1/grid/{z}/{x}/{y}.png?ttl=${86_400}&verifiable=true&taxon_id=${species.id}`}
 					minZoom={2}
 					maxZoom={6}
 					updateInterval={2000}
@@ -55,18 +64,20 @@ function SpeciesDetailPage() {
 					{/* Settings intended to minimize requests to iNat's API. */}
 			</ExploreMap>
 			<figcaption className="species-page__range-caption">
-				Places the {species?.common_name} has been observed
+				Places the {species.common_name || species.scientific_name} has
+				been observed
 			</figcaption>
 		</figure>
 		<p className="species-page__wiki-excerpt">
 			<WikiExcerpt
-				wiki={species?.wikipedia_excerpt}
-				speciesId={species?.id}/>
+				wiki={species.wikipedia_excerpt}
+				speciesId={species.id}/>
 		</p>
-		<Button className="species-page__wiki-link" href={species?.wikipedia_url}>
+		<Button className="species-page__wiki-link" href={species.wikipedia_url}>
 			Read more on Wikipedia
 		</Button>
-	</section>);
+	</section>)}
+	</>);
 }
 
 export default SpeciesDetailPage;

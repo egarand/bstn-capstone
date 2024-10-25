@@ -46,6 +46,22 @@
 		margin-top: $l-space-4;
 		margin-left: auto;
 	}
+
+	&__results {
+		position: relative;
+	}
+	&__loader {
+		&:empty {
+			@include u-screen-reader-only;
+		}
+		&:not(:empty) {
+			position: absolute;
+			z-index: 1300;
+			background-color: rgba($c-white, .6);
+			inset: 0;
+		}
+	}
+
 	&__pois-wrapper {
 		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(250), 1fr));
 		gap: $l-space-2;

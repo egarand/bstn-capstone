@@ -39,7 +39,8 @@
 			background: rgba($c-hawkweed, .15);
 		}
 		&:disabled {
-			background: rgba($c-matcha, .5);
+			filter: grayscale(1);
+			opacity: .7;
 		}
 	}
 	&__error {

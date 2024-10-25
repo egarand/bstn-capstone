@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useIsMounted from "../../hooks/useIsMounted";
 import { round, trycatch } from "../../utils";
 import api from "../../utils/api";
@@ -11,7 +11,10 @@ import Button from "../../components/Button/Button";
 import PoiOverview from "../../components/PoiOverview/PoiOverview";
 
 import "./ExplorePage.scss";
+import Loader from "../../components/Loader/Loader";
+import Pagination from "../../components/Pagination/Pagination";
 
+const perPage = 15;
 const initialValues = {
 	lat: 0,
 	lon: 0,
@@ -21,23 +24,31 @@ const initialValues = {
 };
 
 function ExplorePage() {
-	const [isLoading, setIsLoading] = useState(false);
-	const [pois, setPois] = useState([]);
+	const [isLoading, setIsLoading] = useState(false),
+		[error, setError] = useState(false),
+		[pois, setPois] = useState([]),
+		[poiPage, setPoiPage] = useState(1);
 	const [values, setValues] =
 		useState(
 			trycatch(() =>
 				JSON.parse(localStorage.getItem("explore_input")),
 				initialValues
 			)
-			?? initialValues
+			|| initialValues
 		);
 	const resultsRef = useRef(null);
 	const isMounted = useIsMounted();
 
+	const poiPageTotal = useMemo(() =>
+		Math.ceil(pois?.length / perPage)
+	, [pois]);
+
 	async function handleSubmit(ev) {
 		ev.preventDefault();
+		setError(false);
 		setIsLoading(true);
 		setPois([]);
+		setPoiPage(1);
 		try {
 			const submitValues = {...values, radius: values.radius*1000};
 			delete submitValues.taxa;
@@ -50,8 +61,12 @@ function ExplorePage() {
 			setPois(data);
 			setIsLoading(false);
 			requestAnimationFrame(() => resultsRef.current.focus());
-		} catch {
-			// do something
+		} catch (error) {
+			console.error(error);
+			if (error.name !== "CanceledError" && isMounted.current) {
+				setIsLoading(false);
+				setError(error);
+			}
 		}
 	}
 
@@ -87,6 +102,11 @@ function ExplorePage() {
 		if (values.lat !== 0) { return; }
 		fillCurrentLocation();
 	}, [values.lat]);
+
+	function paginate(direction) {
+		const page = Math.max(1, Math.min(poiPageTotal, poiPage + direction));
+		setPoiPage(page);
+	}
 
 	return (<>
 		<DocTitle title="Explore" />
@@ -156,7 +176,7 @@ function ExplorePage() {
 			</Button>
 		</form>
 
-		<section aria-busy={isLoading}>
+		<section className="explore-page__results" aria-busy={isLoading}>
 			<h2 className="explore-page__heading" tabIndex={-1} ref={resultsRef}>Results</h2>
 			<p>
 			{pois.length
@@ -173,8 +193,18 @@ function ExplorePage() {
 					taxa={values.taxa}/>
 			</ExploreMap>
 
+			{!!pois.length && (
+			<Pagination
+				currentPage={poiPage}
+				totalPages={poiPageTotal}
+				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
+			)}
 			<ul className="explore-page__pois-wrapper">
-			{pois.map((p) => (
+			{pois
+				.slice(
+					(poiPage - 1) * perPage,
+					(poiPage - 1) * perPage + perPage
+				).map((p) => (
 				<li
 					key={`${p.osm_type}${p.osm_id}`}
 					className={`explore-page__poi explore-page__poi--${p.category}`}
@@ -187,6 +217,14 @@ function ExplorePage() {
 				</li>
 			))}
 			</ul>
+			{!!pois.length && (
+			<Pagination
+				currentPage={poiPage}
+				totalPages={poiPageTotal}
+				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
+			)}
+
+			<Loader className="explore-page__loader" isLoading={isLoading} errorObj={error}/>
 		</section>
 
 	</>);

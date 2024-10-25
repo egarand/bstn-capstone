@@ -32,6 +32,10 @@
 			background: $c-matcha;
 		}
 	}
+	&:disabled {
+		filter: grayscale(1);
+		opacity: .7;
+	}
 
 	@include l-tablet {
 		width: fit-content;

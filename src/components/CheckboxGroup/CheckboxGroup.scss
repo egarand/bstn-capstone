@@ -4,6 +4,10 @@
 	&__legend {
 		@include u-screen-reader-only;
 	}
+	&:disabled {
+		filter: grayscale(1);
+		opacity: .7;
+	}
 }
 .checkbox-group-error {
 	display: block;
@@ -39,6 +43,10 @@
 					$c-pine 45%, $c-pine 55%,
 					rgba($c-matcha, .5) 55%
 				);
+		}
+		&:disabled {
+			filter: grayscale(1);
+			opacity: .7;
 		}
 		&--invalid {
 			border-color: darken($c-hawkweed, 10%);

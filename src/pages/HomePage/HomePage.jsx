@@ -5,10 +5,12 @@ import sandpiperSrc from "../../assets/icons/sandpiper.svg";
 import compassSrc from "../../assets/icons/compass.svg";
 import frogSrc from "../../assets/icons/frogprints.svg";
 import Icon from "../../components/Icon/Icon";
+import DocTitle from "../../components/DocTitle/DocTitle";
 
 function HomePage() {
 	return (<article className="home-page">
 		<section className="home-page__hero">
+			<DocTitle title="Home"/>
 			<h1 className="home-page__title">
 				Discover Your<br/>
 				Next Adventure
