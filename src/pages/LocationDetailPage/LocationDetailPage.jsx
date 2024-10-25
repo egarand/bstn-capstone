@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import useIsMounted from "../../hooks/useIsMounted";
 import { polygonCentroid, trycatch } from "../../utils";
-import api from "../../utils/api";
+import useApi from "../../utils/api";
 
 import { AnnouncedLink, useAccessibleNav } from "../../navigation-accessibility";
 import ExploreMap from "../../components/ExploreMap/ExploreMap";
@@ -26,17 +25,14 @@ const primaryTags = ["name", "description", ...primaryListTags];
 function LocationDetailPage() {
 	const { state } = useLocation();
 	const { osm_info } = useParams();
-	const isMounted = useIsMounted();
-
 	const { refocusPageTop } = useAccessibleNav();
 
-	const [errorPoi, setErrorPoi] = useState(null),
-		[loadingPoi, setLoadingPoi] = useState(true),
-		[errorSpecies, setErrorSpecies] = useState(null),
-		[loadingSpecies, setLoadingSpecies] = useState(true),
-		[poi, setPoi] = useState(null),
-		[species, setSpecies] = useState(null);
-
+	const
+		[fetchPoi, poi, loadingPoi, errorPoi]
+			= useApi(state?.poi),
+		[fetchSpecies, species, loadingSpecies, errorSpecies]
+			= useApi(null, true);
+	const [page, setPage] = useState(1);
 	const [taxa, setTaxa] = useState(
 		state?.taxa
 		?? trycatch(() =>
@@ -49,52 +45,11 @@ function LocationDetailPage() {
 		Intl.DateTimeFormat([], { month: "long" }).format(new Date())
 	, []);
 
-	useEffect(() => {
-		setErrorPoi(null);
-		setErrorSpecies(null);
-		setLoadingPoi(true);
-		setLoadingSpecies(true);
-		setPoi(null);
-		setSpecies(null);
-		(async () => {
-			try {
-				let poiData = state?.poi;
-				if (!state?.poi) {
-					const [,type,id] = /([a-z]+)([0-9]+)/i.exec(osm_info);
-					poiData = (await api("get", `/pois/${type}/${id}`)).data;
-				}
-				poiData.centroid = polygonCentroid(poiData.geometry.flat());
+	const centroid = useMemo(() =>
+		poi ? polygonCentroid(poi.geometry.flat()) : [0,0]
+	, [poi]);
 
-				if (!isMounted.current) { return; }
-				setPoi(() => poiData);
-				setLoadingPoi(() => false);
-				requestAnimationFrame(refocusPageTop);
-				try {
-					const params = new URLSearchParams(Object.entries(poiData.bounds));
-					const { data: lifeData } = await api("get", `/life?${params.toString()}`, null, {
-						"axios-retry": { retries: 0 }
-					});
-					lifeData.page = 1;
-
-					if (!isMounted.current) { return; }
-					setSpecies(() => lifeData);
-					setLoadingSpecies(() => false);
-				} catch (error) {
-					console.error(error);
-					if (error.name !== "CanceledError" && isMounted.current) {
-						setErrorSpecies(error);
-					}
-				}
-			} catch (error) {
-				console.error(error);
-				if (error.name !== "CanceledError" && isMounted.current) {
-					setErrorPoi(error);
-				}
-			}
-		})();
-	}, [osm_info, state, isMounted, refocusPageTop]);
-
-	const [filteredSpecies, speciesPageTotal] = useMemo(() => {
+	const [filteredSpecies, pageTotal] = useMemo(() => {
 		const specs =
 			species?.species?.filter((s) => taxa.includes(s.iconic_taxon));
 		const pages =
@@ -102,15 +57,31 @@ function LocationDetailPage() {
 		return [specs, pages];
 	}, [species, taxa]);
 
+	useEffect(() => {
+		(async () => {
+			if (state?.poi) { return; }
+			const [,type,id] = /([a-z]+)([0-9]+)/i.exec(osm_info);
+			await fetchPoi("get", `/pois/${type}/${id}`);
+		})();
+	}, [osm_info, state, fetchPoi, refocusPageTop]);
+
+	useEffect(() => {
+		if (!poi) { return; }
+		setPage(1);
+		const params = new URLSearchParams(Object.entries(poi.bounds));
+		fetchSpecies("get", `/life?${params.toString()}`, null, {
+			"axios-retry": { retries: 0 }
+		});
+	}, [poi, fetchSpecies]);
+
 	function paginate(direction) {
-		const page = Math.max(1, Math.min(speciesPageTotal, species.page + direction));
-		setSpecies({ ...species, page });
+		setPage(Math.max(1, Math.min(pageTotal, page + direction)));
 	}
 
 	function handleTaxaChange(ev) {
 		const { value } = ev.target;
 		setTaxa(value);
-		setSpecies({ ...species, page: 1 });
+		setPage(1);
 		trycatch(() => {
 			const formInp = JSON.parse(localStorage.getItem("explore_input"));
 			formInp.taxa = value;
@@ -122,10 +93,10 @@ function LocationDetailPage() {
 	<section className="location-page" aria-busy={loadingPoi}>
 		<DocTitle title={poi?.tags?.name} />
 		<Loader isLoading={loadingPoi} errorObj={errorPoi}/>
-		{!loadingPoi && (<>
 		<h1 className="location-page__title">
-			{poi.tags.name}
+			{poi?.tags?.name}
 		</h1>
+		{!loadingPoi && poi && (<>
 		<section className="location-page__detail-section">
 			{poi.tags.description && (
 				<p className="location-page__description">
@@ -164,8 +135,8 @@ function LocationDetailPage() {
 				</dl>
 			</details>
 			<span className="location-page__column-breaker"></span>
-			<ExploreMap className="location-page__map" center={poi?.centroid}>
-				<ExploreMap.CenterOnCoordinate latlon={poi?.centroid}/>
+			<ExploreMap className="location-page__map" center={centroid}>
+				<ExploreMap.CenterOnCoordinate latlon={centroid}/>
 				<ExploreMap.Poi poi={poi} noPopup />
 			</ExploreMap>
 		</section>
@@ -199,7 +170,7 @@ function LocationDetailPage() {
 		</details>
 
 		<Loader isLoading={loadingSpecies && !species} errorObj={errorSpecies}/>
-		{!loadingSpecies && !filteredSpecies.length && species.page === 1 && (
+		{!loadingSpecies && !filteredSpecies?.length && page === 1 && (
 			<div className="location-page__no-species">
 				<p>None... <em>yet.</em></p>
 				<p><AnnouncedLink
@@ -212,14 +183,14 @@ function LocationDetailPage() {
 		)}
 		{filteredSpecies?.length && (<>
 			<Pagination
-				currentPage={species?.page}
-				totalPages={speciesPageTotal}
+				currentPage={page}
+				totalPages={pageTotal}
 				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
 			<ul className="location-page__species-list">
 			{filteredSpecies
 				.slice(
-					(species.page - 1) * perPage,
-					(species.page - 1) * perPage + perPage
+					(page - 1) * perPage,
+					(page - 1) * perPage + perPage
 				).map((s) => (
 					<li key={s.id} className="location-page__species-list-item">
 						<SpeciesLink species={s}/>
@@ -228,8 +199,8 @@ function LocationDetailPage() {
 			)}
 			</ul>
 			<Pagination
-				currentPage={species?.page}
-				totalPages={speciesPageTotal}
+				currentPage={page}
+				totalPages={pageTotal}
 				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
 		</>)}
 	</section>);
