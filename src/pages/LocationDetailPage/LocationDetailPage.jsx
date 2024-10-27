@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { polygonCentroid, trycatch } from "../../utils";
-import useApi from "../../utils/api";
+import useApi, { api } from "../../utils/api";
+import { useAuth } from "../../components/AuthProvider/AuthProvider";
 
 import { AnnouncedLink, useAccessibleNav } from "../../navigation-accessibility";
 import DocTitle from "../../components/DocTitle/DocTitle";
+import IconButton from "../../components/IconButton/IconButton";
 import Loader from "../../components/Loader/Loader";
 import LocationTag from "../../components/LocationTag/LocationTag";
 import ExploreMap from "../../components/ExploreMap/ExploreMap";
@@ -17,6 +19,7 @@ import linkSrc from "../../assets/icons/link.svg";
 import moneySrc from "../../assets/icons/money.svg";
 import pawprintSrc from "../../assets/icons/pawprint.svg";
 import wheelchairSrc from "../../assets/icons/wheelchair.svg";
+import bookmarkSrc from "../../assets/icons/bookmark.svg";
 
 const primaryListTags = ["website", "wheelchair", "dog", "fee"];
 const primaryTags = ["name", "description", ...primaryListTags];
@@ -25,6 +28,7 @@ function LocationDetailPage() {
 	const { state } = useLocation();
 	const { osm_info } = useParams();
 	const { refocusPageTop } = useAccessibleNav();
+	const { user } = useAuth();
 
 	const
 		[fetchPoi, poi, loadingPoi, errorPoi]
@@ -79,13 +83,31 @@ function LocationDetailPage() {
 		});
 	}
 
+	async function handleBookmark() {
+		try {
+			const res = await api("post", "/users/pois", { osm_type: poi.osm_type, osm_id: poi.osm_id, name: poi.tags.name});
+			console.log(res);
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	return (
 	<section className="location-page" aria-busy={loadingPoi}>
 		<DocTitle title={poi?.tags?.name} />
 		<Loader isLoading={loadingPoi} errorObj={errorPoi}/>
-		<h1 className="location-page__title">
-			{poi?.tags?.name}
-		</h1>
+		<div className="location-page__header-section">
+			<h1 className="location-page__title">
+				{poi?.tags?.name}
+			</h1>
+			{user && poi?.tags && (
+			<IconButton
+				onClick={handleBookmark}
+				className="location-page__bookmark-btn"
+				iconSrc={bookmarkSrc}
+				text="Bookmark location" />)}
+		</div>
+
 		{!loadingPoi && poi?.tags && (<>
 		<section className="location-page__detail-section">
 			{poi.tags.description && (

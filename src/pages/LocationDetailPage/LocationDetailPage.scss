@@ -1,8 +1,17 @@
 @use "../../styles/partials/global" as *;
 
 .location-page {
+	&__header-section {
+		display: flex;
+		align-items: first baseline;
+		gap: $l-space-2;
+	}
 	&__title {
+		flex: 1 1 auto;
 		@extend %f-page-title;
+	}
+	&__bookmark-btn {
+		flex: 0 0 $l-space-6;
 	}
 	&__heading {
 		@extend %f-heading;
