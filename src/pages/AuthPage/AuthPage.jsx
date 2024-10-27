@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../components/AuthProvider/AuthProvider";
-import { AnnouncedLink, useAnnouncedNavigate } from "../../navigation-accessibility";
-import api from "../../utils/api";
+import { AnnouncedLink, AnnouncedNavigate } from "../../navigation-accessibility";
 import DocTitle from "../../components/DocTitle/DocTitle";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
@@ -15,8 +14,7 @@ const initialValues = {
 
 function AuthPage() {
 	const { pathname } = useLocation();
-	const navigate = useAnnouncedNavigate();
-	const { login } = useAuth();
+	const { token, login, register } = useAuth();
 
 	const [values, setValues] = useState(initialValues);
 	const isRegisterPage = useMemo(() =>
@@ -34,20 +32,22 @@ function AuthPage() {
 		ev.preventDefault();
 		try {
 			login(values);
-		} catch {
-			// do something
+		} catch (error) {
+			console.error(error);
 		}
 	}
 
 	async function handleRegister(ev) {
 		ev.preventDefault();
 		try {
-			const { data } = await api("post", "/users/register", values);
-			// TODO store the JWT token, etc
-			navigate("/explore");
-		} catch {
-			// do something
+			register(values);
+		} catch (error) {
+			console.error(error);
 		}
+	}
+
+	if (token) {
+		return <AnnouncedNavigate to="/bookmarks" />;
 	}
 
 	return (<section className="auth-page">
@@ -74,6 +74,8 @@ function AuthPage() {
 				value={values.password}
 				onChange={handleInputChange}
 				required={true}
+				pattern={isRegisterPage ? "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$" : null}
+				description={isRegisterPage ? "Must be between 8 and 32 characters and contain 1 number, 1 uppercase letter, and 1 lowercase letter." : null}
 				placeholder="Password"
 				label="Password"/>
 
