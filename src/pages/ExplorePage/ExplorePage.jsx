@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { round, trycatch } from "../../utils";
 import useApi from "../../utils/api";
 
@@ -7,13 +7,13 @@ import ExploreMap from "../../components/ExploreMap/ExploreMap";
 import Input from "../../components/Input/Input";
 import CheckboxGroup from "../../components/CheckboxGroup/CheckboxGroup";
 import Button from "../../components/Button/Button";
+import PaginatedCards from "../../components/PaginatedCards/PaginatedCards";
+import SimpleCard from "../../components/SimpleCard/SimpleCard";
 import PoiOverview from "../../components/PoiOverview/PoiOverview";
+import Loader from "../../components/Loader/Loader";
 
 import "./ExplorePage.scss";
-import Loader from "../../components/Loader/Loader";
-import Pagination from "../../components/Pagination/Pagination";
 
-const perPage = 15;
 const initialValues = {
 	lat: 0,
 	lon: 0,
@@ -24,24 +24,17 @@ const initialValues = {
 
 function ExplorePage() {
 	const [fetchPois, pois, loading, error] = useApi(null);
-	const [page, setPage] = useState(1);
 
-	const [values, setValues] =
-		useState(
-			trycatch(() =>
-				JSON.parse(localStorage.getItem("explore_input")),
-				initialValues
-			)
-			|| initialValues
-		);
-
-	const pageTotal = useMemo(() =>
-		pois ? Math.ceil(pois.length / perPage) : 0
-	, [pois]);
+	const [values, setValues] = useState(
+		trycatch(() =>
+			JSON.parse(localStorage.getItem("explore_input")),
+			initialValues
+		)
+		|| initialValues
+	);
 
 	async function handleSubmit(ev) {
 		ev.preventDefault();
-		setPage(1);
 		const submitValues = {...values, radius: values.radius*1000};
 		delete submitValues.taxa;
 		const params = new URLSearchParams(Object.entries(submitValues));
@@ -81,10 +74,6 @@ function ExplorePage() {
 		if (values.lat !== 0) { return; }
 		fillCurrentLocation();
 	}, [values.lat]);
-
-	function paginate(direction) {
-		setPage(Math.max(1, Math.min(pageTotal, page + direction)));
-	}
 
 	return (<>
 		<DocTitle title="Explore" />
@@ -175,36 +164,19 @@ function ExplorePage() {
 			</ExploreMap>
 
 			{!!pois?.length && (
-			<Pagination
-				currentPage={page}
-				totalPages={pageTotal}
-				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
+				<PaginatedCards items={pois?.map((p) => (
+					<SimpleCard
+						key={`${p.osm_type}${p.osm_id}`}
+						variant={p.category}
+					>
+						<PoiOverview
+							poi={p}
+							taxa={values.taxa}
+							headingTag="h3"
+							headerClassName="explore-page__poi-header"/>
+					</SimpleCard>
+				))} perPage={15} type="poi" />
 			)}
-			<ul className="explore-page__pois-wrapper">
-			{pois
-				?.slice(
-					(page - 1) * perPage,
-					(page - 1) * perPage + perPage
-				).map((p) => (
-				<li
-					key={`${p.osm_type}${p.osm_id}`}
-					className={`explore-page__poi explore-page__poi--${p.category}`}
-				>
-					<PoiOverview
-						poi={p}
-						taxa={values.taxa}
-						headingTag="h3"
-						headerClassName="explore-page__poi-header"/>
-				</li>
-			))}
-			</ul>
-			{!!pois?.length && (
-			<Pagination
-				currentPage={page}
-				totalPages={pageTotal}
-				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
-			)}
-
 			<Loader className="explore-page__loader" isLoading={loading} errorObj={error}/>
 		</section>
 

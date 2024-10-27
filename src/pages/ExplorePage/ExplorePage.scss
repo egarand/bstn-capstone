@@ -62,36 +62,6 @@
 		}
 	}
 
-	&__pois-wrapper {
-		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(250), 1fr));
-		gap: $l-space-2;
-		list-style-type: none;
-		margin-block: $l-space-3 0;
-		padding: 0;
-	}
-	&__poi {
-		margin: 0;
-		border: 2px solid;
-		border-radius: 4px;
-		padding: $l-space-2;
-		@extend %f-body-medium;
-		transition: transform .15s ease-in-out;
-		&:hover {
-			transform: scale(1.04);
-		}
-		&--trail {
-			background: rgba(#0368bb, .15);
-			border-color: lighten(#0368bb,10%);
-		}
-		&--campground {
-			background: rgba($c-hawkweed, .3);
-			border-color: $c-hawkweed;
-		}
-		&--reserve {
-			background: rgba($c-matcha, .3);
-			border-color: lighten($c-pine, 30%);
-		}
-	}
 	&__poi-header {
 		@extend %f-sub-heading;
 		font-weight: 700;

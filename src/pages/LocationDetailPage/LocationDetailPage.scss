@@ -1,8 +1,17 @@
 @use "../../styles/partials/global" as *;
 
 .location-page {
+	&__header-section {
+		display: flex;
+		align-items: first baseline;
+		gap: $l-space-2;
+	}
 	&__title {
+		flex: 1 1 auto;
 		@extend %f-page-title;
+	}
+	&__bookmark-btn {
+		flex: 0 0 $l-space-6;
 	}
 	&__heading {
 		@extend %f-heading;
@@ -78,20 +87,6 @@
 		color: $c-pine;
 		&:hover {
 			color: $c-hawkweed;
-		}
-	}
-	&__species-list {
-		padding: 0;
-		list-style-type: none;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(180), 1fr));
-		gap: $l-space-1;
-	}
-
-	@include l-tablet {
-		&__species-list {
-			grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(200), 1fr));
-			gap: $l-space-2;
 		}
 	}
 }
