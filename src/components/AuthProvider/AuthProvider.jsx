@@ -29,6 +29,13 @@ function AuthProvider({ children }) {
 		navigate("/bookmarks");
 	}
 
+	async function register(credentials) {
+		const { data } = await api("post", "/users/register", credentials);
+		setToken(data.token);
+		localStorage.setItem("user_token", data.token);
+		navigate("/bookmarks");
+	}
+
 	function logout() {
 		setToken(null);
 		trycatch(() => localStorage.removeItem("user_token"));
@@ -36,7 +43,7 @@ function AuthProvider({ children }) {
 	}
 
 	return (
-	<AuthContext.Provider value={{ token, login, logout }}>
+	<AuthContext.Provider value={{ token, login, logout, register }}>
 		{children}
 	</AuthContext.Provider>);
 }
