@@ -1,0 +1,12 @@
+@use "../../styles/partials/global" as *;
+
+.bookmark-page {
+	&__title {
+		@extend %f-page-title;
+	}
+
+	&__poi-header {
+		@extend %f-sub-heading;
+		font-weight: 700;
+	}
+}
