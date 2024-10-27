@@ -4,21 +4,20 @@ import { polygonCentroid, trycatch } from "../../utils";
 import useApi from "../../utils/api";
 
 import { AnnouncedLink, useAccessibleNav } from "../../navigation-accessibility";
-import ExploreMap from "../../components/ExploreMap/ExploreMap";
 import DocTitle from "../../components/DocTitle/DocTitle";
-import SpeciesLink from "../../components/SpeciesLink/SpeciesLink";
-import Pagination from "../../components/Pagination/Pagination";
+import Loader from "../../components/Loader/Loader";
 import LocationTag from "../../components/LocationTag/LocationTag";
+import ExploreMap from "../../components/ExploreMap/ExploreMap";
 import CheckboxGroup from "../../components/CheckboxGroup/CheckboxGroup";
+import PaginatedCards from "../../components/PaginatedCards/PaginatedCards";
+import SpeciesLink from "../../components/SpeciesLink/SpeciesLink";
 
 import "./LocationDetailPage.scss";
 import linkSrc from "../../assets/icons/link.svg";
 import moneySrc from "../../assets/icons/money.svg";
 import pawprintSrc from "../../assets/icons/pawprint.svg";
 import wheelchairSrc from "../../assets/icons/wheelchair.svg";
-import Loader from "../../components/Loader/Loader";
 
-const perPage = 16;
 const primaryListTags = ["website", "wheelchair", "dog", "fee"];
 const primaryTags = ["name", "description", ...primaryListTags];
 
@@ -46,37 +45,28 @@ function LocationDetailPage() {
 	, []);
 
 	const centroid = useMemo(() =>
-		poi ? polygonCentroid(poi.geometry.flat()) : [0,0]
+		poi?.tags ? polygonCentroid(poi.geometry.flat()) : [0,0]
 	, [poi]);
 
-	const [filteredSpecies, pageTotal] = useMemo(() => {
-		const specs =
-			species?.species?.filter((s) => taxa.includes(s.iconic_taxon));
-		const pages =
-			specs ? Math.ceil(specs.length / perPage) : 0;
-		return [specs, pages];
-	}, [species, taxa]);
+	const filteredSpecies = useMemo(() =>
+		species?.species?.filter((s) => taxa.includes(s.iconic_taxon)) || []
+	, [species, taxa]);
 
 	useEffect(() => {
 		(async () => {
-			if (state?.poi) { return; }
+			if (state?.poi?.tags) { return; }
 			const [,type,id] = /([a-z]+)([0-9]+)/i.exec(osm_info);
 			await fetchPoi("get", `/pois/${type}/${id}`);
 		})();
 	}, [osm_info, state, fetchPoi, refocusPageTop]);
 
 	useEffect(() => {
-		if (!poi) { return; }
-		setPage(1);
+		if (!poi?.tags) { return; }
 		const params = new URLSearchParams(Object.entries(poi.bounds));
 		fetchSpecies("get", `/life?${params.toString()}`, null, {
 			"axios-retry": { retries: 0 }
 		});
 	}, [poi, fetchSpecies]);
-
-	function paginate(direction) {
-		setPage(Math.max(1, Math.min(pageTotal, page + direction)));
-	}
 
 	function handleTaxaChange(ev) {
 		const { value } = ev.target;
@@ -96,7 +86,7 @@ function LocationDetailPage() {
 		<h1 className="location-page__title">
 			{poi?.tags?.name}
 		</h1>
-		{!loadingPoi && poi && (<>
+		{!loadingPoi && poi?.tags && (<>
 		<section className="location-page__detail-section">
 			{poi.tags.description && (
 				<p className="location-page__description">
@@ -181,28 +171,11 @@ function LocationDetailPage() {
 				</AnnouncedLink></p>
 			</div>
 		)}
-		{filteredSpecies?.length && (<>
-			<Pagination
-				currentPage={page}
-				totalPages={pageTotal}
-				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
-			<ul className="location-page__species-list">
-			{filteredSpecies
-				.slice(
-					(page - 1) * perPage,
-					(page - 1) * perPage + perPage
-				).map((s) => (
-					<li key={s.id} className="location-page__species-list-item">
-						<SpeciesLink species={s}/>
-					</li>
-				)
-			)}
-			</ul>
-			<Pagination
-				currentPage={page}
-				totalPages={pageTotal}
-				onPrev={()=>paginate(-1)} onNext={()=>paginate(1)}/>
-		</>)}
+		{filteredSpecies?.length && (
+			<PaginatedCards items={filteredSpecies.map((s) => (
+				<SpeciesLink key={s.id} species={s}/>
+			))} perPage={16} type="species"/>
+		)}
 	</section>);
 }
 

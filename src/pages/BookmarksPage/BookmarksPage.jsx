@@ -10,6 +10,8 @@ import Icon from "../../components/Icon/Icon";
 
 import "./BookmarksPage.scss";
 import closeSrc from "../../assets/icons/close.svg";
+import DocTitle from "../../components/DocTitle/DocTitle";
+import SimpleCard from "../../components/SimpleCard/SimpleCard";
 
 function BookmarksPage() {
 	const { refocusPageTop } = useAccessibleNav();
@@ -34,23 +36,25 @@ function BookmarksPage() {
 
 	return (
 	<section className="bookmark-page" aria-busy={loading}>
+		<DocTitle title="Your Bookmarks"/>
 		<h1 className="bookmark-page__title">Your Bookmarks</h1>
 		<Loader isLoading={loading} errorObj={error}/>
 		{!loading && !error && (
-			<PaginatedCards items={bookmarks?.map((b) => (<>
-				<PoiOverview
-					key={`${b.osm_type}${b.osm_id}`}
-					poi={b}
-					taxa={taxa}
-					headingTag="h2"
-					headerClassName="bookmark-page__poi-header" />
-				<button
-					className="bookmark-page__delete-btn"
-					onClick={() => deleteBookmark(b.id)}
-				>
-					<Icon src={closeSrc} alt="Delete bookmark" />
-				</button>
-			</>))} perPage={16} type="poi"/>
+			<PaginatedCards items={bookmarks?.map((b) => (
+				<SimpleCard key={`${b.osm_type}${b.osm_id}`} variant={b.category}>
+					<PoiOverview
+						poi={b}
+						taxa={taxa}
+						headingTag="h3"
+						headerClassName="explore-page__poi-header"/>
+					<button
+						className="bookmark-page__delete-btn"
+						onClick={() => deleteBookmark(b.id)}
+					>
+						<Icon src={closeSrc} alt="Delete bookmark" />
+					</button>
+				</SimpleCard>
+			))} perPage={16} type="poi"/>
 		)}
 	</section>);
 }

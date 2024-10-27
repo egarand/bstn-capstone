@@ -1,15 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import Pagination from "../Pagination/Pagination";
-import SimpleCard from "../SimpleCard/SimpleCard";
 import "./PaginatedCards.scss";
 
 /** `type` can be "poi" (default) or "species"  */
 function PaginatedCards({ items, perPage, type = "poi" }) {
-	const isPoi = useMemo(() => type === "poi", [type]);
 	const [page, setPage] = useState(1);
-	const pageTotal = useMemo(() =>
-		Math.ceil((items?.length ?? 1) / perPage)
-	, [items, perPage]);
+	const [pageTotal, random] = useMemo(() => { return [
+		Math.ceil((items?.length ?? 1) / perPage),
+		Date.now()
+	]}, [items, perPage]);
 
 	useEffect(() => setPage(1), [items]);
 
@@ -28,14 +27,12 @@ function PaginatedCards({ items, perPage, type = "poi" }) {
 				?.slice(
 					(page - 1) * perPage,
 					(page - 1) * perPage + perPage
-				).map((i) => (
+				).map((i, idx) => (
 				<li
-					key={isPoi ? `${i?.osm_type}${i?.osm_id}` : i?.id}
+					key={`${idx}-${random}`}
 					className="paged-cards__item"
 				>
-					<SimpleCard variant={isPoi ? i.category : "species"}>
-						{i}
-					</SimpleCard>
+					{i}
 				</li>
 			))}
 		</ul>
