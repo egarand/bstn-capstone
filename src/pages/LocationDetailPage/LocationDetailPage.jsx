@@ -28,7 +28,7 @@ function LocationDetailPage() {
 	const { state } = useLocation();
 	const { osm_info } = useParams();
 	const { refocusPageTop } = useAccessibleNav();
-	const { user } = useAuth();
+	const { token } = useAuth();
 
 	const
 		[fetchPoi, poi, loadingPoi, errorPoi]
@@ -84,8 +84,16 @@ function LocationDetailPage() {
 	}
 
 	async function handleBookmark() {
+		if (!token) { return; }
 		try {
-			const res = await api("post", "/users/pois", { osm_type: poi.osm_type, osm_id: poi.osm_id, name: poi.tags.name});
+			const res = await api("post", "/users/pois",
+				{
+					osm_type: poi.osm_type,
+					osm_id: poi.osm_id,
+					name: poi.tags.name
+				},
+				{ headers: { "Authorization": `Bearer ${token}`} }
+			);
 			console.log(res);
 		} catch (error) {
 			console.log(error);
@@ -100,7 +108,7 @@ function LocationDetailPage() {
 			<h1 className="location-page__title">
 				{poi?.tags?.name}
 			</h1>
-			{user && poi?.tags && (
+			{token && poi?.tags && (
 			<IconButton
 				onClick={handleBookmark}
 				className="location-page__bookmark-btn"

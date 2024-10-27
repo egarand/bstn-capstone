@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useAccessibleNav } from "../../navigation-accessibility";
+import { AnnouncedLink, useAccessibleNav } from "../../navigation-accessibility";
 import { trycatch } from "../../utils";
 import useApi, { api } from "../../utils/api";
+import { useAuth } from "../../components/AuthProvider/AuthProvider";
 
 import Loader from "../../components/Loader/Loader";
 import PaginatedCards from "../../components/PaginatedCards/PaginatedCards";
@@ -14,6 +15,7 @@ import DocTitle from "../../components/DocTitle/DocTitle";
 import SimpleCard from "../../components/SimpleCard/SimpleCard";
 
 function BookmarksPage() {
+	const { token } = useAuth();
 	const { refocusPageTop } = useAccessibleNav();
 	const [fetchBookmarks, bookmarks, loading, error] = useApi([]);
 
@@ -25,11 +27,16 @@ function BookmarksPage() {
 	);
 
 	useEffect(() => {
-		fetchBookmarks("get", "/users/pois");
-	}, [fetchBookmarks]);
+		if (!token) { return; }
+		fetchBookmarks("get", "/users/pois", null, {
+			headers: { "Authorization": `Bearer ${token}` }
+		});
+	}, [fetchBookmarks, token]);
 
 	async function deleteBookmark(id) {
-		await api("delete", `/users/pois/${id}`);
+		await api("delete", `/users/pois/${id}`, null, {
+			headers: { "Authorization": `Bearer ${token}`}
+		});
 		await fetchBookmarks("get", "/users/pois");
 		refocusPageTop();
 	}
@@ -39,7 +46,16 @@ function BookmarksPage() {
 		<DocTitle title="Your Bookmarks"/>
 		<h1 className="bookmark-page__title">Your Bookmarks</h1>
 		<Loader isLoading={loading} errorObj={error}/>
-		{!loading && !error && (
+		{!loading && !error && !bookmarks?.length && (
+			<p className="bookmark-page__no-bookmarks">
+				You haven&apos;t bookmarked any locations yet. Visit the&#32;
+				<AnnouncedLink className="bookmark-page__no-bookmarks-link" to="/explore">
+					Explore page
+				</AnnouncedLink>
+				&#32;to find some.
+			</p>
+		)}
+		{!loading && !error && !!bookmarks?.length && (
 			<PaginatedCards items={bookmarks?.map((b) => (
 				<SimpleCard key={`${b.osm_type}${b.osm_id}`} variant={b.category}>
 					<PoiOverview
