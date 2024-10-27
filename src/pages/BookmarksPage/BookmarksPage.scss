@@ -9,4 +9,17 @@
 		@extend %f-sub-heading;
 		font-weight: 700;
 	}
+
+	&__delete-btn {
+		position: absolute;
+		top: $l-space-0;
+		right: $l-space-0;
+
+		width: $l-space-5;
+		aspect-ratio: 1;
+		border: 1px solid transparent;
+		padding: $l-space-0;
+		background: transparent;
+		color: currentColor;
+	}
 }
