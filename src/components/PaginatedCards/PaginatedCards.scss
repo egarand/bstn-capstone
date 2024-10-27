@@ -1,0 +1,26 @@
+@use "../../styles/partials/global" as *;
+
+.paged-cards {
+	&__list {
+		display: grid;
+		&--poi {
+			grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(250), 1fr));
+		}
+		&--species {
+			grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(180), 1fr));
+		}
+		gap: $l-space-1;
+		list-style-type: none;
+		margin-block: 0;
+		padding: 0;
+	}
+
+	@include l-tablet {
+		&__list {
+			gap: $l-space-2;
+		}
+		&__list--species {
+			grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(200), 1fr));
+		}
+	}
+}

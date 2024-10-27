@@ -1,0 +1,26 @@
+@use "../../styles/partials/global" as *;
+
+.simple-card {
+	position: relative;
+	margin: 0;
+	border: 2px solid;
+	border-radius: 4px;
+	padding: $l-space-2;
+	@extend %f-body-medium;
+	transition: transform .15s ease-in-out;
+	&:hover {
+		transform: scale(1.03);
+	}
+	&--trail {
+		background: rgba(#0368bb, .15);
+		border-color: lighten(#0368bb,10%);
+	}
+	&--campground {
+		background: rgba($c-hawkweed, .3);
+		border-color: $c-hawkweed;
+	}
+	&--reserve, &--species {
+		background: rgba($c-matcha, .3);
+		border-color: lighten($c-pine, 30%);
+	}
+}
