@@ -1,33 +1,42 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react";
 import { useAnnouncedNavigate } from "../../navigation-accessibility";
 import { trycatch } from "../../utils";
+import { api } from "../../utils/api";
 
 const AuthContext = createContext(null);
 
 function AuthProvider({ children }) {
 	const navigate = useAnnouncedNavigate();
-	const [user, setUser] = useState(null),
-		[token, setToken] = useState(null);
+	const [token, setToken] = useState(null);
+
+	useEffect(() => {
+		const oldToken = trycatch(() =>
+			localStorage.getItem("user_token")
+		);
+		if (oldToken) {
+			const decoded = JSON.parse(atob(oldToken.split(".")[1]));
+			const now = Date.now() / 1000;
+			if (decoded.exp > now) {
+				setToken(oldToken);
+			}
+		}
+	}, []);
 
 	async function login(credentials) {
-		try {
-			setUser(credentials);
-			// localStorage.setItem("user_token", token);
-			navigate("/bookmarks");
-		} catch (error) {
-			throw new Error(error.statusText || error.message);
-		}
+		const { data } = await api("post", "/users/login", credentials);
+		setToken(data.token);
+		localStorage.setItem("user_token", data.token);
+		navigate("/bookmarks");
 	}
 
 	function logout() {
-		setUser(null);
-		setToken("");
+		setToken(null);
 		trycatch(() => localStorage.removeItem("user_token"));
-		navigate("/");
+		navigate("/login");
 	}
 
 	return (
-	<AuthContext.Provider value={{ token, user, login, logout }}>
+	<AuthContext.Provider value={{ token, login, logout }}>
 		{children}
 	</AuthContext.Provider>);
 }
