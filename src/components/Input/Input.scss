@@ -1,0 +1,62 @@
+@use "../../styles/partials/global" as *;
+
+.input {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	width: 100%;
+	min-width: u-pxToRem(184);
+
+	&__label {
+		flex: 1 0 100%;
+		margin-bottom: $l-space-0;
+		@extend %f-text-label;
+		color: $c-pine;
+	}
+
+	&__field {
+		appearance: none;
+		flex: 1 0 auto;
+		display: inline-block;
+		border: 1px solid $c-pine;
+		border-radius: 4px;
+		padding: $l-space-1 $l-space-1 * 1.5;
+		background: rgba($c-matcha, .4);
+		@extend %f-body-medium;
+		color: $c-blackberry;
+
+		&::placeholder {
+			color: rgba($c-blackberry, .5);
+			opacity: 1;
+		}
+		&:focus {
+			outline: 3px solid $c-blackberry;
+			outline-offset: -1px;
+		}
+		&--invalid {
+			border-color: darken($c-hawkweed, 10%);
+			outline-color: darken($c-hawkweed, 10%);
+			background: rgba($c-hawkweed, .15);
+		}
+		&:disabled {
+			filter: grayscale(1);
+			opacity: .7;
+		}
+	}
+	&__error {
+		display: inline-block;
+		background: darken($c-hawkweed, 10%);
+		width: $l-space-3;
+	}
+	&__description {
+		flex: 1 0 100%;
+		@extend %f-caption-large;
+		color: $c-pine;
+		&:not(:empty) {
+			margin-top: $l-space-0;
+		}
+	}
+	&__hidden {
+		@include u-screen-reader-only;
+	}
+}

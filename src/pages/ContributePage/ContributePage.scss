@@ -1,0 +1,66 @@
+@use "../../styles/partials/global" as *;
+
+.contribute {
+	&__title {
+		@extend %f-page-title;
+	}
+	&__intro-body {
+		@extend %f-body-large;
+	}
+	&__card-wrapper {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: center;
+		align-items: stretch;
+		gap: $l-space-3;
+		margin-block: $l-space-4 $l-space-2;
+	}
+	&__card {
+		position: relative;
+		flex: 0 1 $l-space-1*38;
+		border-radius: 4px;
+		overflow: hidden;
+		padding-inline: $l-space-2;
+		padding-bottom: $l-space-8;
+		background:rgba($c-matcha, .5);
+		@extend %f-body-medium;
+		transition: transform 0.15s ease-in-out;
+		&:hover, &:focus-within {
+			transform: scale(1.02);
+		}
+	}
+	&__card-header {
+		display: flex;
+		align-items: center;
+		gap: $l-space-2;
+		margin-inline: ($l-gutter-mobile + $l-space-2) * -1;
+		margin-block: 0;
+		padding: $l-gutter-mobile $l-gutter-mobile * 2;
+		@extend %f-heading;
+		background: $c-pine;
+		color: $c-white;
+	}
+	&__card-logo {
+		width: $l-space-5;
+		aspect-ratio: 1;
+		object-fit: contain;
+	}
+	&__card-cta {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		display: block;
+		margin-inline: ($l-gutter-mobile + $l-space-2) * -1;
+		padding: $l-gutter-mobile $l-gutter-mobile * 2;
+		@extend %f-button-large;
+		text-align: center;
+		text-decoration: none;
+		background-color: $c-hawkweed;
+		color: $c-blackberry;
+		cursor: pointer;
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}

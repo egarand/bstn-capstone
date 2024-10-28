@@ -1,0 +1,48 @@
+
+// || KEYFRAMES
+
+@keyframes spin {
+	to {
+		transform: rotate(1turn);
+	}
+}
+@keyframes shake {
+	0% { transform: translateX(0) }
+	25% { transform: translateX(3px); }
+	50% { transform: translateX(-3px); }
+	75% { transform: translateX(3px); }
+	100% { transform: translateX(0); }
+}
+
+// || MEDIA QUERIES
+
+@mixin animation-reduced-motion($animation) {
+	// Set an alternate animation for reduced motion users.
+	@media only screen and (prefers-reduced-motion: reduce) {
+		animation: $animation;
+	}
+}
+
+@mixin animation-halt {
+	// Halts all animations for reduced motion users.
+	@media only screen and (prefers-reduced-motion: reduce) {
+		animation-delay: 0s;
+		animation-duration: .001ms;
+		animation-iteration-count: 1;
+	}
+}
+
+@mixin transition-reduced-motion($transition) {
+	// Set an alternate transition for reduced motion users.
+	@media only screen and (prefers-reduced-motion: reduce) {
+		transition: $transition;
+	}
+}
+
+@mixin transition-halt {
+	// Halts all transitions for reduced motion users.
+	@media only screen and (prefers-reduced-motion: reduce) {
+		transition-duration: .001ms;
+		transition-delay: 0s;
+	}
+}

@@ -1,0 +1,84 @@
+@use "../../styles/partials/global" as *;
+
+.explore-page {
+	&__title {
+		@extend %f-page-title;
+	}
+	&__description {
+		@extend %f-body-large;
+	}
+	&__heading {
+		margin-block: $l-space-1;
+		@extend %f-heading;
+	}
+	&__form-heading {
+		margin-block: 0 $l-space-1;
+		@extend %f-sub-heading;
+		font-weight: 700;
+		color: $c-pine;
+		&:last-of-type {
+			break-before: column;
+		}
+	}
+	&__fieldset, &__pois-wrapper {
+		display: grid;
+		grid-auto-flow: row;
+		column-gap: $l-space-2;
+		margin-block: $l-space-1 $l-space-2;
+	}
+	&__type-group {
+		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(160), 1fr));
+	}
+	&__taxa-group {
+		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(130), 1fr));
+	}
+	&__coord-group {
+		grid-template-columns: repeat(auto-fit, minmax(u-pxToRem(200), 1fr));
+		align-items: end;
+		gap: $l-space-2;
+		max-width: u-pxToRem(600) + $l-space-2;
+	}
+	&__current-loc-btn {
+		width: 100%;
+		margin-bottom: $l-space-0*.5;
+	}
+	&__submit-btn {
+		margin-top: $l-space-4;
+		margin-left: auto;
+	}
+
+	&__results {
+		position: relative;
+	}
+	&__loader {
+		&:empty {
+			@include u-screen-reader-only;
+		}
+		&:not(:empty) {
+			position: absolute;
+			z-index: 1300;
+			background-color: rgba($c-white, .6);
+			inset: 0;
+		}
+	}
+
+	&__poi-header {
+		@extend %f-sub-heading;
+		font-weight: 700;
+	}
+
+	&__map {
+		width: 100%;
+		height: u-pxToRem(400);
+	}
+
+
+	@include l-tablet {
+		&__form {
+			columns: 2;
+		}
+		&__fieldset {
+			break-inside: avoid-column;
+		}
+	}
+}

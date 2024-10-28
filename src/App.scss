@@ -1,1 +1,8 @@
+@use "styles/partials/global" as *;
 
+.skip-link:focus, .skip-link:focus-visible {
+	border-bottom-right-radius: 4px;
+	padding: $l-space-1;
+	background: $c-hawkweed;
+	color: $c-blackberry;
+}

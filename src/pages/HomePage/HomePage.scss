@@ -1,0 +1,88 @@
+@use "../../styles/partials/global" as *;
+
+.home-page {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: $l-space-4 $l-space-3;
+
+	&__hero {
+		flex: 1 0 100%;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-evenly;
+		column-gap: $l-space-3;
+		margin: $l-space-2*-1 $l-margin-mobile*-1 0;
+		padding: $l-space-6 $l-margin-mobile $l-space-7;
+		$overlay-col: rgba($c-pine, .75);
+		background:
+			linear-gradient($overlay-col, $overlay-col),
+			no-repeat bottom/cover url("../../assets/images/autumn.jpg"),
+			linear-gradient($overlay-col, $overlay-col);
+		color: $c-white;
+	}
+	&__title {
+		flex: 0 1 content;
+		margin: 0;
+		@extend %f-hero;
+	}
+	&__hero-body {
+		flex-basis: u-pxToRem(240);
+		@extend %f-body-medium;
+	}
+	&__hero-btn {
+		margin-inline: auto;
+	}
+
+	&__section {
+		flex: 0 1 auto;
+		display: flex;
+		flex-direction: column;
+		gap: $l-space-2;
+		align-items: center;
+		max-width: min(100%, u-pxToRem(500));
+		text-align: center;
+	}
+	&__subheading {
+		break-before: column;
+		margin-bottom: $l-space-1;
+		@extend %f-sub-heading;
+		font-weight: 700;
+		color: $c-pine;
+	}
+
+	&__img-wrapper {
+		width: fit-content;
+		border-radius: 4px;
+		background-color: $c-matcha;
+		padding: $l-space-2;
+	}
+	&__img {
+		width: u-pxToRem(130);
+		color: rgba($c-pine, .75);
+	}
+	&__copy {
+		margin: 0;
+	}
+
+	@include l-tablet {
+		&__hero {
+			margin-inline: $l-margin-tablet*-1;
+			padding: $l-space-8 $l-margin-tablet;
+		}
+		&__section {
+			flex: 0 0 100%;
+			flex-direction: row;
+			gap: $l-space-6;
+			@include u-content-width-clamp(u-pxToRem(700), $l-gutter-desktop);
+			max-width: none;
+			text-align: left;
+		}
+		&__section-body {
+			order: 1;
+		}
+		&__section:nth-of-type(even) &__img-wrapper {
+			order: 2;
+		}
+	}
+}

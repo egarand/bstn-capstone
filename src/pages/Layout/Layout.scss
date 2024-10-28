@@ -1,0 +1,27 @@
+@use "../../styles/partials/global" as *;
+
+.layout {
+	flex: 1 0 auto;
+
+	&__inner {
+		background-color: $c-white;
+		padding: $l-space-2 $l-margin-mobile $l-space-3;
+	}
+
+	@include l-tablet {
+		@include u-content-width-clamp($l-max-content-width + $l-margin-tablet * 2, 0px);
+		background: $c-matcha;
+		background:
+			linear-gradient(
+				-165deg,
+				rgba($c-hawkweed, .1),
+				rgba($c-white, .2),
+				transparent,
+				rgba($c-pine, .2)
+			),
+			linear-gradient($c-matcha, $c-matcha);
+		&__inner {
+			padding: $l-space-2 $l-margin-tablet $l-space-3;
+		}
+	}
+}

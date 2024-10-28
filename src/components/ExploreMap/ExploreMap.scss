@@ -1,0 +1,74 @@
+@use "../../styles/partials/global" as *;
+
+.explore-map {
+	border: 2px solid $c-matcha;
+	border-radius: 4px;
+}
+
+.explore-map-radius {
+	stroke: lighten($c-blackberry, 45%);
+	stroke-dasharray: 6 5 10 6 5 7 5 8;
+	fill: lighten($c-blackberry, 50%);
+	fill-opacity: .1;
+	cursor: grab;
+}
+
+.explore-map-poi {
+	&--trail {
+		stroke: #0368bb;
+		stroke-width: .35rem;
+	}
+	&--campground {
+		stroke: darken($c-hawkweed, 20%);
+		fill: $c-hawkweed;
+		stroke-width: .2rem;
+	}
+	&--reserve {
+		stroke: lighten($c-pine, 15%);
+		fill: $c-matcha;
+		stroke-width: .2rem;
+	}
+	&__title {
+		max-width: u-pxToRem(400);
+		@extend %f-sub-heading;
+		text-overflow: ellipsis;
+		color: $c-matcha;
+	}
+	&__content {
+		@extend %f-body-medium;
+	}
+}
+
+.explore-map-popup {
+	// Leaflet's popups are difficult; fighting for specificity
+	// with their stylesheet is required
+	& .leaflet-popup {
+		&-content-wrapper {
+			border-radius: 4px;
+			background: $c-pine;
+			color: $c-white;
+			box-shadow: 0 0 5px 1px $c-white;
+			text-align: center;
+		}
+		&-content {
+			margin: $l-space-2;
+			color: currentColor;
+			& a {
+				color: currentColor;
+				&:hover {
+					color: $c-hawkweed;
+				}
+			}
+		}
+		&-tip {
+			background: $c-pine;
+			box-shadow: 0 0 8px 1px $c-white;
+		}
+	}
+	& a.leaflet-popup-close-button {
+		color: $c-matcha;
+		&:hover {
+			color: $c-hawkweed;
+		}
+	}
+}

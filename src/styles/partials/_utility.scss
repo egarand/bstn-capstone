@@ -1,0 +1,33 @@
+@use "sass:math";
+
+/// Converts pixel values to rems.
+/// @param {number} $px The pixel value to convert.
+/// @return {number} The rem equivalent of the input value.
+@function pxToRem($px) {
+	$pxValue: math.div($px, ($px * 0 + 1)); // strip units
+	@return math.div($pxValue, 16) * 1rem;
+}
+
+/// A set of styles which hides an element visually, while ensuring screen
+/// readers will still read the contents.
+@mixin screen-reader-only {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/// Use padding to clamp the width of inner content so it's never wider than
+/// the maximum desktop content width. Similar in concept to margin: auto.
+@mixin content-width-clamp($max-width, $min-padding) {
+	padding-inline: max(calc((100% - $max-width) / 2), $min-padding);
+}
+
+/// Calculates perfect width for flex items in a responsive "grid" layout with
+/// the given column count and gutter width.
+@function flex-column-width($columns, $gutter) {
+	@return calc(100%/$columns - $gutter/$columns * ($columns - 1));
+}

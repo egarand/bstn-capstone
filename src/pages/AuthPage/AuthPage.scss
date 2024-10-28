@@ -1,0 +1,31 @@
+@use "../../styles/partials/global" as *;
+
+.auth-page {
+	&__title {
+		@extend %f-page-title;
+	}
+
+	&__form {
+		display: flex;
+		flex-direction: column;
+		gap: $l-space-2;
+		margin-block: $l-space-4;
+		@include u-content-width-clamp(u-pxToRem(500), 0px);
+	}
+
+	&__submit-btn {
+		align-self: flex-end;
+	}
+
+	&__link-wrapper {
+		margin: 0;
+		@extend %f-caption-large;
+		text-align: center;
+	}
+	&__link {
+		color: $c-pine;
+		&:hover {
+			color: $c-hawkweed;
+		}
+	}
+}

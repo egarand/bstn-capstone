@@ -1,0 +1,16 @@
+.skip-link {
+	&:focus {
+		position: fixed;
+		z-index: 10;
+		cursor: pointer;
+	}
+	&:not(:focus) {
+		clip: rect(0 0 0 0);
+		clip-path: inset(50%);
+		height: 1px;
+		overflow: hidden;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+	}
+}
