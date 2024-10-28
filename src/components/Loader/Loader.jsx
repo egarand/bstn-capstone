@@ -1,3 +1,4 @@
+import { errorMessage } from "../../utils";
 import "./Loader.scss";
 
 /** A themed loader. Provide a `className` and set the `color` to change the colour of the text and animation. */
@@ -13,9 +14,7 @@ function Loader({ className, isLoading, loadMessage, errorObj }) {
 			{errorObj && (<>
 				<div className="loader__error-header">Error</div>
 				<div className="loader__error-message">{
-					errorObj?.statusText
-					|| errorObj?.message
-					|| "Unknown error, sorry"
+					!!errorObj && errorMessage(errorObj)
 				}</div>
 			</>)}
 		</div>

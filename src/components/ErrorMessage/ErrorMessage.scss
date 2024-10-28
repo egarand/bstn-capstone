@@ -1,0 +1,23 @@
+@use "../../styles/partials/global" as *;
+
+.error-message {
+	display: flex;
+	align-items: center;
+	gap: $l-space-0;
+	background: rgba($c-hawkweed, .3);
+	border: 1px solid darken($c-hawkweed, 20%);
+	border-radius: 4px;
+	padding: $l-space-1;
+	padding-right: $l-space-2;
+	width: fit-content;
+	max-width: u-pxToRem(600);
+	margin-inline: auto;
+
+	&__icon {
+		color: darken($c-hawkweed, 20%);
+		width: $l-space-3;
+	}
+	&:has(&__body:empty) {
+		@include u-screen-reader-only;
+	}
+}

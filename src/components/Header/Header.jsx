@@ -11,7 +11,7 @@ import menuSrc from "../../assets/icons/menu.svg";
 import closeSrc from "../../assets/icons/close.svg";
 
 function Header() {
-	const { user, logout } = useAuth();
+	const { token, logout } = useAuth();
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 	const base = "header__navlink";
@@ -42,13 +42,13 @@ function Header() {
 			<AnnouncedNavLink to="/contribute" className={navLinkClasses}>
 				Contribute
 			</AnnouncedNavLink>
-			{!!user && (<>
+			{!!token && (<>
 			<AnnouncedNavLink to="/bookmarks" className={navLinkClasses}>
 				Bookmarks
 			</AnnouncedNavLink>
 			<Button onClick={logout} className="header__login">Log Out</Button>
 			</>)}
-			{!!user || (
+			{!!token || (
 			<Button to="/login" className="header__login">Log In</Button>)}
 		</nav>
 	</header>
