@@ -14,18 +14,21 @@ function ExploreMap({
 	center = algonquinCoords, minz = 6, maxz = 14, zoom = 10
 }) {
 	const mapRef = useRef(null);
-	function loadTilesOnResize(ref) {
+	function loadTilesOnResize() {
 		const resizeObserver = new ResizeObserver(
 			() => mapRef.current?.invalidateSize()
 		);
-		if (ref.current) {
-			resizeObserver.observe(ref.current);
-		}
+		requestAnimationFrame(() => {
+			if (mapRef.current) {
+				resizeObserver.observe(mapRef.current.getContainer());
+			}
+		});
 	}
 	return (
 		<MapContainer
 			ref={mapRef}
-			whenReady={() => loadTilesOnResize(mapRef)}
+			trackResize
+			whenReady={() => loadTilesOnResize()}
 			center={center} zoom={zoom} scrollWheelZoom={false}
 			className={`explore-map ${className}`}
 		>
