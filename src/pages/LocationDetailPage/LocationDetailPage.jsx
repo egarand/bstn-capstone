@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { polygonCentroid, trycatch } from "../../utils";
-import useApi, { api } from "../../utils/api";
+import useApi from "../../utils/api";
 import { useAuth } from "../../components/AuthProvider/AuthProvider";
 
 import { AnnouncedLink, useAccessibleNav } from "../../navigation-accessibility";
 import DocTitle from "../../components/DocTitle/DocTitle";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import IconButton from "../../components/IconButton/IconButton";
 import Loader from "../../components/Loader/Loader";
 import LocationTag from "../../components/LocationTag/LocationTag";
@@ -34,7 +35,8 @@ function LocationDetailPage() {
 		[fetchPoi, poi, loadingPoi, errorPoi]
 			= useApi(state?.poi),
 		[fetchSpecies, species, loadingSpecies, errorSpecies]
-			= useApi(null, true);
+			= useApi(null, true),
+		[bookmark,,,bookmarkError] = useApi();
 	const [page, setPage] = useState(1);
 	const [taxa, setTaxa] = useState(
 		state?.taxa
@@ -85,25 +87,21 @@ function LocationDetailPage() {
 
 	async function handleBookmark() {
 		if (!token) { return; }
-		try {
-			const res = await api("post", "/users/pois",
-				{
-					osm_type: poi.osm_type,
-					osm_id: poi.osm_id,
-					name: poi.tags.name
-				},
-				{ headers: { "Authorization": `Bearer ${token}`} }
-			);
-			console.log(res);
-		} catch (error) {
-			console.log(error);
-		}
+		bookmark("post", "/users/pois",
+			{
+				osm_type: poi.osm_type,
+				osm_id: poi.osm_id,
+				name: poi.tags.name
+			},
+			{ headers: { "Authorization": `Bearer ${token}`} }
+		);
 	}
 
 	return (
 	<section className="location-page" aria-busy={loadingPoi}>
 		<DocTitle title={poi?.tags?.name} />
 		<Loader isLoading={loadingPoi} errorObj={errorPoi}/>
+		<ErrorMessage errorObj={bookmarkError}/>
 		<div className="location-page__header-section">
 			<h1 className="location-page__title">
 				{poi?.tags?.name}

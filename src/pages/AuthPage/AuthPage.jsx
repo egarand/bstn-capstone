@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../components/AuthProvider/AuthProvider";
+import useIsMounted from "../../hooks/useIsMounted";
 import { AnnouncedLink, AnnouncedNavigate } from "../../navigation-accessibility";
 import DocTitle from "../../components/DocTitle/DocTitle";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import "./AuthPage.scss";
@@ -15,15 +17,21 @@ const initialValues = {
 function AuthPage() {
 	const { pathname } = useLocation();
 	const { token, login, register } = useAuth();
+	const isMounted = useIsMounted();
 
-	const [values, setValues] = useState(initialValues);
+	const [values, setValues] = useState(initialValues),
+		[error, setError] = useState(null);
 	const isRegisterPage = useMemo(() =>
 		pathname.includes("/register")
 	, [pathname]);
 
-	useEffect(() => setValues(initialValues), [pathname]);
+	useEffect(() => {
+		setValues(initialValues);
+		setError(null);
+	}, [pathname]);
 
 	function handleInputChange(ev) {
+		setError(null);
 		const { name, value } = ev.target;
 		setValues({ ...values, [name]: value });
 	}
@@ -31,18 +39,24 @@ function AuthPage() {
 	async function handleLogin(ev) {
 		ev.preventDefault();
 		try {
-			login(values);
+			await login(values);
 		} catch (error) {
 			console.error(error);
+			if (isMounted.current) {
+				setError(error);
+			}
 		}
 	}
 
 	async function handleRegister(ev) {
 		ev.preventDefault();
 		try {
-			register(values);
+			await register(values);
 		} catch (error) {
 			console.error(error);
+			if (isMounted.current) {
+				setError(error);
+			}
 		}
 	}
 
@@ -56,6 +70,7 @@ function AuthPage() {
 			{isRegisterPage ? "Register" : "Log In"}
 		</h1>
 
+		<ErrorMessage errorObj={error}/>
 		<form
 			className="auth-page__form"
 			onSubmit={isRegisterPage ? handleRegister : handleLogin}

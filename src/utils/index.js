@@ -41,3 +41,22 @@ export function trycatch(fn, errorVal = null) {
 	}
 }
 
+/** Extracts a more human-readable error message out of an error object */
+export function errorMessage(errorObj) {
+	if (errorObj?.response) {
+		const { data } = errorObj.response;
+		if (typeof data === "string" && !data.startsWith("<!DOCTYPE")) {
+			return data;
+		} else if (typeof data === "object") {
+			if (data.errors) {
+				return data.errors.map((e) => `${e.path}: ${e.msg}`);
+			} else if (data.message) {
+				return data.message;
+			}
+		} else if (errorObj.message) {
+			return errorObj.message;
+		}
+		return data;
+	}
+	return errorObj?.message || "Unknown error";
+}
