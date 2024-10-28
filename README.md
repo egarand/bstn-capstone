@@ -4,6 +4,23 @@
 
 Hike & Seek aims to encourage local exploration and responsible hiking, and foster an appreciation for users' local ecosystems by helping users find places for outdoor recreation and educating users about the wildlife they may find there.
 
+## Installation
+
+1. Install [PostgreSQL](https://www.postgresql.org/download/)
+2. Create a new postgres database to store Hike & Seek's data
+2. Install [Nodejs](https://nodejs.org/en)
+3. Clone this repository and [the repository for the API](https://github.com/egarand/bstn-capstone-api)
+4. For the front end repository (you are here):
+    1. Copy `.env.sample`, rename it to `.env`, and make sure each variable is set how you need it. `VITE_API_URL` will need to match the port you set for the API.
+    2. `npm install`
+    3. `npm run dev`
+5. For the API repository:
+    1. Copy `.env.sample`, rename it to `.env`, and make sure each variable is set how you need it. Make sure the ones prefixed `DB_` match your local database set up.
+    2. `npm install`
+    3. `npm run db:migrate`
+    4. `npm run db:seed`
+    5. `npm run dev`
+
 ### Problem Space
 
 Many individuals, particularly those in urban areas, experience a disconnect from natural spaces and a lack of knowledge about local ecosystems. This gap in understanding diminishes outdoor experiences and makes it hard to find those outdoor experiences to begin with. Unless you already know a good spot to hike or camp, it can be a struggle to find a place to go - and many small local hiking trails and campgrounds don't have an online presence, which makes them nigh-impossible for a beginner to find. Additionally, without knowledge of the kinds of wildlife they may encounter, an aspiring outdoorman misses valuable educational opportunities, and may even inadvertently harm wildlife or their habitats.
@@ -22,7 +39,6 @@ Many individuals, particularly those in urban areas, experience a disconnect fro
 - As a user, I want to be able to find trails and campgrounds close to any given location.
 - As a user, I want to learn about wildlife I can encounter at a given trail or campground.
 - As a user, I want to filter what iconic taxa (broad, well-known groups of wildlife) are displayed for each location.
-- As a user, I want to be able to save or print a sightings checklist of wildlife from a location
 
 - As a user, I want to be able to create an account to manage natural spaces I want to visit.
 - As a user, I want to be able to login to my account to manage natural spaces I want to visit.
@@ -66,8 +82,6 @@ Many individuals, particularly those in urban areas, experience a disconnect fro
   - View more details about a trail/campground/other point of interest
 - View an organism
   - View more details about a given species
-- Save/print a sightings checklist
-  - From a trail/point of interest, get a printable checklist of species you may see there.
 - Manage bookmarked trails
   - Logged in users: view and manage a list of saved points of interest
 - Contribute
@@ -87,28 +101,16 @@ Many individuals, particularly those in urban areas, experience a disconnect fro
 ![](./mockups/find-trails.png)
 
 #### View & save a trail
-*TODO*
 ![](./mockups/view-trail.png)
 
-#### View an organism
-*TODO*
-![](./mockups/view-organism.png)
-
-#### Save/print a sightings checklist
-*TODO*
-![](./mockups/checklist.png)
+#### View a species
+![](./mockups/view-species.png)
 
 #### Contribute
-*TODO*
-![](./mockups/view-organism.png)
+![](./mockups/contribute.png)
 
-#### Register
-*TODO*
-![](./mockups/register.png)
-
-#### Login
-*TODO*
-![](./mockups/login.png)
+#### Register/Log In
+![](./mockups/auth.png)
 
 
 ### Data
@@ -123,13 +125,16 @@ Many individuals, particularly those in urban areas, experience a disconnect fro
 **`pois`**:
   - `id`: primary key, integer, auto-increment
   - `name`: varchar(128)
+  - `category`: varchar(16)
   - `osm_id`: integer
   - `osm_type`: integer
+	- unique constraint on (`osm_id`,`osm_type`)
 
 **`saved_pois`**:
   - `id`: primary key, integer, auto-increment
   - `user_id`: foreign key on `users.id`
   - `poi_id`: foreign key on `pois.id`
+	- unique constraint on (`user_id`,`poi_id`)
 
 ### Endpoints
 
@@ -210,12 +215,13 @@ Response:
 
 #### **GET /life**
 
-- Get a list of species that have previously been sighted within a radius of a certain location, within the current month of the year. Data pulled from iNaturalist.
+- Get a list of species that have previously been sighted within a geographic bounding box, within the current month of the year. Bounding box is enlarged to be minimum 5km across in both axes if necessary. Data pulled from iNaturalist.
 
 Parameters:
-- longitude: Location as a number
-- latitude: Location as a number
-- taxa: User-provided comma-separated list of iconic taxa to include in the results
+- north: The northern latitude of the bounding box to search.
+- south: The southern latitude of the bounding box to search.
+- west: The western longitude of the bounding box to search.
+- east: The eastern longitude of the bounding box to search.
 
 Response:
 ```
@@ -283,6 +289,7 @@ Parameters:
 - osm_id: PoI OSM identifier as a number
 - osm_type: The type that this PoI is represented as in Overpass. One of "node", "way", or "relation".
 - name: The name of this PoI
+- category: One of either "trail", "campground", or "reserve"; identifying what kind of PoI this is.
 - token: JWT used to identify the user saving the location.
 
 Response:
@@ -342,60 +349,56 @@ Response:
 - JWT auth
   - Before adding auth functionality, relevant API requests will be made using a fake user with id 1.
   - Auth functionality will be added after core features have been implemented.
-  - If user asks the site to remember them on login, JWT will be saved in localStorage; if not, it will be saved to sessionStorage; in either case, it is removed upon logout.
   - Add states for logged in that show different UI in relevant areas.
 
 ## Roadmap
 
-- Create client - Day 1
+- Create client
   - React project with routes & boilerplate pages
   - Set up Sass partials & accessibility enhancements
 
-- Create server - Day 1
+- Create server
   - Express project with routing, with placeholder 501 responses
   - Set up general middleware (cors, compression, etc)
   - Set up sanitization and validation for user-inputted data
 
-- Create database migrations - Day 1
-- Create seeds for fake user data - Day 1
+- Create database migrations
+- Create seeds for fake user data
   - One user account, plus a few saved points of interest
 
-- Feature: Home Page - Day 2
+- Feature: Home Page
   - Implement home page
 
-- Feature: Contribute Page - Day 2
+- Feature: Contribute Page
   - Implement contribute page
 
-- Feature: Find Trails - Day 3
+- Feature: Find Trails
   - Create GET /pois
   - Implement find trails page, including form & Leaflet map
   - Save most form contents in sessionStorage; iconic taxa choices in localStorage
 
-- Feature: View Trail Page - Day 4
+- Feature: View Trail Page
   - Create GET /pois/:osm_id
   - Create GET /life
   - Implement view trail page, including overview of seasonal animal sightings
 
-- Feature: View Organism Page - Day 5
+- Feature: View Organism Page
   - Create GET /life/:id
   - Implement view organism page
 
-- Feature: Sighting Checklist Page - Day 6
-  - Implement printable checklist page - shows name of PoI, month, and a list of animals randomly chosen from iconic taxa groups of user's choice
-
-- Feature: Manage Bookmarked Trails Page - Day 7
+- Feature: Manage Bookmarked Trails Page
   - Create GET /pois/saved
   - Implement manage bookmarks page, including a delete button for each bookmark and a link to view details.
 
-- Feature: Login - Day 8
+- Feature: Login
   - Create POST /users/login
   - Implement login page and form
 
-- Feature: Create account - Day 8
+- Feature: Create account
   - Create POST /users/register
   - Implement registration page and form
 
-- Feature: Implement JWT tokens - Day 9
+- Feature: Implement JWT tokens
   - Server: Update expected requests & responses on protected endpoints
   - Client: Local storage of JWT, include JWT with api calls
 
@@ -409,7 +412,11 @@ Response:
 
 ## Future Implementations
 
-- User authentication may be a future implementation, depending on time.
-- Forgot password & password change functionality.
+- Improve UX around bookmarking; the location details page should inform a logged in user if this PoI is in their bookmarks already and allow them to unbookmark it.
+- Optimize front-end API calls; implement a response caching system to reduce the number of calls made to the API, especially to proxy endpoints.
+- Include a printable Sightings Checklist page that displays a formatted list of randomly selected species for a given location; intended for people to bring with them on a trip to see how many of those species they can spot.
+- Improve UX around searching for locations; allow users to set the location by clicking the map, and by searching for an address.
+- Improve parsing of OSM data to include more/more useful featured tags on locations.
 - Get directions from a specified location to a given point of interest, when possible.
+- Forgot password & password change functionality.
 - Unit and Integration tests.
